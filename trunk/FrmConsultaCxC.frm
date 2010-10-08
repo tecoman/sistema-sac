@@ -2,7 +2,7 @@ VERSION 5.00
 Object = "{F0D2F211-CCB0-11D0-A316-00AA00688B10}#1.0#0"; "MSDATLST.OCX"
 Object = "{C932BA88-4374-101B-A56C-00AA003668DC}#1.1#0"; "MSMASK32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{0ECD9B60-23AA-11D0-B351-00A0C9055D8E}#6.0#0"; "MSHFLXGD.OCX"
 Begin VB.Form FrmConsultaCxC 
    Caption         =   "Consulta de Deuda al Día de Hoy"
@@ -995,7 +995,7 @@ Attribute VB_Exposed = False
         FlexFacturas(1).Width = 11025
         cmd.Picture = Image1(1)
         FlexFacturas(2).Visible = False
-        Frame3(0).Visible = False
+        frame3(0).Visible = False
         If FlexFacturas(1).Rows > 18 Then
             FlexFacturas(1).ColWidth(2) = 7200
         Else
@@ -1006,7 +1006,7 @@ Attribute VB_Exposed = False
         FlexFacturas(1).Width = 6615
         cmd.Picture = Image1(0)
         FlexFacturas(2).Visible = True
-        Frame3(0).Visible = True
+        frame3(0).Visible = True
         If FlexFacturas(1).Rows > 18 Then
             FlexFacturas(1).ColWidth(2) = 2800
         Else
@@ -1185,7 +1185,7 @@ End Sub
     For I = 21 To 24
         Load lbl(I)
         lbl(I).Visible = True
-        lbl(I).Width = Frame3(0).Width
+        lbl(I).Width = frame3(0).Width
         lbl(I) = ""
         lbl(I).Font.Size = lbl(I).Font.Size - 1
     Next
@@ -1194,7 +1194,7 @@ End Sub
     margen_top = (margen_top * 300) / 768
     lbl(21).FontBold = True
     lbl(21).Left = lbl(20).Left
-    lbl(21).Top = Frame3(0).Top + Frame3(0).Height + 300
+    lbl(21).Top = frame3(0).Top + frame3(0).Height + 300
     lbl(21).AutoSize = True
     lbl(22).Left = lbl(21).Left
     lbl(22).Top = lbl(21).Top + 300
@@ -1220,8 +1220,8 @@ End Sub
             txt(0).Top = FlexFacturas(1).Top + FlexFacturas(1).Height
             FlexFacturas(2).Height = FmeCuentas.Height - FlexFacturas(2).Top - 200
             lbl(20).Height = FmeCuentas.Height * 0.3
-            Frame3(0).Top = lbl(20).Top + lbl(20).Height
-            Frame3(0).Left = lbl(20).Left
+            frame3(0).Top = lbl(20).Top + lbl(20).Height
+            frame3(0).Left = lbl(20).Left
         End If
     End With
     '
@@ -1572,7 +1572,7 @@ End Sub
     For I = 0 To 2
         FlexFacturas(I).Rows = 2
         Call rtnLimpiar_Grid(FlexFacturas(I))
-        MskTelefono(I) = ""
+        mskTelefono(I) = ""
     Next
     '
     Dat(2) = ""
@@ -1659,7 +1659,7 @@ End Sub
     FlexFacturas(1).Visible = StrEstado
     cmd.Visible = StrEstado
     FlexFacturas(2).Visible = StrEstado
-    Frame3(0).Visible = Not StrEstado
+    frame3(0).Visible = Not StrEstado
     '
     End Sub
 
@@ -1735,9 +1735,9 @@ End Sub
                 txt(10) = Format(!Deuda, "#,##0.00")
                 txt(9) = Format(0, "#,##0.00")
                 txt(11) = txt(10)
-                MskTelefono(0) = IIf(IsNull(!Fax), "", !Fax)
-                MskTelefono(1) = IIf(IsNull(!TelfHab), "", !TelfHab)
-                MskTelefono(2) = IIf(IsNull(!Celular), "", !Celular)
+                mskTelefono(0) = IIf(IsNull(!Fax), "", !Fax)
+                mskTelefono(1) = IIf(IsNull(!TelfHab), "", !TelfHab)
+                mskTelefono(2) = IIf(IsNull(!Celular), "", !Celular)
                 Text1(7) = IIf(IsNull(!email), "", !email)
                 Text1(8) = IIf(IsNull(!FecUltPag), "", !FecUltPag)
                 Text1(9) = IIf(IsNull(!UltPago), "", !UltPago)

@@ -169,11 +169,11 @@ Gestion_Error:
     
 
     'Rev.05/09/2002-------------------------------------------------------------------------------
-    Public Function BuscaProp(StrCampo$, StrRecord$, ado As Adodc) As Boolean
+    Public Function BuscaProp(StrCampo$, StrRecord$, Ado As Adodc) As Boolean
     '---------------------------------------------------------------------------------------------
     'BUSCA EL CODIGO Y NOMBRE DE UN PROPIETARIO SEGUN PARAMETROS ENVIADOS POR EL USUARIO
     '
-    With ado.Recordset
+    With Ado.Recordset
     '
         If .EOF Or .BOF Then Exit Function
         .MoveFirst
@@ -496,7 +496,7 @@ End Sub
     '   de abogado y la deuda total. Además verifica el estatus del propietario, demandado,
     '   convenio, etc.
     '---------------------------------------------------------------------------------------------
-    Public Sub RtnFlex(StrApto$, Grid As Control, intMesMora%, intMora%, C%, txtmora As TextBox, _
+    Public Sub RtnFlex(StrApto$, grid As Control, intMesMora%, intMora%, C%, txtmora As TextBox, _
     cnnApto As ADODB.Connection, Optional Inm As String, Optional BsF As Boolean)
     'variales locales
     Dim Rfacturas As ADODB.Recordset
@@ -519,7 +519,7 @@ End Sub
     End If
     Rfacturas.MoveFirst
     '
-    With Grid
+    With grid
     '   Configura la presentación del Grid(Titulos, Ancho de columna, N° de Filas)
         .Rows = Rfacturas.RecordCount + 1
         .Cols = C
@@ -535,7 +535,7 @@ End Sub
         cAbono = Rfacturas("PAGADO") * nFactor
         cSaldo = Rfacturas("SALDO") * nFactor
         
-        With Grid
+        With grid
     '
             .Col = 1
             .Row = I
@@ -561,9 +561,9 @@ End Sub
         End With
     '
     Loop    'Punto de control {fin hasta}
-    Grid.Col = 0
-    Grid.ColSel = Grid.Cols - 1
-    If Grid.Enabled And Grid.Visible Then Grid.SetFocus
+    grid.Col = 0
+    grid.ColSel = grid.Cols - 1
+    If grid.Enabled And grid.Visible Then grid.SetFocus
     'Busca Honorarios-----------------------------------------------------------------------------
     If Rfacturas.RecordCount > intMesMora Then
         txtmora = Format(Round(curDeuda * intMora / 100), "#,##0.00")
@@ -1491,12 +1491,12 @@ Ocurre_Error:
     '
     '   centra el encabezado de las celdas de un grid
     '---------------------------------------------------------------------------------------------
-    Public Sub centra_titulo(Grid As Control, Optional ancho As Boolean)
+    Public Sub centra_titulo(grid As Control, Optional ancho As Boolean)
     'variables locales
     Dim I%, Ncol() As Integer, N%, strTag$ 'variables locales
     
     '
-    With Grid
+    With grid
         '
         .Visible = False
         .FormatString = .FormatString
@@ -2762,7 +2762,7 @@ End Sub
     'variables locales
     Dim Cuenta As String
     Dim Des As String
-    Dim Cargado As String
+    Dim cargado As String
     Dim Monto As String
     'asignación de las vairables
     If r Then
@@ -2771,7 +2771,7 @@ End Sub
         Cuenta = Inm & "-" & rst("CodGasto")
     End If
     Des = rst("Detalle")
-    Cargado = Format(rst("Periodo"), "MM/YYYY")
+    cargado = Format(rst("Periodo"), "MM/YYYY")
     Monto = Format(rst("Monto"), "#,##.00")
     '-------------------
     Printer.CurrentY = Linea
@@ -2779,7 +2779,7 @@ End Sub
     Printer.Print Cuenta    'print código de cuenta
     Printer.CurrentY = Linea
     Printer.CurrentX = 2400
-    Printer.Print Cargado   'print cargado
+    Printer.Print cargado   'print cargado
     Printer.CurrentY = Linea
     Printer.CurrentX = 3400
     Printer.Print Des   'print. descripción
@@ -5015,7 +5015,7 @@ salir:
         email.TextBody = Mensaje
     End If
     'aqui colocamos los archivos adjuntos
-    If Not IsNull(archivo_adjunto) Or archivo_adjunto <> "" Then
+    If archivo_adjunto <> "" Then
         If Dir(archivo_adjunto, vbArchive) <> "" Then
             email.AddAttachment (archivo_adjunto)
         End If

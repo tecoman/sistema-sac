@@ -2562,8 +2562,23 @@ EntraCod:
     '
         Case 0  'CONSULTA CUENTAS POR PAGAR
     '   ---------------------------------------------------
+            Static veces As Integer
             Call Muestra_Formulario(FrmConsultaCxC, "Click Consulta Ctas. x Cobrar..")
             FrmConsultaCxC.Dat(0).SetFocus
+'            If veces < 2 Then
+'                If MsgBox("Acces está usando un 70% de su capacidad." & _
+'                vbCrLf & "Libere recursos para optimizar el sistema" & vbCrLf & "¿Desea que Acces ejecute este proceso automáticamente?", vbYesNo + vbCritical, App.ProductName) = vbYes Then
+'                'On Error Resume Next
+'                    Dim msg As String
+'
+'                    msg = "Usuario: " & gcUsuario & "<br>"
+'                    msg = msg & "Fecha: " & Format(Date, "dd/mm/yyyy") & " " & Format(Time, "hh:mm") & "<br>"
+'                    msg = msg & "Máquina: " & gcMAC & "<br><br>"
+'                    msg = msg & "Email automático desde sistema SAC"
+'                    ModGeneral.enviar_email "ynfantes@gmail.com", "sistema-sac@administradorasac.com", "Acces 70%", True, msg
+'                    veces = veces + 1
+'                End If
+'            End If
     '
         Case 1  'IMPRESION AVISOS DE COBROS
     '   ---------------------------------------------------
