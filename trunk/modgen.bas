@@ -780,40 +780,23 @@ End Sub
     '   este apartado lo uso para ejecutar instrucciones
     '   sql para ajustar la base de datos en forma remota
     '********************************************************
-'    cnnConexion.Execute "delete from tdfcheques where monto = 0", N
+'    cnnConexion.Execute "delete from chequedetalle where idcheque = 50654 and Detalle='INST LAMINAS PROTECTORAS CAJETINES EXTINTORES'", N
+'    cnnConexion.Execute "delete from chequedetalle where idcheque = 50654 and Detalle='INST LAMINAS PROTECTORAS REMACHES CAJETINES EXTINT'", N
 '    Call rtnBitacora("Borrados (" & N & ") registros en cero de la tabla TDFCheques")
     Dim sql As String
-'    gcMAC = "REMOTO"
-'    gcUsuario = "SUPERVISOR"
+    gcMAC = "REMOTO"
+    gcUsuario = "SUPERVISOR"
+
 '
-''
-'    sql = "PARAMETERS [Cuentas] Text ( 255 ), [IDCuenta] Long, [Inmueble] Text ( 255 );" & _
-'        "SELECT [IDCuenta] AS IDCuenta, Cheque.FechaCheque as Fecha, 'CHQ' AS IDTipoMov, Cheque.Beneficiario, " & _
-'        "Cheque.IDCheque, 0 AS Debe, Cheque_Total.Total_Cheque AS Haber, Cheque.Hora " & _
-'        "FROM Cheque INNER JOIN Cheque_Total ON Cheque.IDCheque = Cheque_Total.IDCheque " & _
-'        "WHERE (((Cheque.Cuenta)=[Cuentas])) " & _
-'        "Union All SELECT [IDCuenta], ChequeAnulado.FechaCheque, 'CHQ', '(CHQ. ANULADO) '+Beneficiario, " & _
-'        "ChequeAnulado.IDCheque, 0, 0, ChequeAnulado.Hora " & _
-'        "FROM ChequeAnulado Where (((Cuenta) = [Cuentas])) " & _
-'        "Union All " & _
-'        "SELECT [IDCuenta], MovimientoCaja.FechaMovimientoCaja,  Left(TDFCheques.Fpago,3), " & _
-'        "MovimientoCaja.CuentaMovimientoCaja  & ' APTO: ' &  iif(MovimientoCaja.MontoMovimientocaja < TDFCheques.Monto, 'VARIOS',MovimientoCaja.AptoMovimientoCaja), " & _
-'        "TDFCheques.Ndoc, TDFCheques.Monto, 0, MovimientoCaja.Hora " & _
-'        "FROM MovimientoCaja RIGHT JOIN TDFCheques ON MovimientoCaja.IDRecibo = TDFCheques.IDRecibo " & _
-'        "WHERE TDFCheques.CodInmueble & TDFCheques.IDDeposito=[Inmueble] & [IDCuenta] AND TDFCheques.Fpago<>'EFECTIVO' AND " & _
-'        "TDFCheques.Fpago<>'CHEQUE' " & _
-'        "Union All " & _
-'        "SELECT [IDCuenta],MovimientoCaja.FechaMovimientoCaja, Left(TDFCheques.Fpago,3) , " & _
-'        "MovimientoCaja.CuentaMovimientoCaja & ' APTO: ' &  iif(MovimientoCaja.MontoMovimientocaja < TDFCheques.Monto, 'VARIOS',MovimientoCaja.AptoMovimientoCaja), " & _
-'        "TDFCheques.Ndoc, TDFCheques.Monto, 0, MovimientoCaja.Hora " & _
-'        "FROM TDFDepositos RIGHT JOIN (MovimientoCaja RIGHT JOIN TDFCheques ON MovimientoCaja.IDRecibo " & _
-'        "= TDFCheques.IDRecibo) ON TDFDepositos.IDDeposito = TDFCheques.IDDeposito " & _
-'        "WHERE TDFCheques.CodInmueble & TDFDepositos.Cuenta=[Inmueble]&[Cuentas] AND (TDFCheques.Fpago='EFECTIVO' " & _
-'        "or TDFCheques.Fpago='CHEQUE');"
-'
-'    rtnGenerator gcPath & "\sac.mdb", sql, "procLibroBanco"
-'
-'    Call rtnBitacora("Creada procedimiento procLibroBanco")
+    sql = "PARAMETERS [sInmueble] Text ( 255 ); " & _
+        "SELECT Inmueble.Caja, Inmueble.CodPagoCondominio, Inmueble.Nombre, " & _
+        "Inmueble.CodAbonoCta, Inmueble.CodAbonoFut " & _
+        "from Inmueble " & _
+        "WHERE (((Inmueble.CodInm)=[sInmueble]));"
+
+    rtnGenerator gcPath & "\sac.mdb", sql, "procBuscaCaja"
+
+    Call rtnBitacora("Actualizado procedimiento procBuscaCaja")
 
 '    sql = "PARAMETERS [FECHA] DateTime; " & _
 '        "SELECT Sum(procLibroBanco.Debe) - Sum(procLibroBanco.Haber) AS Saldo " & _

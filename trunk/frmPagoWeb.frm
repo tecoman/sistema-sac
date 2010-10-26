@@ -144,7 +144,7 @@ Private Declare Function InternetCloseHandle Lib "wininet" (ByRef hInet As Long)
 Private Declare Function InternetReadFile Lib "wininet" (ByVal hFile As Long, ByVal sBuffer As String, ByVal lNumBytesToRead As Long, lNumberOfBytesRead As Long) As Integer
 Private Declare Function InternetOpenUrl Lib "wininet" Alias "InternetOpenUrlA" (ByVal hInternetSession As Long, ByVal lpszUrl As String, ByVal lpszHeaders As String, ByVal dwHeadersLength As Long, ByVal dwFlags As Long, ByVal dwContext As Long) As Long
         
-Private sCodPagoCondominio As String
+Private sCodPagoCondominio As String, sCodAbonoCuenta As String, sCodAbonoFuturo As String
 Private sNombreInmueble As String
 Private aFacturasC() As String
 
@@ -386,11 +386,12 @@ End Sub
 
 Private Sub procesar_pago()
 Dim I As Integer, ID As Integer, Fila As Integer
-Dim Pago As Double, mfactura As Double, sql As String, dAbono As Double
+Dim Pago As Currency, mfactura As Currency, sql As String, dAbono As Currency
 Dim sINM As String, sFact As String, sFP As String, sRecibo As String
 Dim cFactura As Double, sEmail As String, sApto As String
 Dim bTrans As Boolean, N As Integer, sDescrip As String, u As Integer
 Dim rstlocal As ADODB.Recordset
+
 
 cmd(0).Enabled = False
 cmd(1).Enabled = False
@@ -452,8 +453,7 @@ For I = 1 To grid.Rows - 1
         
         Loop
         sDescrip = Left(sDescrip, Len(sDescrip) - 1)
-        '   guardamos el movimiento de caja
-        grid.TextMatrix(Fila, 10) = "A"
+        
         
         sql = "UPDATE MovimientoCaja SET MontoMovimientoCaja='" & Pago & _
               "', MontoCheque='" & Pago & "', DescripcionMovimientoCaja='" & sDescrip & _
@@ -474,31 +474,53 @@ For I = 1 To grid.Rows - 1
                 dAbono = Pago - mfactura
                 '   si existe alguna diferencia efectuamos el abono en la cuenta del cliente
                 '   validamos si existe factura pendiente para abonarle a esa factura
-                sql = "select * from factura where codprop='" & sApto & "' and saldo > 0 order by periodo desc"
+                sql = "SELECT * FROM factura IN '" & gcPath & "\" & sINM & "\inm.mdb' " & _
+                      "WHERE codprop='" & sApto & "' AND saldo > 0 ORDER BY periodo ASC"
                 Set rstlocal = cnnConexion.Execute(sql)
                 ' si hay facturas pendientes abonamos a esa factura
                 If Not (rstlocal.EOF And rstlocal.BOF) Then
-                    sql = "UPDATE Factura set Saldo = Saldo + '" & dAbono + "', usuario='" & _
-                    gcUsuario & "', fecha='" & Time() & "' WHERE FACT='" & rstlocal("FACT") & "'"
+                    sql = "UPDATE Factura IN '" & gcPath & "\" & sINM & "\inm.mdb' set Saldo = Saldo - '" & dAbono & "', usuario='" & _
+                    gcUsuario & "', fecha='" & Format(Time(), "hh:mm:ss") & "', pagado = pagado + '" & dAbono & "' WHERE FACT='" & rstlocal("FACT") & "'"
                     cnnConexion.Execute sql, u
                     Call rtnBitacora("---- Aplicar (" & u & ") abono factura " & rstlocal("FACT") & ".")
                     '
                     'registramos el movimiento en la tabla periodo
                     sql = "INSERT INTO Periodos(IDRecibo,IDPeriodos,Periodo,CodGasto,Descripcion,Monto,Facturado) " & _
                     "VALUES ('" & sRecibo & "','" & sRecibo & Format(rstlocal("periodo"), "mmyy") & "','" & _
-                    Format(rstlocal("periodo"), "mm-yy") & "','900001','ABONO A CUENTA','" & sabono & _
+                    Format(rstlocal("periodo"), "mm-yy") & "','" & sCodAbonoCuenta & "','ABONO A CUENTA','" & dAbono & _
                     "','" & rstlocal("facturado") & "')"
+                    cnnConexion.Execute sql, u
+                    
+                    sql = "UPDATE MovimientoCaja SET DescripcionMovimientoCaja = " & _
+                    "DescripcionMovimientoCaja & ' / Abono a Cuenta " & Format(rstlocal("periodo"), "mm-yy") & _
+                    "' WHERE IDRecibo='" & sRecibo & "'"
+                    
                     cnnConexion.Execute sql, u
                      
                 Else
                     '   hacemos un abono a futuro, no hay facturas pendientes
                     '   registramos el movimiento en la tabla periodo
                     sql = "INSERT INTO Periodos(IDRecibo,IDPeriodos,Periodo,CodGasto,Descripcion,Monto,Facturado) " & _
-                    "SELECT TOP 1 ('" & sRecibo & "','" & sRecibo & "' & format(periodo,'mmyy') ," & _
-                    "format(periodo, 'mm-yy'),'900002','Abono Próx. Facturación','" & sabono & _
-                    "',0) where codprop='" & sApto & "'"
+                    "VALUES('" & sRecibo & "','" & sRecibo & sCodAbonoFuturo & "','" & _
+                    Format(DateAdd("m", 1, CDate("01-" & Left(sFact, 2) & _
+                    "-" & Mid(sFact, 3, 2))), "MM-YY") & "'," & _
+                    "'" & sCodAbonoFuturo & "','Abono Próx. Facturación','" & dAbono & _
+                    "',0)"
                     cnnConexion.Execute sql, u
+                    
+                    ' actualizamos la información del movimiento de caja
+                    sql = "UPDATE MovimientoCaja SET DescripcionMovimientoCaja = " & _
+                    "DescripcionMovimientoCaja & ' / Abono a Prox.Facturación' WHERE IDRecibo='" & _
+                    sRecibo & "'"
+                    cnnConexion.Execute sql, u
+                                        
                 End If
+                
+                ' actualizamos la información del propietario
+                sql = "UPDATE propietarios IN '" & gcPath & "\" & sINM & "\inm.mdb'  SET Deuda = Deuda - '" & dAbono & "', " & _
+                "Ultpago = Ultpago + '" & dAbono & "' WHERE Codigo='" & sApto & "'"
+                cnnConexion.Execute sql, u
+
             End If
             '   actualizamos la deuda general del inmueble
             sql = "UPDATE Inmueble INNER JOIN MovimientoCaja ON Inmueble.CodInm = MovimientoCaja." & _
@@ -508,6 +530,8 @@ For I = 1 To grid.Rows - 1
             Call rtnBitacora("---- Actualizar (" & u & ") deuda inmueble.")
             '
             cnnConexion.CommitTrans
+            '   guardamos el movimiento de caja
+            grid.TextMatrix(Fila, 10) = "A"
             Call rtnBitacora("-- Pago OK!!!. Cerrar Transacción.")
             'cnnConexion.RollbackTrans
             bTrans = False
@@ -530,8 +554,8 @@ Next
 ReversarPago:
 If Err <> 0 Then
     If bTrans Then cnnConexion.RollbackTrans
-    Call rtnBitacora("-- Error en operacion. " & Err.Description)
-    MsgBox "No se completo el proceso." & vbCrLf & Err.Description
+    Call rtnBitacora("-- Error en operacion. ID: " & ID & ". " & Err.Description)
+    MsgBox "No se completo el proceso. Pago ID:" & ID & vbCrLf & Err.Description
 Else
     Call rtnBitacora("Fin proceso pago web.")
     MsgBox "Proceso finalizado con éxito.", vbInformation, App.ProductName
@@ -587,7 +611,7 @@ End Function
 
 
 Private Sub actualizar_factura(Inmueble As String, Factura As String, _
-ReciboCaja As String, dPagado As Double)
+ReciboCaja As String, dPagado As Currency)
 
 Dim StrRutaInmueble As String, sql As String, u As Integer
 
@@ -671,6 +695,8 @@ Set rst = ejecutar_procedure("procBuscaCaja", Inmueble)
 If Not (rst.EOF And rst.BOF) Then
     CajaInmueble = rst("Caja")
     sCodPagoCondominio = rst("CodPagoCondominio")
+    sCodAbonoCuenta = rst("CodAbonoCta")
+    sCodAbonoFuturo = rst("CodAbonoFut")
     sNombreInmueble = rst("Nombre")
 End If
 rst.Close
