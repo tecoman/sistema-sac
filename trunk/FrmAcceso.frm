@@ -237,8 +237,8 @@ Begin VB.Form frmAcceso
             BackStyle       =   0  'Transparent
             Caption         =   "SISTEMA DE ADMINISTRACION DE CONDOMINIOS"
             BeginProperty Font 
-               Name            =   "Times New Roman"
-               Size            =   18
+               Name            =   "Tahoma"
+               Size            =   15.75
                Charset         =   0
                Weight          =   700
                Underline       =   0   'False
@@ -259,8 +259,8 @@ Begin VB.Form frmAcceso
             BackStyle       =   0  'Transparent
             Caption         =   "SISTEMA DE ADMINISTRACION DE CONDOMINIOS"
             BeginProperty Font 
-               Name            =   "Times New Roman"
-               Size            =   18
+               Name            =   "Tahoma"
+               Size            =   15.75
                Charset         =   0
                Weight          =   700
                Underline       =   0   'False
@@ -453,11 +453,11 @@ Attribute VB_Exposed = False
     Private Sub Form_Load() '-
     '-------------------------
     'variables locales
-    Dim errLocal As Long, Archivo As String
+    Dim errLocal As Long, archivo As String
     '
     On Error Resume Next
     errLocal = Shell("NET TIME \\" & DataServer & " /SET /YES", vbHide)
-    
+    establecerFuente frmAcceso
     
     CmdCancel.Picture = LoadResPicture("Salir", vbResIcon)
     CmdOk.Picture = LoadResPicture("OK", vbResIcon)

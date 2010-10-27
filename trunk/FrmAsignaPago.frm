@@ -1,10 +1,10 @@
 VERSION 5.00
 Object = "{F0D2F211-CCB0-11D0-A316-00AA00688B10}#1.0#0"; "MSDATLST.OCX"
 Object = "{CDE57A40-8B86-11D0-B3C6-00A0C90AEA82}#1.0#0"; "MSDATGRD.OCX"
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
 Object = "{C932BA88-4374-101B-A56C-00AA003668DC}#1.1#0"; "MSMASK32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{67397AA1-7FB1-11D0-B148-00A0C922E820}#6.0#0"; "MSADODC.OCX"
 Object = "{0ECD9B60-23AA-11D0-B351-00A0C9055D8E}#6.0#0"; "MSHFLXGD.OCX"
 Begin VB.Form FrmAsignaPago 
@@ -133,7 +133,7 @@ Begin VB.Form FrmAsignaPago
       _ExtentY        =   12541
       _Version        =   393216
       Tabs            =   4
-      Tab             =   2
+      Tab             =   3
       TabsPerRow      =   4
       TabHeight       =   520
       TabCaption(0)   =   "&Datos Generales"
@@ -153,30 +153,25 @@ Begin VB.Form FrmAsignaPago
       Tab(1).ControlCount=   4
       TabCaption(2)   =   "Lista &Pagos"
       TabPicture(2)   =   "FrmAsignaPago.frx":0038
-      Tab(2).ControlEnabled=   -1  'True
-      Tab(2).Control(0)=   "imgPago"
-      Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraApago(11)"
-      Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).Control(2)=   "MshgAPago(3)"
-      Tab(2).Control(2).Enabled=   0   'False
-      Tab(2).Control(3)=   "Adodc1(0)"
-      Tab(2).Control(3).Enabled=   0   'False
-      Tab(2).Control(4)=   "Adodc1(1)"
-      Tab(2).Control(4).Enabled=   0   'False
-      Tab(2).Control(5)=   "MshgAPago(4)"
-      Tab(2).Control(5).Enabled=   0   'False
-      Tab(2).Control(6)=   "fraApago(3)"
-      Tab(2).Control(6).Enabled=   0   'False
-      Tab(2).Control(7)=   "fraApago(7)"
-      Tab(2).Control(7).Enabled=   0   'False
+      Tab(2).ControlEnabled=   0   'False
+      Tab(2).Control(0)=   "fraApago(7)"
+      Tab(2).Control(1)=   "fraApago(3)"
+      Tab(2).Control(2)=   "MshgAPago(4)"
+      Tab(2).Control(3)=   "Adodc1(1)"
+      Tab(2).Control(4)=   "Adodc1(0)"
+      Tab(2).Control(5)=   "MshgAPago(3)"
+      Tab(2).Control(6)=   "fraApago(11)"
+      Tab(2).Control(7)=   "imgPago"
       Tab(2).ControlCount=   8
       TabCaption(3)   =   "Consecutivos"
       TabPicture(3)   =   "FrmAsignaPago.frx":0054
-      Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraApago(10)"
+      Tab(3).ControlEnabled=   -1  'True
+      Tab(3).Control(0)=   "MshgAPago(7)"
+      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).Control(1)=   "MshgAPago(6)"
-      Tab(3).Control(2)=   "MshgAPago(7)"
+      Tab(3).Control(1).Enabled=   0   'False
+      Tab(3).Control(2)=   "fraApago(10)"
+      Tab(3).Control(2).Enabled=   0   'False
       Tab(3).ControlCount=   3
       Begin MSComCtl2.MonthView Calendario 
          Height          =   2370
@@ -201,7 +196,7 @@ Begin VB.Form FrmAsignaPago
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         StartOfWeek     =   51838977
+         StartOfWeek     =   54984705
          TitleBackColor  =   -2147483646
          TitleForeColor  =   -2147483639
          CurrentDate     =   37938
@@ -356,10 +351,29 @@ Begin VB.Form FrmAsignaPago
          Caption         =   "Filtrar:"
          Height          =   1785
          Index           =   10
-         Left            =   -74625
+         Left            =   375
          TabIndex        =   64
          Top             =   5040
          Width           =   11070
+         Begin VB.CommandButton CmdRegistrar 
+            Caption         =   "&Buscar"
+            BeginProperty Font 
+               Name            =   "MS Sans Serif"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   700
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            Height          =   330
+            Index           =   2
+            Left            =   7560
+            Style           =   1  'Graphical
+            TabIndex        =   118
+            Top             =   1080
+            Width           =   2175
+         End
          Begin VB.TextBox txtAPago 
             Alignment       =   1  'Right Justify
             BeginProperty DataFormat 
@@ -510,7 +524,7 @@ Begin VB.Form FrmAsignaPago
             CalendarTitleBackColor=   -2147483646
             CalendarTitleForeColor=   -2147483639
             CheckBox        =   -1  'True
-            Format          =   51838977
+            Format          =   54984705
             CurrentDate     =   37540
          End
          Begin MSComCtl2.DTPicker dtpApago 
@@ -526,7 +540,7 @@ Begin VB.Form FrmAsignaPago
             CalendarTitleBackColor=   -2147483646
             CalendarTitleForeColor=   -2147483639
             CheckBox        =   -1  'True
-            Format          =   51838977
+            Format          =   54984705
             CurrentDate     =   37540
          End
          Begin MSDataListLib.DataCombo DtcAPago 
@@ -697,7 +711,7 @@ Begin VB.Form FrmAsignaPago
          Caption         =   "Impresión: "
          Height          =   1785
          Index           =   7
-         Left            =   255
+         Left            =   -74745
          TabIndex        =   49
          Top             =   5085
          Width           =   2280
@@ -771,7 +785,7 @@ Begin VB.Form FrmAsignaPago
          Caption         =   "Filtrar:"
          Height          =   1785
          Index           =   3
-         Left            =   2640
+         Left            =   -72360
          TabIndex        =   38
          Top             =   5085
          Width           =   4515
@@ -849,7 +863,7 @@ Begin VB.Form FrmAsignaPago
             CalendarTitleBackColor=   -2147483646
             CalendarTitleForeColor=   -2147483639
             CheckBox        =   -1  'True
-            Format          =   51838977
+            Format          =   54984705
             CurrentDate     =   37540
          End
          Begin VB.Label LblAPago 
@@ -1576,7 +1590,7 @@ Begin VB.Form FrmAsignaPago
       Begin MSHierarchicalFlexGridLib.MSHFlexGrid MshgAPago 
          Height          =   1600
          Index           =   4
-         Left            =   225
+         Left            =   -74775
          TabIndex        =   48
          Tag             =   "1200|900|5800|1400|1400"
          Top             =   3315
@@ -1633,7 +1647,7 @@ Begin VB.Form FrmAsignaPago
       Begin MSAdodcLib.Adodc Adodc1 
          Height          =   330
          Index           =   1
-         Left            =   3555
+         Left            =   -71445
          Top             =   1185
          Visible         =   0   'False
          Width           =   2445
@@ -1681,7 +1695,7 @@ Begin VB.Form FrmAsignaPago
       Begin MSAdodcLib.Adodc Adodc1 
          Height          =   330
          Index           =   0
-         Left            =   990
+         Left            =   -74010
          Top             =   1185
          Visible         =   0   'False
          Width           =   2445
@@ -1729,7 +1743,7 @@ Begin VB.Form FrmAsignaPago
       Begin MSHierarchicalFlexGridLib.MSHFlexGrid MshgAPago 
          Height          =   2760
          Index           =   3
-         Left            =   225
+         Left            =   -74775
          TabIndex        =   61
          Tag             =   "1200|1200|1000|3500|0|0|11000|0"
          Top             =   555
@@ -1785,7 +1799,7 @@ Begin VB.Form FrmAsignaPago
       Begin MSHierarchicalFlexGridLib.MSHFlexGrid MshgAPago 
          Height          =   2760
          Index           =   6
-         Left            =   -74775
+         Left            =   225
          TabIndex        =   62
          Tag             =   "1000|1200|1000|3500|0|0|11000"
          Top             =   555
@@ -1841,7 +1855,7 @@ Begin VB.Form FrmAsignaPago
       Begin MSHierarchicalFlexGridLib.MSHFlexGrid MshgAPago 
          Height          =   1600
          Index           =   7
-         Left            =   -74775
+         Left            =   225
          TabIndex        =   63
          Tag             =   "1300|1100|7100|1200"
          Top             =   3315
@@ -1898,7 +1912,7 @@ Begin VB.Form FrmAsignaPago
       Begin VB.Frame fraApago 
          Height          =   1785
          Index           =   11
-         Left            =   7230
+         Left            =   -67770
          TabIndex        =   92
          Top             =   5085
          Width           =   4065
@@ -1917,7 +1931,7 @@ Begin VB.Form FrmAsignaPago
             Appearance      =   2
             LargeChange     =   5
             Max             =   10
-            Orientation     =   1245184
+            Orientation     =   1179648
          End
          Begin VB.Frame fraApago 
             BorderStyle     =   0  'None
@@ -2081,7 +2095,7 @@ Begin VB.Form FrmAsignaPago
                   _ExtentY        =   556
                   _Version        =   393216
                   Enabled         =   0   'False
-                  Format          =   51838977
+                  Format          =   54984705
                   CurrentDate     =   37403
                End
                Begin MSComCtl2.DTPicker dtpApago 
@@ -2096,7 +2110,7 @@ Begin VB.Form FrmAsignaPago
                   _ExtentY        =   556
                   _Version        =   393216
                   Enabled         =   0   'False
-                  Format          =   51838977
+                  Format          =   54984705
                   CurrentDate     =   37403
                End
                Begin VB.Label LblAPago 
@@ -2225,7 +2239,7 @@ Begin VB.Form FrmAsignaPago
       End
       Begin VB.Image imgPago 
          Height          =   225
-         Left            =   420
+         Left            =   -74580
          Picture         =   "FrmAsignaPago.frx":10EF
          Top             =   2250
          Width           =   240
@@ -2399,9 +2413,9 @@ Attribute VB_Exposed = False
     '   ---------------------
             Call rtnBusca_Cheque
             
-'        Case 2  'Imprimir Cheque
-'    '   ---------------------
-'            Call RtnImprimir_Cheque(IIf(optApago(0), 1, 0))
+        Case 2  'Busqueda consecutivos
+    '   ---------------------
+           Call rtnConsecutivos
             
     End Select
     MousePointer = vbDefault
@@ -2424,9 +2438,6 @@ Attribute VB_Exposed = False
     If Button = 0 And Shift = 0 Then Call rtnMultiSel
     End Sub
 
-    Private Sub DtcAPago_Change(Index As Integer)
-    If Index = 9 And DtcAPago(9) <> "" Then Call rtnConsecutivos
-    End Sub
 
     'rev.28/08/2002-------------------------------------------------------------------------------
     Private Sub DtcAPago_Click(Index As Integer, Area As Integer)
@@ -2435,10 +2446,10 @@ Attribute VB_Exposed = False
     If Area = 2 Then
     '
         Select Case Index   'SELECCION CONTROL
-            Case 0  'Cargado
-    '       ---------------------------
-                If DtcAPago(8) <> "" Or DtcAPago(9) <> "" Then Call rtnConsecutivos
-    '
+'            Case 0  'Cargado
+'    '       ---------------------------
+'                If DtcAPago(8) <> "" Or DtcAPago(9) <> "" Then Call rtnConsecutivos
+'    '
             Case 1  'Nombre BCO.
     '       ---------------------------
                 Call RtnBuscaCta("NombreBanco", DtcAPago(1), 1, 2)
@@ -2533,7 +2544,7 @@ Attribute VB_Exposed = False
                             'cumpliendo con los otros parametros seleccionados
         Case 5, 6
     '   ---------------------
-            If DtcAPago(8) <> "" Or DtcAPago(9) <> "" Then Call rtnConsecutivos
+    '        If DtcAPago(8) <> "" Or DtcAPago(9) <> "" Then Call rtnConsecutivos
             
     End Select
     
@@ -2550,6 +2561,8 @@ Attribute VB_Exposed = False
     '
     CmdRegistrar(1).Picture = LoadResPicture("Buscar", vbResIcon)
     CmdRegistrar(0).Picture = LoadResPicture("Buscar", vbResIcon)
+    RtnConfigUtility True, "Cargando Módulo Emisión de Pagos", "Iniciando...", "Esto tardará unos segundos"
+    
     '
     'configura los control ADO
     Adodc1(0).ConnectionString = cnnOLEDB + gcPath + "\sac.mdb"
@@ -2559,7 +2572,7 @@ Attribute VB_Exposed = False
     Adodc1(1).CommandType = adCmdText
     Adodc1(1).Mode = adModeShareDenyNone
     'SELECT CodInm & ' ' &  CodGasto as Cuenta, *  FROM ChequeDetalle
-    
+    RtnProUtility "Seleccionando origen de datos", 1000
     Set MshgAPago(0).FontFixed = LetraTitulo(LoadResString(527), 9, , True)
     Set MshgAPago(0).Font = LetraTitulo(LoadResString(528), 8)
     
@@ -2570,6 +2583,7 @@ Attribute VB_Exposed = False
     
     Set DataGrid1.HeadFont = LetraTitulo(LoadResString(527), 7.5, True)
     Set DataGrid1.Font = LetraTitulo(LoadResString(528), 8)
+    
     '
     'Set cAletra = New Num2Let.clsNum2Let
     Set RstFacturasA = New ADODB.Recordset
@@ -2592,6 +2606,8 @@ Attribute VB_Exposed = False
         
     End If
     '
+    
+    RtnProUtility "Buscando información de cuentas por pagar", 3000
     If gcCodInm = sysCodInm Then    'Facturas asignadas de la cuenta pote
         strSQL = "SELECT DISTINCT Cpp.CodProv FROM (Caja INNER JOIN Inmueble ON Caja.CodigoCaja" _
         & "= Inmueble.Caja) INNER JOIN Cpp ON Inmueble.CodInm = Cpp.CodInm WHERE Caja.CodigoCaj" _
@@ -2616,6 +2632,7 @@ Attribute VB_Exposed = False
     For I = 0 To 4: If Not I = 3 Then Call centra_titulo(MshgAPago(I), True)
     Next
     '
+    RtnProUtility "Configurando Presentación en pantalla....", 6015
     MshgAPago(0).ColAlignment(0) = flexAlignCenterCenter
     MshgAPago(0).ColAlignment(2) = flexAlignCenterCenter
     MshgAPago(1).Width = fraApago(1).Width - (MshgAPago(1).Left * 2)
@@ -2632,6 +2649,7 @@ Attribute VB_Exposed = False
     If gcNivel > nuAdministrador Then cmd.Enabled = False: MskFecha.Enabled = False
     STabAPago.tab = 1
     Call centra_titulo(MshgAPago(3), True)
+    Unload FrmUtility
     'MshgAPago(1).Cols = MshgAPago(1).Cols + 1
     'MshgAPago(1).ColWidth(5) = 0
     '
@@ -3762,7 +3780,7 @@ Coincidencia:
        DtcAPago(8) = .Fields("NombreBanco")
        DtcAPago(0) = .Fields("NombreBanco")
     End If
-    Call DtcAPago_Change(9)
+    'Call DtcAPago_Change(9)
     Return
     End With
     
@@ -4252,12 +4270,7 @@ Coincidencia:
     End With
     End Sub
     
-    Private Sub txtAPago_Change(Index As Integer)
-    If Index = 12 Then
-        If DtcAPago(8) <> "" Or DtcAPago(9) <> "" Then Call rtnConsecutivos
-    End If
-    End Sub
-
+    
     '---------------------------------------------------------------------------------------------
     Private Sub txtAPago_KeyPress(Index%, KeyAscii%)    '
     '---------------------------------------------------------------------------------------------
@@ -4297,15 +4310,15 @@ Coincidencia:
             If KeyAscii = 46 Then KeyAscii = 44 'Convierte el punto en coma
             Call Validacion(KeyAscii, "1234567890,")
             If KeyAscii = 13 Then
-                If DtcAPago(8) <> "" And DtcAPago(9) <> "" Then Call rtnConsecutivos
+                'If DtcAPago(8) <> "" And DtcAPago(9) <> "" Then Call rtnConsecutivos
                 txtAPago(13) = Format(txtAPago(13), "#,##0.00")
             End If
         
         Case 14, 15, 16, 17
     '   --------------------------
             Call Validacion(KeyAscii, "1234567890")
-            If KeyAscii = 13 Then If DtcAPago(8) <> "" And DtcAPago(9) <> "" Then _
-            Call rtnConsecutivos
+'            If KeyAscii = 13 Then If DtcAPago(8) <> "" And DtcAPago(9) <> "" Then _
+'            Call rtnConsecutivos
     '
     End Select
     '
@@ -4627,14 +4640,14 @@ Coincidencia:
     
     '   Devuelve el saldo de un determinado Gasto
     '---------------------------------------------------------------------------------------------
-    Function Saldo(strC$, strD$, Monto1@, Periodo$, D$) As Currency
+    Function Saldo(strC$, strD$, Monto1@, Periodo$, d$) As Currency
     '
     Dim rst2 As New ADODB.Recordset   'variables locales
     '
     rst2.Open "SELECT Sum(Monto) AS Total From CHequeDetalle " _
     & "WHERE IDCheque In (SELECT IDCheque FROM ChequeFactura WHERE Ndoc='" _
     & strD & "') AND CodGasto='" & strC & "' AND Cargado=#" & Periodo & "# AND Detalle='" & _
-    D & "';", cnnConexion, adOpenStatic, adLockOptimistic, adCmdText
+    d & "';", cnnConexion, adOpenStatic, adLockOptimistic, adCmdText
     
     If rst2.RecordCount > 0 Then
         Saldo = Monto1 - IIf(IsNull(rst2!Total), 0, rst2!Total)

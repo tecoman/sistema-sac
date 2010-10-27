@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}#1.1#0"; "shdocvw.dll"
+Object = "{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}#1.1#0"; "ieframe.dll"
 Object = "{20C62CAE-15DA-101B-B9A8-444553540000}#1.1#0"; "MSMAPI32.OCX"
 Begin VB.Form frmSelecInm 
    Caption         =   "Enviar Avisos de Cobro vía mail"
@@ -200,11 +200,11 @@ End Sub
 Private Sub Form_Load()
 Dim rstlocal As New ADODB.Recordset
 CenterForm Me
-For I = 0 To year(Date) - 2003: cmbRfact(1).AddItem (2003 + I)
+For I = 0 To Year(Date) - 2003: cmbRfact(1).AddItem (2003 + I)
 Next
 'Presenta el periodo al mes actual
 cmbRfact(0).Text = cmbRfact(0).List(Month(Date) - 1)
-cmbRfact(1).Text = year(Date)
+cmbRfact(1).Text = Year(Date)
     
     
 rstlocal.CursorLocation = adUseClient

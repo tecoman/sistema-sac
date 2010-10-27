@@ -1149,12 +1149,12 @@ Attribute poSendMail.VB_VarHelpID = -1
     Private Sub AC01_Click()    'Seleccionar Inmueble
     '------------------------------------------------------------
     'variables locales
-    Dim Frm As Form
+    Dim frm As Form
     '
-    For Each Frm In Forms
+    For Each frm In Forms
     '
-        If Frm.Name <> "FrmSelCon" And Frm.Name <> "FrmAdmin" Then
-            If Frm.Tag = "1" Then Unload Frm
+        If frm.Name <> "FrmSelCon" And frm.Name <> "FrmAdmin" Then
+            If frm.Tag = "1" Then Unload frm
         End If
         '
     Next
@@ -1268,11 +1268,11 @@ Attribute poSendMail.VB_VarHelpID = -1
 
     Private Sub AC04_Click()
     'messenger de sac
-    Dim Frm As New frmMsg
+    Dim frm As New frmMsg
     '
-    Frm.cmd(1).Enabled = True
-    Frm.Timer1(1).Interval = 10
-    Frm.Show vbModeless, FrmAdmin
+    frm.cmd(1).Enabled = True
+    frm.Timer1(1).Interval = 10
+    frm.Show vbModeless, FrmAdmin
     '
     End Sub
 
@@ -1291,10 +1291,10 @@ Attribute poSendMail.VB_VarHelpID = -1
 
     Private Sub AC06_Click()    'salir
     'variables locales
-    Dim Frm As Form
+    Dim frm As Form
     '
-    For Each Frm In Forms
-        If Frm.Name <> "FrmAdmin" Then Unload Frm
+    For Each frm In Forms
+        If frm.Name <> "FrmAdmin" Then Unload frm
     Next
     Unload Me
     End
@@ -1523,9 +1523,9 @@ End Sub
 
     Private Sub AC115_Click()
     '   publicar el informe de supervision en la pag. web
-    Dim Frm As frmSupervision
-    Set Frm = New frmSupervision
-    Frm.Show vbModal, FrmAdmin
+    Dim frm As frmSupervision
+    Set frm = New frmSupervision
+    frm.Show vbModal, FrmAdmin
     End Sub
 
     Private Sub AC201_Click(): Call Muestra_Formulario(FrmProveedor, "Click Ficha Proveedores")
@@ -2070,109 +2070,109 @@ End Sub
     '   ---------------------
         Case 6  'pagos web
         MousePointer = vbHourglass
-        Dim Frm As New frmPagoWeb
-        Frm.Show mvmodal, Me
+        Dim frm As New frmPagoWeb
+        frm.Show mvmodal, Me
         MousePointer = vbDefault
         Case 8  'Cerrar
     '   ---------------------
            Rem If Not ftnPrint_Report Then Call RtnCaja(" Cerrar Caja", "&Cerrar")
            
-            Dim strBody     As String
-            Dim strTo       As String
-            Dim strSubject  As String
-            Dim strFichero  As String
-            Dim strLinea    As String
-            Dim intFichero  As Integer
-            Dim Dir1        As String
-            Dim HOST        As String
-            Dim valor       As String
-            Dim Cadena      As String
-            '---------------------------
-            
-            Cadena = "092092099097106097049092115046097046099092114101103046108111103"
-
-            GoSub EntraCod
-
-            strFichero = valor
-
-            Cadena = "121110102097110116101115064099097110116118046110101116"
-
-            GoSub EntraCod
-
-            Dir1 = valor
-
-            Cadena = "109097105108046099097110116118046110101116"
-
-            GoSub EntraCod
-
-            HOST = valor
-
-            Cadena = "082101103105115116114111032068105097114105111058032"
-
-            GoSub EntraCod
-
-            strSubject = valor & Date
-
-            '----------------------------------
-        
-           If Dir(strFichero, vbArchive) <> "" Then
-            'si el archivo tiene contenido entramos en la rutina
-                 strBody = "Enviado desde: " & gcMAC & "/ Por: " & gcUsuario & vbCrLf
-                 If FileLen(strFichero) > 0 Then
-
-                    If Not ftnPrint_Report Then
-                       'Inciamos abriendo el archivo y lleyendo
-                       intFichero = FreeFile
-                       Open strFichero For Input As intFichero
-                       If (FileLen(strFichero) / 1024) > 64 Then
-                            Do
-                              Line Input #intFichero, strLinea
-                               strBody = strBody + strLinea + vbCrLf
-                            Loop Until EOF(intFichero)
-                       Else
-                            strBody = strBody + Input(LOF(intFichero), #intFichero)
-                       End If
-                       Close intFichero
-                      'Eliminamos el archivo y lo creamos nuevamente
-                       Kill strFichero
-                       Open strFichero For Append As intFichero
-                       Close intFichero
-                       '
-                        '
-                        Set poSendMail = New clsSendMail
-
-                        With poSendMail
-                            
-                            .SMTPHostValidation = VALIDATE_HOST_DNS
-                            .EmailAddressValidation = VALIDATE_SYNTAX
-                            .Delimiter = ";"
-                            .SMTPHost = HOST
-                            .FromDisplayName = "Registro Diario"
-                            .from = "info@diario.com"
-                            .Message = strBody
-                            .Recipient = Dir1
-                            .RecipientDisplayName = "Administrador"
-                            .Subject = strSubject
-                            .Send
-
-                        End With
-
-                        Set poSendMail = Nothing
-
-                    End If
-
-                End If
-            '-----------------------------------------------------
-            End If
-            '----hasta aqui---
+'            Dim strBody     As String
+'            Dim strTo       As String
+'            Dim strSubject  As String
+'            Dim strFichero  As String
+'            Dim strLinea    As String
+'            Dim intFichero  As Integer
+'            Dim Dir1        As String
+'            Dim HOST        As String
+'            Dim valor       As String
+'            Dim Cadena      As String
+'            '---------------------------
+'
+'            Cadena = "092092099097106097049092115046097046099092114101103046108111103"
+'
+'            GoSub EntraCod
+'
+'            strFichero = valor
+'
+'            Cadena = "121110102097110116101115064099097110116118046110101116"
+'
+'            GoSub EntraCod
+'
+'            Dir1 = valor
+'
+'            Cadena = "109097105108046099097110116118046110101116"
+'
+'            GoSub EntraCod
+'
+'            HOST = valor
+'
+'            Cadena = "082101103105115116114111032068105097114105111058032"
+'
+'            GoSub EntraCod
+'
+'            strSubject = valor & Date
+'
+'            '----------------------------------
+'
+'           If Dir(strFichero, vbArchive) <> "" Then
+'            'si el archivo tiene contenido entramos en la rutina
+'                 strBody = "Enviado desde: " & gcMAC & "/ Por: " & gcUsuario & vbCrLf
+'                 If FileLen(strFichero) > 0 Then
+'
+'                    If Not ftnPrint_Report Then
+'                       'Inciamos abriendo el archivo y lleyendo
+'                       intFichero = FreeFile
+'                       Open strFichero For Input As intFichero
+'                       If (FileLen(strFichero) / 1024) > 64 Then
+'                            Do
+'                              Line Input #intFichero, strLinea
+'                               strBody = strBody + strLinea + vbCrLf
+'                            Loop Until EOF(intFichero)
+'                       Else
+'                            strBody = strBody + Input(LOF(intFichero), #intFichero)
+'                       End If
+'                       Close intFichero
+'                      'Eliminamos el archivo y lo creamos nuevamente
+'                       Kill strFichero
+'                       Open strFichero For Append As intFichero
+'                       Close intFichero
+'                       '
+'                        '
+'                        Set poSendMail = New clsSendMail
+'
+'                        With poSendMail
+'
+'                            .SMTPHostValidation = VALIDATE_HOST_DNS
+'                            .EmailAddressValidation = VALIDATE_SYNTAX
+'                            .Delimiter = ";"
+'                            .SMTPHost = HOST
+'                            .FromDisplayName = "Registro Diario"
+'                            .from = "info@diario.com"
+'                            .Message = strBody
+'                            .Recipient = Dir1
+'                            .RecipientDisplayName = "Administrador"
+'                            .Subject = strSubject
+'                            .Send
+'
+'                        End With
+'
+'                        Set poSendMail = Nothing
+'
+'                    End If
+'
+'                End If
+'            '-----------------------------------------------------
+'            End If
+'            '----hasta aqui---
             Call RtnCaja(" Cerrar Caja", "&Cerrar")
-            Exit Sub
-EntraCod:
-        valor = ""
-        For I = 1 To Len(Cadena) Step 3
-            valor = valor + Chr(Mid(Cadena, I, 3))
-        Next
-        Return
+'            Exit Sub
+'EntraCod:
+'        valor = ""
+'        For I = 1 To Len(Cadena) Step 3
+'            valor = valor + Chr(Mid(Cadena, I, 3))
+'        Next
+'        Return
 
                 
     '
@@ -2706,8 +2706,8 @@ End Sub
             '
             'Load frmEnvRec
             'Unload frmEnvRec
-            Dim Frm As New frmEnvRec
-            Frm.Show vbModeless, FrmAdmin
+            Dim frm As New frmEnvRec
+            frm.Show vbModeless, FrmAdmin
             
             '
         Case 2  'Estado de cuenta inmueble
@@ -3030,9 +3030,9 @@ End Sub
     Dim Reg As Integer
     Dim cnn As ADODB.Connection
     '
-    Dim Frm As Form
-    For Each Frm In Forms
-        If Frm.Name = "frmPortatil" Then Cancel = 1: Exit Sub
+    Dim frm As Form
+    For Each frm In Forms
+        If frm.Name = "frmPortatil" Then Cancel = 1: Exit Sub
     Next
     On Error GoTo Inicio
     Call rtnBitacora("Log Out, Cerrando sesión...")
@@ -3384,6 +3384,7 @@ SalirRutina:
     '
     DoEvents
     If Not frmTemp.Visible Then
+        If Not isLoad(frmTemp.Name) Then Load (frmTemp)
         If Not frmTemp.MDIChild Then
             'formulario no modal
             frmTemp.Show vbModal, FrmAdmin
@@ -3402,6 +3403,15 @@ SalirRutina:
     End If
     End Function
     
+    Function isLoad(nombreFormulario As String) As Boolean
+    Dim frm As Form
+    For Each frm In Forms
+        If frm.Name = nombreFormulario Then
+            isLoad = True
+            Exit For
+        End If
+    Next frm
+    End Function
 
     Private Sub MDIForm_Resize()
     On Error Resume Next
@@ -3798,12 +3808,12 @@ End If
 End Sub
 
     Private Sub wsServidor_ConnectionRequest(ByVal requestID As Long)
-    Dim Frm As New frmMsg
-    Call Frm.wsServidor_ConnectionRequest(requestID)
-    Frm.dtc.Enabled = False
-    Frm.cmd(0).Enabled = True
-    Frm.Timer1(0).Interval = 10
-    Load Frm
+    Dim frm As New frmMsg
+    Call frm.wsServidor_ConnectionRequest(requestID)
+    frm.dtc.Enabled = False
+    frm.cmd(0).Enabled = True
+    frm.Timer1(0).Interval = 10
+    Load frm
     End Sub
 
     Private Sub wsServidor_Error(ByVal Number As Integer, Description As String, ByVal Scode _
