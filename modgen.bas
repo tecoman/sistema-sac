@@ -496,7 +496,7 @@ End Sub
     '   de abogado y la deuda total. Además verifica el estatus del propietario, demandado,
     '   convenio, etc.
     '---------------------------------------------------------------------------------------------
-    Public Sub RtnFlex(StrApto$, grid As Control, intMesMora%, intMora%, C%, txtmora As TextBox, _
+    Public Sub RtnFlex(StrApto$, Grid As Control, intMesMora%, intMora%, C%, txtmora As TextBox, _
     cnnApto As ADODB.Connection, Optional Inm As String, Optional BsF As Boolean)
     'variales locales
     Dim Rfacturas As ADODB.Recordset
@@ -519,7 +519,7 @@ End Sub
     End If
     Rfacturas.MoveFirst
     '
-    With grid
+    With Grid
     '   Configura la presentación del Grid(Titulos, Ancho de columna, N° de Filas)
         .Rows = Rfacturas.RecordCount + 1
         .Cols = C
@@ -535,7 +535,7 @@ End Sub
         cAbono = Rfacturas("PAGADO") * nFactor
         cSaldo = Rfacturas("SALDO") * nFactor
         
-        With grid
+        With Grid
     '
             .Col = 1
             .Row = I
@@ -561,9 +561,9 @@ End Sub
         End With
     '
     Loop    'Punto de control {fin hasta}
-    grid.Col = 0
-    grid.ColSel = grid.Cols - 1
-    If grid.Enabled And grid.Visible Then grid.SetFocus
+    Grid.Col = 0
+    Grid.ColSel = Grid.Cols - 1
+    If Grid.Enabled And Grid.Visible Then Grid.SetFocus
     'Busca Honorarios-----------------------------------------------------------------------------
     If Rfacturas.RecordCount > intMesMora Then
         txtmora = Format(Round(curDeuda * intMora / 100), "#,##0.00")
@@ -656,9 +656,9 @@ End Sub
     ' Centra el Formulario en pantalla
     '-----------------------------------------------------------
     '
-    Sub CenterForm(Frm As Form)
-    Frm.Top = (FrmAdmin.Height * 0.85) \ 2 - Frm.Height \ 2
-    Frm.Left = FrmAdmin.Width \ 2 - (Frm.Width \ 2)
+    Sub CenterForm(frm As Form)
+    frm.Top = (FrmAdmin.Height * 0.85) \ 2 - frm.Height \ 2
+    frm.Left = FrmAdmin.Width \ 2 - (frm.Width \ 2)
     '
     End Sub
 
@@ -784,19 +784,19 @@ End Sub
 '    cnnConexion.Execute "delete from chequedetalle where idcheque = 50654 and Detalle='INST LAMINAS PROTECTORAS REMACHES CAJETINES EXTINT'", N
 '    Call rtnBitacora("Borrados (" & N & ") registros en cero de la tabla TDFCheques")
     Dim sql As String
-    gcMAC = "REMOTO"
-    gcUsuario = "SUPERVISOR"
-
+'    gcMAC = "REMOTO"
+'    gcUsuario = "SUPERVISOR"
 '
-    sql = "PARAMETERS [sInmueble] Text ( 255 ); " & _
-        "SELECT Inmueble.Caja, Inmueble.CodPagoCondominio, Inmueble.Nombre, " & _
-        "Inmueble.CodAbonoCta, Inmueble.CodAbonoFut " & _
-        "from Inmueble " & _
-        "WHERE (((Inmueble.CodInm)=[sInmueble]));"
-
-    rtnGenerator gcPath & "\sac.mdb", sql, "procBuscaCaja"
-
-    Call rtnBitacora("Actualizado procedimiento procBuscaCaja")
+''
+'    sql = "PARAMETERS [sInmueble] Text ( 255 ); " & _
+'        "SELECT Inmueble.Caja, Inmueble.CodPagoCondominio, Inmueble.Nombre, " & _
+'        "Inmueble.CodAbonoCta, Inmueble.CodAbonoFut " & _
+'        "from Inmueble " & _
+'        "WHERE (((Inmueble.CodInm)=[sInmueble]));"
+'
+'    rtnGenerator gcPath & "\sac.mdb", sql, "procBuscaCaja"
+'
+'    Call rtnBitacora("Actualizado procedimiento procBuscaCaja")
 
 '    sql = "PARAMETERS [FECHA] DateTime; " & _
 '        "SELECT Sum(procLibroBanco.Debe) - Sum(procLibroBanco.Haber) AS Saldo " & _
@@ -1066,7 +1066,7 @@ Cerrar:
     '   Imprime todos los reportes del módulo de facturación
     '---------------------------------------------------------------------------------------------
     Public Sub Printer_PaqueteCompleto(ByVal datFacturado$, _
-    ByVal curTotal@, Optional Salida As crSalida, Optional F As Boolean)
+    ByVal curTotal@, Optional Salida As crSalida, Optional f As Boolean)
     '
     'Variables locales
     Dim strPeriodo As String
@@ -1077,7 +1077,7 @@ Cerrar:
     '
     MousePointer = vbHourglass
     strPeriodo = UCase(Format(Format(CDate(datFacturado), "mm/dd/yyyy"), "MMM - yyyy"))
-    If F Then
+    If f Then
         FrmEmisionFactura.lblFactura(0) = "Imprimiendo el Análisis de Facturación"
         FrmEmisionFactura.lblFactura(1).Width = 9200
         For I = 0 To 1: FrmEmisionFactura.lblFactura(I).Refresh
@@ -1085,7 +1085,7 @@ Cerrar:
     End If
     'Imprime el análisis de facturación
     Call Printer_Analisis_Facturacion(strPeriodo, datFacturado, curTotal, Salida)
-    If F Then   'si está facturando msg en pantalla
+    If f Then   'si está facturando msg en pantalla
         FrmEmisionFactura.lblFactura(0) = "Imprimiendo el Pre-Recibo"
         FrmEmisionFactura.lblFactura(1).Width = 9400
         For I = 0 To 1: FrmEmisionFactura.lblFactura(I).Refresh
@@ -1094,7 +1094,7 @@ Cerrar:
     '
     'imprime el pre_recibo
     Call Printer_PreRecibo(strPeriodo, datFacturado, 1, Salida) 'Pre-Recibo
-    If F Then   'si está fact. msg en pantalla
+    If f Then   'si está fact. msg en pantalla
         FrmEmisionFactura.lblFactura(0) = "Imprimiendo Reporte Gastos No Comunes"
         FrmEmisionFactura.lblFactura(1).Width = 9500
         For I = 0 To 1: FrmEmisionFactura.lblFactura(I).Refresh
@@ -1104,7 +1104,7 @@ Cerrar:
     'imprime el reporte de gastos no comunes
     Call Printer_GNC(strPeriodo, datFacturado, Salida)
     
-    If F Then   'si esta facturando msg en pantalla
+    If f Then   'si esta facturando msg en pantalla
         FrmEmisionFactura.lblFactura(0) = "Imprimiendo la Facturación Mensual"
         FrmEmisionFactura.lblFactura(1).Width = 9700
         For I = 0 To 1: FrmEmisionFactura.lblFactura(I).Refresh
@@ -1117,7 +1117,7 @@ Cerrar:
     'imprime la facturación mensual 1 copia
     Call Printer_Facturacion_Mensual(strPeriodo, Salida)
     '
-    If F Then
+    If f Then
         FrmEmisionFactura.lblFactura(0) = "Imprimiendo el Control de Facturación"
         FrmEmisionFactura.lblFactura(1).Width = 9900
         For I = 0 To 1: FrmEmisionFactura.lblFactura(I).Refresh
@@ -1162,7 +1162,7 @@ Cerrar:
     '
     'imprime el control de facturación
     Call Printer_Control_Facturacion(strPeriodo, datFacturado, Salida)
-    If F Then
+    If f Then
         FrmEmisionFactura.lblFactura(0) = "Imprimiendo Reportes Finales"
         FrmEmisionFactura.lblFactura(1).Width = 10000
         For I = 0 To 1: FrmEmisionFactura.lblFactura(I).Refresh
@@ -1252,9 +1252,9 @@ Cerrar:
 '    Set rpReporte = New ctlReport
     '
     'imprime otro reporte de facturación si se está facturando
-    If F Then Call Printer_Facturacion_Mensual(strPeriodo, Salida)
+    If f Then Call Printer_Facturacion_Mensual(strPeriodo, Salida)
     'imprime otro control de facturación si se esta facturando
-    If F Then Call Printer_Control_Facturacion(strPeriodo, datFacturado, Salida)
+    If f Then Call Printer_Control_Facturacion(strPeriodo, datFacturado, Salida)
     MousePointer = vbDefault
     Exit Sub
 Ocurre_Error:
@@ -1474,12 +1474,12 @@ Ocurre_Error:
     '
     '   centra el encabezado de las celdas de un grid
     '---------------------------------------------------------------------------------------------
-    Public Sub centra_titulo(grid As Control, Optional ancho As Boolean)
+    Public Sub centra_titulo(Grid As Control, Optional ancho As Boolean)
     'variables locales
     Dim I%, Ncol() As Integer, N%, strTag$ 'variables locales
     
     '
-    With grid
+    With Grid
         '
         .Visible = False
         .FormatString = .FormatString
@@ -1548,7 +1548,7 @@ Ocurre_Error:
     Dim strArchivo As String, IDArchivo As String * 10
     Dim rstEmail(1) As New ADODB.Recordset
     Dim Mes$, apto$, Naviso$, Nombre$, Alic@, MP$, Facturado$
-    Dim Total@, Deuda@, Comun@, m&, F&
+    Dim Total@, Deuda@, Comun@, m&, f&
     Dim Dir1$, Dir2$, PyC&
     Dim mPeriodo As Date
     Dim gsTEMPDIR As String
@@ -1580,7 +1580,7 @@ Ocurre_Error:
                 & "AND Cargado=#" & Periodo & "#);"
                 Call rtnGenerator(mcDatos, strSQL, "AG")
                 'Busca el monto del fondo de reserva
-                F = Total_Fondo(gcCodInm, Periodo)
+                f = Total_Fondo(gcCodInm, Periodo)
             Else
                 gsTEMPDIR = String$(255, 0)
                 lchar = GetTempPath(255, gsTEMPDIR)
@@ -1637,7 +1637,7 @@ Ocurre_Error:
                             strArchivo = gcPath & gcUbica & "reportes\" & Naviso & ".html"
                             Open strArchivo For Output As numFichero
                                 Print #numFichero, Encabezado(Mes, gcCodInm, gcNomInm, apto, Naviso, Nombre, Alic, _
-                                Facturado, Format(Total, "#,##0.00 "), Format(Deuda, "#,##0.00 "), MP, Format(CCur(F), "#,##0.00 "))
+                                Facturado, Format(Total, "#,##0.00 "), Format(Deuda, "#,##0.00 "), MP, Format(CCur(f), "#,##0.00 "))
                             Close numFichero
                             '
                             Do  'genera el detalle de la notificación de gastos
@@ -2859,9 +2859,9 @@ salir: If Err <> 0 Then
 Public Sub addToolTip(Contacto As String, Gestion As String, Por As String)
 Dim INI&, lTop&
 Set frmTT = New frmToolTip
-frmTT.lbl(1) = Contacto
-frmTT.lbl(2) = Gestion
-frmTT.lbl(4) = Por
+frmTT.Lbl(1) = Contacto
+frmTT.Lbl(2) = Gestion
+frmTT.Lbl(4) = Por
 INI = Screen.Height
 frmTT.Top = INI
 frmTT.Show
@@ -2876,9 +2876,9 @@ Next
 End Sub
 
 Public Sub EliminaFrmGestion()
-Dim F As Form
-For Each F In Forms
-    If F.Name = "frmToolTip" Then Unload F
+Dim f As Form
+For Each f In Forms
+    If f.Name = "frmToolTip" Then Unload f
 Next
 End Sub
 
@@ -5009,3 +5009,19 @@ salir:
     Set email = Nothing
     
     End Function
+
+    Sub establecerFuente(frm As Form)
+   
+    For Each C In frm.Controls
+        Select Case True
+            Case TypeOf C Is TextBox, TypeOf C Is Label, TypeOf C Is CommandButton
+                C.FontName = "Tahoma"
+            Case TypeOf C Is DataCombo, TypeOf C Is MaskEdBox
+                C.Font.Name = "Tahoma"
+            Case TypeOf C Is MSHFlexGrid
+                C.Font.Name = "Tahoma"
+                C.FontFixed.Name = "Tahoma"
+        End Select
+    Next C
+    
+    End Sub

@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{CDE57A40-8B86-11D0-B3C6-00A0C90AEA82}#1.0#0"; "msdatgrd.ocx"
+Object = "{CDE57A40-8B86-11D0-B3C6-00A0C90AEA82}#1.0#0"; "MSDATGRD.OCX"
 Begin VB.Form FrmSelCon 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Seleccionar Condominio"
@@ -30,16 +30,16 @@ Begin VB.Form FrmSelCon
       RowDividerStyle =   4
       FormatLocked    =   -1  'True
       BeginProperty HeadFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-         Name            =   "MS Sans Serif"
+         Name            =   "Tahoma"
          Size            =   8.25
          Charset         =   0
-         Weight          =   400
+         Weight          =   700
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-         Name            =   "MS Sans Serif"
+         Name            =   "Tahoma"
          Size            =   8.25
          Charset         =   0
          Weight          =   400
@@ -261,10 +261,6 @@ Attribute VB_Exposed = False
     End Sub
 
     Private Sub Form_Load()
-    '
-    'cargar formulario
-    Set DataGrid1.HeadFont = LetraTitulo(LoadResString(527), 7.5, True)
-    Set DataGrid1.Font = LetraTitulo(LoadResString(528), 8)
     '
     BotBusca.Picture = LoadResPicture("Buscar", vbResIcon)
     Set DataGrid1.DataSource = FrmAdmin.objRst
