@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{F0D2F211-CCB0-11D0-A316-00AA00688B10}#1.0#0"; "MSDATLST.OCX"
-Object = "{C932BA88-4374-101B-A56C-00AA003668DC}#1.1#0"; "msmask32.ocx"
+Object = "{C932BA88-4374-101B-A56C-00AA003668DC}#1.1#0"; "MSMASK32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{5E9E78A0-531B-11CF-91F6-C2863C385E30}#1.0#0"; "MSFLXGRD.OCX"
 Object = "{0ECD9B60-23AA-11D0-B351-00A0C9055D8E}#6.0#0"; "MSHFLXGD.OCX"
@@ -20,9 +20,9 @@ Begin VB.Form frmAguinaldos
       Caption         =   "&Salir"
       Height          =   1275
       Index           =   0
-      Left            =   10200
+      Left            =   10170
       TabIndex        =   17
-      Top             =   7680
+      Top             =   7695
       Width           =   1215
    End
    Begin TabDlg.SSTab tab 
@@ -328,7 +328,7 @@ Begin VB.Form frmAguinaldos
          Top             =   600
          Width           =   10935
          Begin VB.CommandButton cmd 
-            Caption         =   "&Imprimir"
+            Caption         =   "&Imprimir Carta Inmueble"
             Height          =   1275
             Index           =   3
             Left            =   7965
@@ -471,12 +471,13 @@ Select Case Index
             
          End If
     Case 3  'imprimir
-      
+        imprimir_cartas_inmuble
+        
     Case 4  'cerrar aguinaldos
         Me.tab.Enabled = False
         If cerrar_aguinaldos Then
-            MsgBox "Aguinaldos " & lbl(4) & " cerrados con éxito."
-            Call rtnBitacora("Aguinaldos " & lbl(4) & " cerrados con éxito.")
+            MsgBox "Aguinaldos " & Lbl(4) & " cerrados con éxito."
+            Call rtnBitacora("Aguinaldos " & Lbl(4) & " cerrados con éxito.")
         End If
         Me.tab.Enabled = True
         
@@ -573,7 +574,7 @@ Private Sub Flex_LeaveCell()
 If Flex.ColSel = 6 And Flex.RowSel > 0 And Flex.TextMatrix(Flex.RowSel, 5) <> "" Then
     Dim iDias As Double
     Dim cAguinaldo As Currency
-    Dim I As Integer
+    Dim i As Integer
     
     If Len(Flex.TextMatrix(Flex.RowSel, 6)) > 1 Then
         Flex.Text = CCur(Flex.TextMatrix(Flex.RowSel, 6))
@@ -584,26 +585,26 @@ If Flex.ColSel = 6 And Flex.RowSel > 0 And Flex.TextMatrix(Flex.RowSel, 5) <> ""
     cAguinaldo = iDias * (CCur(Flex.TextMatrix(Flex.RowSel, 3)) / 30)
     Flex.TextMatrix(Flex.RowSel, 7) = Format(cAguinaldo, "#,##0.00")
     cAguinaldo = 0
-    For I = 1 To Flex.Rows - 1
-        cAguinaldo = cAguinaldo + (CCur(Flex.TextMatrix(I, 6)) * CCur(Flex.TextMatrix(I, 3)) / 30)
+    For i = 1 To Flex.Rows - 1
+        cAguinaldo = cAguinaldo + (CCur(Flex.TextMatrix(i, 6)) * CCur(Flex.TextMatrix(i, 3)) / 30)
     Next
-    lbl(9).Caption = Format(cAguinaldo, "#,##0.00")
+    Lbl(9).Caption = Format(cAguinaldo, "#,##0.00")
 End If
 End Sub
 
 Private Sub Form_Load()
 Dim strSQL As String
-Dim I As Integer
+Dim i As Integer
 Dim rst As ADODB.Recordset
 
-strSQL = "SELECT TOP 2 Right(nom_inf.IDNomina,4) as ano " & _
+strSQL = "SELECT TOP 3 Right(nom_inf.IDNomina,4) as ano " & _
          "FROM nom_inf " & _
          "WHERE (((Left([nom_inf].[IDNomina], 1)) = 3)) " & _
          "ORDER BY Right(nom_inf.IDNomina,4) DESC"
         
 Call llenar_combo(cmb(1), listar_valores(strSQL, False), 0)
 
-lbl(4) = cnnConexion.Execute(strSQL).Fields(0).Value + 1
+Lbl(4) = cnnConexion.Execute(strSQL).Fields(0).Value + 1
 
 strSQL = "SELECT CodInm, Nombre FROM Inmueble Where Inactivo =false"
 Set rst = cnnConexion.Execute(strSQL)
@@ -620,12 +621,12 @@ Set dtc(1).RowSource = rst
 strSQL = "SELECT CodInm & ' ' & Nombre FROM Inmueble ORDER BY CodInm"
 Call llenar_combo(cmb(0), listar_valores(strSQL, True))
 Call configurar_grid
-
+establecerFuente Me
 End Sub
 
 Private Sub Form_Resize()
 Dim ancho()
-Dim I As Integer
+Dim i As Integer
 
 ancho = Array(600, 2500, 1500, 1000, 900, 600, 750, 750, 750, 750, 750, 750)
 'centrar las fichas
@@ -647,8 +648,8 @@ With Grid
     .FillStyle = flexFillSingle
     .Row = 1
     .ColAlignment(5) = flexAlignCenterCenter
-    For I = 0 To .Cols - 1
-        .ColWidth(I) = ancho(I)
+    For i = 0 To .Cols - 1
+        .ColWidth(i) = ancho(i)
     Next
 End With
 Call configurar_botones
@@ -657,7 +658,7 @@ End Sub
 Private Sub mostrar_informacion(strFiltro As String, intYear As Integer)
 Dim rstlocal As ADODB.Recordset
 Dim Inm As String, sNombre As String
-Dim E As Integer, I As Integer
+Dim E As Integer, i As Integer
 Dim subTotal As Currency, SueldoNeto As Currency
 
 Call habilitar_boton(False)
@@ -669,62 +670,66 @@ Call rtnLimpiar_Grid(Grid)
 If Not (rstlocal.EOF And rstlocal.BOF) Then
     rstlocal.MoveFirst
     
-    Grid.Cols = rstlocal.Fields.count - 1
-    For E = 8 To rstlocal.Fields.count - 1
+    Grid.Cols = rstlocal.Fields.Count - 1
+    For E = 8 To rstlocal.Fields.Count - 1
         Grid.TextArray(E - 1) = "D/Aprob." & vbCrLf & rstlocal.Fields(E).Name
     Next
     Grid.Rows = rstlocal.RecordCount + 1
     Grid.MergeCells = flexMergeRestrictRows
-    I = 0
+    i = 0
     Do
         DoEvents
-        I = I + 1
+        i = i + 1
         If Inm <> rstlocal("CodInm") Then
             
-            If I > 1 Then
+            If i > 1 Then
                 Grid.AddItem ""
-                Grid.TextMatrix(I, 6) = Format(subTotal, "#,##0.00")
-                Grid.Row = I
-                Grid.Col = 6
+                Grid.MergeRow(i) = True
+                Grid.TextMatrix(i, 5) = Format(subTotal, "#,##0.00")
+                Grid.TextMatrix(i, 6) = Format(subTotal, "#,##0.00")
+                Grid.Row = i
+                Grid.Col = 5
+                Grid.ColSel = 2
+                Grid.CellAlignment = flexAlignRightCenter
                 Grid.CellFontBold = True
-                Grid.RowHeight(I) = 200
-                I = I + 1
+                Grid.RowHeight(i) = 200
+                i = i + 1
             End If
             Grid.AddItem ""
-            Grid.MergeRow(I) = True
-            Grid.TextMatrix(I, 0) = rstlocal("CodInm") & " " & rstlocal("Nombre")
-            Grid.TextMatrix(I, 1) = rstlocal("CodInm") & " " & rstlocal("Nombre")
-            Grid.TextMatrix(I, 2) = rstlocal("CodInm") & " " & rstlocal("Nombre")
-            Grid.Row = I
-            Grid.RowHeight(I) = 250
+            Grid.MergeRow(i) = True
+            Grid.TextMatrix(i, 0) = rstlocal("CodInm") & " " & rstlocal("Nombre")
+            Grid.TextMatrix(i, 1) = rstlocal("CodInm") & " " & rstlocal("Nombre")
+            Grid.TextMatrix(i, 2) = rstlocal("CodInm") & " " & rstlocal("Nombre")
+            Grid.Row = i
+            Grid.RowHeight(i) = 250
             Grid.Col = 0
             Grid.ColSel = 3
             Grid.CellAlignment = flexAlignLeftCenter
             Grid.CellFontBold = True
-            I = I + 1
+            i = i + 1
             subTotal = 0
         End If
-            Grid.MergeRow(I) = False
+            Grid.MergeRow(i) = False
             sNombre = rstlocal("Empleado")
             If sNombre = "" Then sNombre = rstlocal("Empleado")
-            Grid.RowHeight(I) = IIf(Screen.Width / Screen.TwipsPerPixelX >= 1024, 250, 215)
-            Grid.TextMatrix(I, 0) = rstlocal("CodEmp")
-            Grid.TextMatrix(I, 1) = sNombre
-            Grid.TextMatrix(I, 2) = rstlocal("NombreCargo")
+            Grid.RowHeight(i) = IIf(Screen.Width / Screen.TwipsPerPixelX >= 1024, 250, 215)
+            Grid.TextMatrix(i, 0) = rstlocal("CodEmp")
+            Grid.TextMatrix(i, 1) = sNombre
+            Grid.TextMatrix(i, 2) = rstlocal("NombreCargo")
             SueldoNeto = (rstlocal("Sueldo") * rstlocal("BonoNoc") / 100) + rstlocal("Sueldo")
-            Grid.TextMatrix(I, 3) = Format(SueldoNeto, "#,##0.00 ")
-            Grid.TextMatrix(I, 4) = rstlocal("Fingreso")
-            Grid.TextMatrix(I, 5) = IIf(DateDiff("m", rstlocal("Fingreso"), "30/11/" & Year(Date)) >= 12, 15, 15 / 12 * DateDiff("m", rstlocal("FIngreso"), "30/11/" & Year(Date)))
-            Grid.TextMatrix(I, 6) = Format(SueldoNeto / 30 * Grid.TextMatrix(I, 5), "#,##0.00")
-            subTotal = subTotal + Grid.TextMatrix(I, 6)
-            For E = 8 To rstlocal.Fields.count - 1
+            Grid.TextMatrix(i, 3) = Format(SueldoNeto, "#,##0.00 ")
+            Grid.TextMatrix(i, 4) = rstlocal("Fingreso")
+            Grid.TextMatrix(i, 5) = IIf(DateDiff("m", rstlocal("Fingreso"), "30/11/" & Year(Date)) >= 12, 15, 15 / 12 * DateDiff("m", rstlocal("FIngreso"), "30/11/" & Year(Date)))
+            Grid.TextMatrix(i, 6) = Format(SueldoNeto / 30 * Grid.TextMatrix(i, 5), "#,##0.00")
+            subTotal = subTotal + Grid.TextMatrix(i, 6)
+            For E = 8 To rstlocal.Fields.Count - 1
                 Grid.ColAlignment(E - 1) = flexAlignCenterCenter
-                Grid.TextMatrix(I, E - 1) = IIf(IsNull(rstlocal.Fields(E)), "--", rstlocal.Fields(E))
+                Grid.TextMatrix(i, E - 1) = IIf(IsNull(rstlocal.Fields(E)), "--", rstlocal.Fields(E))
             Next
             Grid.Col = 0
-            Grid.Row = I
+            Grid.Row = i
             Grid.ColSel = Grid.Cols - 1
-            Grid.RowSel = I
+            Grid.RowSel = i
             Grid.FillStyle = flexFillRepeat
             Grid.CellFontName = "Arial Narrow"
             Grid.CellFontSize = IIf(Screen.Width / Screen.TwipsPerPixelX >= 1024, 8, 8)
@@ -732,13 +737,13 @@ If Not (rstlocal.EOF And rstlocal.BOF) Then
             Inm = rstlocal("CodInm")
             rstlocal.MoveNext
     Loop Until rstlocal.EOF
-    I = I + 1
+    i = i + 1
     Grid.AddItem ""
-    Grid.TextMatrix(I, 6) = Format(subTotal, "#,##0.00")
-    Grid.Row = I
+    Grid.TextMatrix(i, 6) = Format(subTotal, "#,##0.00")
+    Grid.Row = i
     Grid.Col = 6
     Grid.CellFontBold = True
-    Grid.RowHeight(I) = 200
+    Grid.RowHeight(i) = 200
     '
 End If
 Call habilitar_boton(True)
@@ -746,11 +751,11 @@ Set rstlocal = Nothing
 End Sub
 
 Private Sub llenar_combo(cmb As ComboBox, Items As String, Optional ElementoSeleccionado As Integer)
-Dim I As Integer
+Dim i As Integer
 Dim aElementos() As String
 aElementos = Split(Items, ",")
-For I = LBound(aElementos) To UBound(aElementos)
-    cmb.AddItem aElementos(I)
+For i = LBound(aElementos) To UBound(aElementos)
+    cmb.AddItem aElementos(i)
 Next
 If Not IsEmpty(ElementoSeleccionado) Then cmb.ListIndex = ElementoSeleccionado
 End Sub
@@ -767,7 +772,7 @@ End Function
 
 Private Sub configurar_grid()
 Dim ancho As Long
-Dim I As Integer
+Dim i As Integer
 ancho = (fra(2).Width - (Flex.Left * 2))
 Flex.Width = ancho
 Flex.ColWidth(0) = 0.1 * ancho  'codigo empleado
@@ -784,8 +789,8 @@ Flex.TextMatrix(0, 2) = "Fecha de" & vbCrLf & "Ingreso"
 Flex.TextMatrix(0, 5) = "Días" & vbCrLf & "s/Ley(1)"
 Flex.TextMatrix(0, 6) = "Días" & vbCrLf & "Adic.(2)"
 Flex.Row = 0
-For I = 0 To Flex.Cols - 1
-    Flex.Col = I
+For i = 0 To Flex.Cols - 1
+    Flex.Col = i
     Flex.CellAlignment = flexAlignCenterCenter
 Next
 Flex.ColAlignment(0) = flexAlignCenterCenter
@@ -804,16 +809,16 @@ Set rst = ModGeneral.ejecutar_procedure("agui_temp", Codigo_Inmueble)
 Call rtnLimpiar_Grid(Flex)
 
 If Not (rst.EOF And rst.BOF) Then
-    Dim I As Integer
+    Dim i As Integer
     Flex.Rows = rst.RecordCount + 1
     Do
         'DoEvents
         Flex.RowHeight(rst.AbsolutePosition) = 250
-        For I = 0 To rst.Fields.count - 1
+        For i = 0 To rst.Fields.Count - 1
             
-            Flex.TextMatrix(rst.AbsolutePosition, I) = IIf(IsNull(rst(I)), 0, rst(I))
-            If rst(I).Name = "Sueldo" Then
-                Flex.TextMatrix(rst.AbsolutePosition, I) = Format(rst("Sueldo"), "#,##0.00")
+            Flex.TextMatrix(rst.AbsolutePosition, i) = IIf(IsNull(rst(i)), 0, rst(i))
+            If rst(i).Name = "Sueldo" Then
+                Flex.TextMatrix(rst.AbsolutePosition, i) = Format(rst("Sueldo"), "#,##0.00")
             End If
         Next
         cAguiSL = cAguiSL + (rst("Sueldo") / 30 * rst("DiasSley"))
@@ -827,23 +832,23 @@ If Not (rst.EOF And rst.BOF) Then
     '
     Call setCodGasto(Codigo_Inmueble)
 End If
-lbl(8).Caption = Format(cAguiSL, "#,##0.00")
-lbl(9).Caption = Format(cAguiAD, "#,##0.00")
+Lbl(8).Caption = Format(cAguiSL, "#,##0.00")
+Lbl(9).Caption = Format(cAguiAD, "#,##0.00")
 Call habilitar_boton(True)
-cmd(2).Enabled = aguinaldo_no_cerrado(CLng("312" & lbl(4)), Codigo_Inmueble, lbl(4))
+cmd(2).Enabled = aguinaldo_no_cerrado(CLng("312" & Lbl(4)), Codigo_Inmueble, Lbl(4))
 cmd(1).Enabled = cmd(2).Enabled
 
 End Sub
 
 Private Sub configurar_botones()
 Dim ancho As Long
-Dim I As Integer
+Dim i As Integer
 
 cmd(0).Left = Me.tab.Left + fra(2).Left + Flex.Left + Flex.Width - cmd(0).Width
 cmd(0).Top = Me.tab.Top + fra(2).Top + fra(2).Height - cmd(0).Height - 200
-For I = 1 To 2
-    cmd(I).Top = cmd(0).Top - fra(2).Top - Me.tab.Top - 5
-    cmd(I).Left = Flex.Left + Flex.Width - (cmd(I).Width * I) - cmd(0).Width
+For i = 1 To 2
+    cmd(i).Top = cmd(0).Top - fra(2).Top - Me.tab.Top - 5
+    cmd(i).Left = Flex.Left + Flex.Width - (cmd(i).Width * i) - cmd(0).Width
 Next
 
 End Sub
@@ -882,10 +887,10 @@ rst.Close
 Set rst = Nothing
 End Sub
 Private Function guardar_aguinaldos() As Boolean
-Dim I As Integer, N As Integer
+Dim i As Integer, N As Integer
 Dim sql As String
 
-On Error GoTo salir
+On Error GoTo Salir
 
 guardar_aguinaldos = False
 
@@ -903,16 +908,16 @@ cnnConexion.BeginTrans
 With Flex
     Call rtnBitacora("Guardando aguinaldos inm " & dtc(0) & "...")
 
-    For I = 1 To .Rows - 1
-       sql = "UPDATE Emp SET DiasAgui='" & .TextMatrix(I, 6) & _
-            "' WHERE CodEmp=" & .TextMatrix(I, 0)
+    For i = 1 To .Rows - 1
+       sql = "UPDATE Emp SET DiasAgui='" & .TextMatrix(i, 6) & _
+            "' WHERE CodEmp=" & .TextMatrix(i, 0)
        cnnConexion.Execute sql, N
-       Call rtnBitacora(.TextMatrix(I, 0) & " Dias:" & _
-                        .TextMatrix(I, 6) & "Reg.: " & N)
+       Call rtnBitacora(.TextMatrix(i, 0) & " Dias:" & _
+                        .TextMatrix(i, 6) & "Reg.: " & N)
     Next
     
 End With
-salir:
+Salir:
 If Err <> 0 Then
     cnnConexion.RollbackTrans
     MsgBox Err.Description, vbCritical, _
@@ -978,26 +983,26 @@ End If
 'si llegamos a este punto comenzamos el proceso de facturacion
 Dim strDoc As String, strIDNom As String, strBdInm As String
 Dim cAgui(1) As Currency, cSueldoNeto As Currency, cBonoNoc As Currency
-Dim I As Integer, j As Integer
+Dim i As Integer, j As Integer
 Dim NumEmpleado As Long
 
-strDoc = "AGU" & Trim(lbl(4))
+strDoc = "AGU" & Trim(Lbl(4))
 strBdInm = gcPath & "\" & dtc(0).Text & "\inm.mdb"
-strIDNom = "312" & lbl(4)
+strIDNom = "312" & Lbl(4)
         
 With Flex
-    For I = 1 To .Rows - 1
+    For i = 1 To .Rows - 1
         For j = 0 To 1
             cAgui(j) = cAgui(j) + _
-                    (CCur(.TextMatrix(I, 3)) / 30 * CDbl(.TextMatrix(I, j + 5)))
+                    (CCur(.TextMatrix(i, 3)) / 30 * CDbl(.TextMatrix(i, j + 5)))
         Next
         
-        cBonoNoc = 1 + (CCur(.TextMatrix(I, 4)) / 100)
-        cSueldoNeto = CLng(CCur(.TextMatrix(I, 3)) / cBonoNoc * 100) / 100
+        cBonoNoc = 1 + (CCur(.TextMatrix(i, 4)) / 100)
+        cSueldoNeto = CLng(CCur(.TextMatrix(i, 3)) / cBonoNoc * 100) / 100
         cBonoNoc = cBonoNoc - 1
-        cBonoNoc = CLng((cSueldoNeto * cBonoNoc) / 30 * CCur(.TextMatrix(I, 5)) * 100) / 100
+        cBonoNoc = CLng((cSueldoNeto * cBonoNoc) / 30 * CCur(.TextMatrix(i, 5)) * 100) / 100
         
-        NumEmpleado = .TextMatrix(I, 0)
+        NumEmpleado = .TextMatrix(i, 0)
         
         
         'guardamos la información en Nom_Detalle
@@ -1005,12 +1010,12 @@ With Flex
             strSQL = "INSERT INTO Nom_Detalle(IDNom,CodEmp,Sueldo,Dias_Trab," & _
                      "Dias_libres,Porc_BonoNoc,Bono_Noc) VALUES (" & strIDNom & _
                      "," & NumEmpleado & ",'" & cSueldoNeto & "','" & _
-                     .TextMatrix(I, 5) & "','" & .TextMatrix(I, 6) & "','" & _
-                     .TextMatrix(I, 4) & "','" & cBonoNoc & "')"
+                     .TextMatrix(i, 5) & "','" & .TextMatrix(i, 6) & "','" & _
+                     .TextMatrix(i, 4) & "','" & cBonoNoc & "')"
             cnnConexion.Execute strSQL
         
         Else
-            strSQL = "UPDATE Nom_Detalle SET Dias_libres='" & .TextMatrix(I, 6) & _
+            strSQL = "UPDATE Nom_Detalle SET Dias_libres='" & .TextMatrix(i, 6) & _
                      "' WHERE IDNom=" & strIDNom & " AND CodEmp=" & NumEmpleado
             cnnConexion.Execute strSQL
         
@@ -1069,30 +1074,30 @@ agui_registrado = Not (rst.EOF And rst.BOF)
 Set rst = Nothing
 End Function
 Private Sub habilitar_boton(Estado As Boolean)
-Dim I As Integer
+Dim i As Integer
 
-For I = 0 To cmd.UBound
-    cmd(I).Enabled = Estado
+For i = 0 To cmd.UBound
+    cmd(i).Enabled = Estado
 Next
 
 End Sub
 
 Private Sub setCodGasto(CodInm As String)
 Dim strSQL As String
-Dim I As Integer, j As Integer
+Dim i As Integer, j As Integer
 Dim rstGas As ADODB.Recordset
 
 'cargamos los valores para los combos
-For I = 0 To 1
+For i = 0 To 1
     For j = 2 To 4 Step 2
         'DoEvents
         strSQL = "SELECT CodGasto,Titulo FROM Tgastos in '" & _
-        gcPath & "\" & CodInm & "\inm.mdb' WHERE Titulo<>'' and Left(Titulo,1)<>'*' ORDER BY " & I + 1
-        dtc(j + I).Text = ""
+        gcPath & "\" & CodInm & "\inm.mdb' WHERE Titulo<>'' and Left(Titulo,1)<>'*' ORDER BY " & i + 1
+        dtc(j + i).Text = ""
         Set rstGas = cnnConexion.Execute(strSQL)
-        dtc(j + I).ListField = IIf(I = 0, "CodGasto", "Titulo")
-        dtc(j + I).BoundColumn = IIf(I = 0, "Titulo", "CodGasto")
-        Set dtc(j + I).RowSource = rstGas
+        dtc(j + i).ListField = IIf(i = 0, "CodGasto", "Titulo")
+        dtc(j + i).BoundColumn = IIf(i = 0, "Titulo", "CodGasto")
+        Set dtc(j + i).RowSource = rstGas
     Next
     Set rstGas = Nothing
 Next
@@ -1168,8 +1173,8 @@ Dim ID As Long
 Dim rstNom As ADODB.Recordset
 Dim subT As String
 
-sql = txt.Text
-subT = "Aguinaldos " & lbl(4)
+sql = Txt.Text
+subT = "Aguinaldos " & Lbl(4)
 If Trim(sql) = "" Then
     sql = "Introduzca su contraseña e intente nuevamete. " & vbCrLf & _
           "Si no la tiene, póngase en contacto con el " & vbCrLf & _
@@ -1179,7 +1184,7 @@ If Trim(sql) = "" Then
     Exit Function
 End If
 
-If UCase(txt.Text) <> gcContraseña & lbl(4).Caption Then
+If UCase(Txt.Text) <> gcContraseña & Lbl(4).Caption Then
     sql = "Introdujo una contraseña incorrecta."
     MsgBox sql, vbExclamation, "Nómina " & subT
     Exit Function
@@ -1193,7 +1198,7 @@ If Not aguinaldos_procesados() Then
     MsgBox "Faltan inmuebles por procesar los " & subT, vbInformation, App.ProductName
     Exit Function
 End If
-ID = "312" & Trim(lbl(4))
+ID = "312" & Trim(Lbl(4))
 RtnConfigUtility True, Me.Caption, "Iniciando proceso...", "Cierre Nómina. Aguinaldos"
 'comienza el proceso de cierre de la nomina de aguinaldos
 'abrimos una transaccion
@@ -1243,7 +1248,7 @@ If Not rstNom.EOF And Not rstNom.BOF Then
         'ingresa el cargado
         '
         If rstNom("BsTrab") > 0 Then
-            aGasto = Split(BuscaCodigoGasto(rstNom("CodInm"), lbl(4)), "|")
+            aGasto = Split(BuscaCodigoGasto(rstNom("CodInm"), Lbl(4)), "|")
             cnnConexion.Execute "INSERT INTO Cargado(Ndoc,CodGasto,Detalle," & _
             "Periodo,Monto,Fecha,Hora,Usuario) IN '" & gcPath & "\" & _
             rstNom("CodInm") & "\inm.mdb' SELECT '" & strD & "','" & _
@@ -1253,7 +1258,7 @@ If Not rstNom.EOF And Not rstNom.BOF Then
             
         End If
         If rstNom("BsLib") > 0 Then
-            aGasto = Split(BuscaCodigoGasto(rstNom("CodInm"), lbl(4), "JUNTA"), "|")
+            aGasto = Split(BuscaCodigoGasto(rstNom("CodInm"), Lbl(4), "JUNTA"), "|")
             cnnConexion.Execute "INSERT INTO Cargado(Ndoc,CodGasto,Detalle," & _
             "Periodo,Monto,Fecha,Hora,Usuario) IN '" & gcPath & "\" & _
             rstNom("CodInm") & "\inm.mdb' SELECT '" & strD & "','" & _
@@ -1362,7 +1367,7 @@ If Not (rst.EOF And rst.BOF) Then
         sql = "SELECT Nom_Detalle.CodEmp " & _
               "FROM Emp LEFT JOIN Nom_Detalle ON Emp.CodEmp=Nom_Detalle.CodEmp " & _
               "WHERE Emp.CodInm='" & rst("CodInm") & _
-              "' AND Nom_Detalle.IDNom=312" & lbl(4)
+              "' AND Nom_Detalle.IDNom=312" & Lbl(4)
         Set rstlocal = cnnConexion.Execute(sql)
         If (rstlocal.EOF And rstlocal.BOF) Then
             Unload FrmUtility
@@ -1380,7 +1385,7 @@ If Not (rst.EOF And rst.BOF) Then
               "FROM Emp INNER JOIN Nom_Detalle ON Emp.CodEmp=Nom_Detalle.CodEmp " & _
               "GROUP BY Emp.CodInm, Nom_Detalle.IDNom " & _
               "HAVING (((Emp.CodInm)='" & rst("CodInm") & _
-              "') AND ((Nom_Detalle.IDNom)=312" & lbl(4) & "));"
+              "') AND ((Nom_Detalle.IDNom)=312" & Lbl(4) & "));"
         
         Set rstlocal = cnnConexion.Execute(sql)
         
@@ -1391,7 +1396,7 @@ If Not (rst.EOF And rst.BOF) Then
         Set rstlocal = Nothing
         
         sql = "SELECT Count(NDoc) FROM AsignaGasto in '" & gcPath & "\" & _
-        rst("CodInm") & "\inm.mdb' WHERE Ndoc='AGU" & lbl(4) & "'"
+        rst("CodInm") & "\inm.mdb' WHERE Ndoc='AGU" & Lbl(4) & "'"
         Debug.Print rst("CodInm")
         Set rstlocal = cnnConexion.Execute(sql)
         If (rstlocal.EOF And rstlocal.BOF) Then Exit Function
@@ -1425,3 +1430,24 @@ Set rstGas = Nothing
 
 End Function
 
+Sub imprimir_cartas_inmuble()
+    Dim RepNom As String
+    Dim sFormulas() As String
+    Dim sOrigenDatos() As String
+    Dim sParams()
+    Dim NameFile As String
+    Dim TituloReporte As String
+    
+    RepNom = gcPath & "\nomina\"
+    sFormulas = Split("ano='" & InputBox("Ingrese el período al cual será facturado", _
+        "Facturación") & "'", "|")
+    sOrigenDatos = Split("sac.mdb|sac.mdb", "|")
+    NameFile = RepNom & "CA" & Year(Date) & ".rpt"
+    TituloReporte = "Cartas Aguinaldos Inmueble"
+    '-------------------------------+
+    '   listado de cheques          |
+    '-------------------------------+
+    Call Printer_ReporteNomina("nom_cartaagui_inmueble.rpt", sOrigenDatos(), sFormulas(), _
+                                sParams(), NameFile, TituloReporte, True)
+    
+End Sub
