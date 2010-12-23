@@ -170,7 +170,7 @@ Attribute Reporte.VB_UserMemId = 0
 Reporte = mvarReporte
 End Property
 
-Public Function Imprimir(Optional Copias As Long) As Long
+Public Function Imprimir(Optional Copias As Long, Optional DataSource As ADODB.Recordset) As Long
 'variables locales
 Dim I As Integer, P As Integer, j As Integer
 Dim mFormulasF As CRAXDRT.FormulaFieldDefinitions
@@ -236,7 +236,9 @@ If orden Then
         
     Next
 End If
-
+If DataSource Then
+    mReport.Database.SetDataSource DataSource, 3, 1
+End If
 If Salida = 1 Then
     mReport.PrintOut False, IIf(Copias = 0, 1, Copias)
 ElseIf Salida = crPantalla Then

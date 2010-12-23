@@ -885,6 +885,10 @@ Begin VB.MDIForm FrmAdmin
       Begin VB.Menu AC506 
          Caption         =   "Conciliación Bancaria"
          Enabled         =   0   'False
+         Begin VB.Menu AC50601 
+            Caption         =   "Cheques"
+            Index           =   0
+         End
       End
       Begin VB.Menu AC507 
          Caption         =   "[Banco] Consultas y Reportes"
@@ -1149,12 +1153,12 @@ Attribute poSendMail.VB_VarHelpID = -1
     Private Sub AC01_Click()    'Seleccionar Inmueble
     '------------------------------------------------------------
     'variables locales
-    Dim frm As Form
+    Dim Frm As Form
     '
-    For Each frm In Forms
+    For Each Frm In Forms
     '
-        If frm.Name <> "FrmSelCon" And frm.Name <> "FrmAdmin" Then
-            If frm.Tag = "1" Then Unload frm
+        If Frm.Name <> "FrmSelCon" And Frm.Name <> "FrmAdmin" Then
+            If Frm.Tag = "1" Then Unload Frm
         End If
         '
     Next
@@ -1268,11 +1272,11 @@ Attribute poSendMail.VB_VarHelpID = -1
 
     Private Sub AC04_Click()
     'messenger de sac
-    Dim frm As New frmMsg
+    Dim Frm As New frmMsg
     '
-    frm.cmd(1).Enabled = True
-    frm.Timer1(1).Interval = 10
-    frm.Show vbModeless, FrmAdmin
+    Frm.cmd(1).Enabled = True
+    Frm.Timer1(1).Interval = 10
+    Frm.Show vbModeless, FrmAdmin
     '
     End Sub
 
@@ -1291,10 +1295,10 @@ Attribute poSendMail.VB_VarHelpID = -1
 
     Private Sub AC06_Click()    'salir
     'variables locales
-    Dim frm As Form
+    Dim Frm As Form
     '
-    For Each frm In Forms
-        If frm.Name <> "FrmAdmin" Then Unload frm
+    For Each Frm In Forms
+        If Frm.Name <> "FrmAdmin" Then Unload Frm
     Next
     Unload Me
     End
@@ -1523,9 +1527,9 @@ End Sub
 
     Private Sub AC115_Click()
     '   publicar el informe de supervision en la pag. web
-    Dim frm As frmSupervision
-    Set frm = New frmSupervision
-    frm.Show vbModal, FrmAdmin
+    Dim Frm As frmSupervision
+    Set Frm = New frmSupervision
+    Frm.Show vbModal, FrmAdmin
     End Sub
 
     Private Sub AC201_Click(): Call Muestra_Formulario(FrmProveedor, "Click Ficha Proveedores")
@@ -2070,8 +2074,8 @@ End Sub
     '   ---------------------
         Case 6  'pagos web
         MousePointer = vbHourglass
-        Dim frm As New frmPagoWeb
-        frm.Show mvmodal, Me
+        Dim Frm As New frmPagoWeb
+        Frm.Show mvmodal, Me
         MousePointer = vbDefault
         Case 8  'Cerrar
     '   ---------------------
@@ -2706,8 +2710,8 @@ End Sub
             '
             'Load frmEnvRec
             'Unload frmEnvRec
-            Dim frm As New frmEnvRec
-            frm.Show vbModeless, FrmAdmin
+            Dim Frm As New frmEnvRec
+            Frm.Show vbModeless, FrmAdmin
             
             '
         Case 2  'Estado de cuenta inmueble
@@ -2741,12 +2745,23 @@ End Sub
     Call Muestra_Formulario(FrmCuentasBancarias, "Click Ficha Cuentas Bancarias Inm.: " & gcCodInm)
     End Sub
     
+    
     Private Sub AC506_Click()
-    If Estado Then Exit Sub
-    Call Muestra_Formulario(frmConciliacion, "Click Ficha Conciliaciones Bancarias Inm.: " _
-    & gcCodInm)
+'    If Estado Then Exit Sub
+'    Call Muestra_Formulario(frmConciliacion, "Click Ficha Conciliaciones Bancarias Inm.: " _
+'    & gcCodInm)
     End Sub
 
+    Private Sub AC50601_Click(Index As Integer)
+    Select Case Index
+        Case 0  ' conciliación cheques
+            Call Muestra_Formulario(frmConciliacionCheque, "Click Ficha " & _
+            "Conciliaciones Bancarias Inm.: " & gcCodInm)
+    End Select
+    '    If Estado Then Exit Sub
+    '    Call Muestra_Formulario(frmConciliacion, "Click Ficha Conciliaciones Bancarias Inm.: " _
+    '    & gcCodInm)
+    End Sub
     Private Sub AC50401_Click()
     If Not Estado Then Call Muestra_Formulario(FrmChequeras, "Click Reg.Chequeras Inm.: " _
     & gcCodInm)
@@ -2775,9 +2790,9 @@ End Sub
     Call Muestra_Formulario(FrmReport, "Click Imprimir " & mcTitulo)
     End Sub
 
-Private Sub AC509_Click()
-Call Muestra_Formulario(frmBDep, "Click Buscar depóstio")
-End Sub
+    Private Sub AC509_Click()
+    Call Muestra_Formulario(frmBDep, "Click Buscar depóstio")
+    End Sub
 
     '---------------------------------------------------------------------------------------------
     '   Menu:   Nomina
@@ -3030,9 +3045,9 @@ End Sub
     Dim Reg As Integer
     Dim cnn As ADODB.Connection
     '
-    Dim frm As Form
-    For Each frm In Forms
-        If frm.Name = "frmPortatil" Then Cancel = 1: Exit Sub
+    Dim Frm As Form
+    For Each Frm In Forms
+        If Frm.Name = "frmPortatil" Then Cancel = 1: Exit Sub
     Next
     On Error GoTo Inicio
     Call rtnBitacora("Log Out, Cerrando sesión...")
@@ -3404,13 +3419,13 @@ SalirRutina:
     End Function
     
     Function isLoad(nombreFormulario As String) As Boolean
-    Dim frm As Form
-    For Each frm In Forms
-        If frm.Name = nombreFormulario Then
+    Dim Frm As Form
+    For Each Frm In Forms
+        If Frm.Name = nombreFormulario Then
             isLoad = True
             Exit For
         End If
-    Next frm
+    Next Frm
     End Function
 
     Private Sub MDIForm_Resize()
@@ -3739,7 +3754,7 @@ SalirRutina:
         
     End With
     'elimina la información del convenio
-salir:
+Salir:
     cnnConexion.Execute "DELETE * FROM Convenio WHERE IDConvenio =" & Con
     '
     End Sub
@@ -3808,12 +3823,12 @@ End If
 End Sub
 
     Private Sub wsServidor_ConnectionRequest(ByVal requestID As Long)
-    Dim frm As New frmMsg
-    Call frm.wsServidor_ConnectionRequest(requestID)
-    frm.dtc.Enabled = False
-    frm.cmd(0).Enabled = True
-    frm.Timer1(0).Interval = 10
-    Load frm
+    Dim Frm As New frmMsg
+    Call Frm.wsServidor_ConnectionRequest(requestID)
+    Frm.dtc.Enabled = False
+    Frm.cmd(0).Enabled = True
+    Frm.Timer1(0).Interval = 10
+    Load Frm
     End Sub
 
     Private Sub wsServidor_Error(ByVal Number As Integer, Description As String, ByVal Scode _

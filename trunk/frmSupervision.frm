@@ -104,9 +104,11 @@ Select Case Index
     
         If Err.Number = cdlCancel Then Exit Sub
         txt.Text = dlg.FileName
+    
     Case 2 '
         Unload Me
         Set frmSupervision = Nothing
+    
     Case 1  ' publicar supervision
         publicar_supervision (txt.Text)
         

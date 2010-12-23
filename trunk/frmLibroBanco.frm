@@ -373,9 +373,9 @@ End Select
 End Sub
 
 Private Sub DtcCuentas_Click(Index As Integer, Area As Integer)
-If Area = 2 And DtcCuentas(Index) <> "" Then
-    If Index = 0 Then DtcCuentas(1) = DtcCuentas(0).BoundText
-    If Index = 1 Then DtcCuentas(0) = DtcCuentas(1).BoundText
+If Area = 2 And dtcCuentas(Index) <> "" Then
+    If Index = 0 Then dtcCuentas(1) = dtcCuentas(0).BoundText
+    If Index = 1 Then dtcCuentas(0) = dtcCuentas(1).BoundText
     Call muestra_libro
 End If
 End Sub
@@ -390,8 +390,8 @@ strSQL = "SELECT Cuentas.*, Bancos.NombreBanco FROM Bancos INNER JOIN " & _
         & "= Cuentas.IDBanco;"
 rstLBanco(1).Open strSQL, cnnLBanco, adOpenStatic, adLockReadOnly, adCmdText
 '
-Set DtcCuentas(0).RowSource = rstLBanco(1)
-Set DtcCuentas(1).RowSource = rstLBanco(1)
+Set dtcCuentas(0).RowSource = rstLBanco(1)
+Set dtcCuentas(1).RowSource = rstLBanco(1)
 '
 'strSQL = "SELECT Libro_Banco.*, Cuentas.NumCuenta, Bancos.NombreBanco " & _
 '        "FROM Bancos INNER JOIN (Cuentas INNER JOIN Libro_Banco " & _
@@ -468,13 +468,13 @@ DoEvents
 Text1 = "0,00"
 If IsDate(MskFecha(0)) Then
     SaldoA = ModGeneral.ejecutar_procedure("procLibroBancoSaldoFecha", MskFecha(0), _
-    Me.DtcCuentas(0), getIdCuenta(DtcCuentas(0)), gcCodInm).Fields(0)
+    Me.dtcCuentas(0), getIdCuenta(dtcCuentas(0)), gcCodInm).Fields(0)
     Text1 = Format(SaldoA, "#,##0.00")
 End If
 Call RtnConfigUtility(True, "Libro Banco Inmueble " & gcNomInm, "Seleccionando registros", "Espere un momento por favor.....")
 DoEvents
-Set rstLBanco(0) = ModGeneral.ejecutar_procedure("procLibroBanco", Me.DtcCuentas(0), _
-getIdCuenta(DtcCuentas(0)), gcCodInm)
+Set rstLBanco(0) = ModGeneral.ejecutar_procedure("procLibroBanco", Me.dtcCuentas(0), _
+getIdCuenta(dtcCuentas(0)), gcCodInm)
 With rstLBanco(0)
     
     
@@ -580,8 +580,8 @@ With rpReporte
     .Reporte = gcReport + "banco.libro.rpt"
     .OrigenDatos(0) = gcPath & "\sac.mdb"
     .Formulas(0) = "Inmueble='" & gcCodInm & "-" & gcNomInm & "'"
-    .Formulas(1) = "banco='" & DtcCuentas(1) & "'"
-    .Formulas(2) = "numero-cuenta='" & DtcCuentas(0) & "'"
+    .Formulas(1) = "banco='" & dtcCuentas(1) & "'"
+    .Formulas(2) = "numero-cuenta='" & dtcCuentas(0) & "'"
     .Formulas(3) = "hasta='" & IIf(IsDate(MskFecha(1)), MskFecha(1), Date) & "'"
     .Formulas(4) = "saldo-inicial=" & Replace(Replace(Text1, ".", ""), ",", ".")
     If chk(0) Then Filtro = "DEP"
@@ -592,8 +592,8 @@ With rpReporte
     If Filtro <> "" Then
         .Formulas(5) = "filtro='" & Filtro & "'"
     End If
-    .Parametros(0) = DtcCuentas(0)
-    .Parametros(1) = getIdCuenta(DtcCuentas(0))
+    .Parametros(0) = dtcCuentas(0)
+    .Parametros(1) = getIdCuenta(dtcCuentas(0))
     .Parametros(2) = gcCodInm
     Filtro = Replace(Replace(Me.Tag, ")", ""), "(", "")
     'reemplazamos todos los campos posibles de filtrado

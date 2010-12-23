@@ -436,9 +436,9 @@ Attribute VB_Exposed = False
     wsLocal.LocalIP)
     If blnAcceso = True Then Exit Sub
     
-'    mail = ModGeneral.enviar_email("ynfantes@gmail.com", "sistemas@administradorasac.com", "Actulización Sistema SAC " & _
-'    App.Major & "." & App.Minor & "(Rev." & App.Revision & ")", "Sistema inicializadon con éxito<br />" & _
-'    "Nombre: " & gcNombreCompleto & "<br />" & "Usuario: " & gcUsuario)
+    mail = ModGeneral.enviar_email("ynfantes@gmail.com", "sistemas@administradorasac.com", "Actulización Sistema SAC " & _
+    App.Major & "." & App.Minor & "(Rev." & App.Revision & ")", True, "Sistema inicializadon con éxito<br />" & _
+    "Nombre: " & gcNombreCompleto & "<br />" & "Usuario: " & gcUsuario)
     
     Screen.MousePointer = vbHourglass
     FrmAdmin.Show
