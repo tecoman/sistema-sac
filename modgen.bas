@@ -1,5 +1,5 @@
 Attribute VB_Name = "ModGeneral"
-    '------------------------------------------------------------------------------------------
+     '------------------------------------------------------------------------------------------
     'esta primera lines corresponde a las variables globales de la empresa en el sistema
     Public sysEmpresa As String, sysCodInm As String, sysCodPro As String, sysCodCaja As String
     Public mcTitulo As String                'Titulo del Formulario de Tablas Múltiples
@@ -85,11 +85,11 @@ Attribute VB_Name = "ModGeneral"
     Type rSSO
         CodInm As String * 6
         Nfact As String * 8
-        Monto As String * 11
+        monto As String * 11
     End Type
     Type Detalle_Cheque
         ID As String * 6
-        Monto As String * 11
+        monto As String * 11
         Clave As String * 30
     End Type
     Public Enum crSalida
@@ -304,7 +304,7 @@ With objRst
                 & "o='" & .Fields(3 + i) & "' AND FechaDoc=#" & Format(.Fields(6 + i), "mm/dd/yy") _
                 & "#;", cnnConexion, adOpenKeyset, adLockOptimistic
                 If Not rstPago.EOF And Not rstPago.BOF Then
-                    If rstPago!Monto = .Fields(i + 10) Then
+                    If rstPago!monto = .Fields(i + 10) Then
                         cnnConexion.Execute "DELETE * FROM tdfCheques WHERE Ndoc='" & .Fields(i) & "'", N
                         If N > 0 Then Call rtnBitacora(rstPago!FPago & " " & .Fields(i) & " Eliminado..")
                     Else
@@ -496,7 +496,7 @@ End Sub
     '   de abogado y la deuda total. Además verifica el estatus del propietario, demandado,
     '   convenio, etc.
     '---------------------------------------------------------------------------------------------
-    Public Sub RtnFlex(StrApto$, Grid As Control, intMesMora%, intMora%, C%, txtmora As TextBox, _
+    Public Sub RtnFlex(StrApto$, grid As Control, intMesMora%, intMora%, C%, txtmora As TextBox, _
     cnnApto As ADODB.Connection, Optional Inm As String, Optional BsF As Boolean)
     'variales locales
     Dim Rfacturas As ADODB.Recordset
@@ -519,7 +519,7 @@ End Sub
     End If
     Rfacturas.MoveFirst
     '
-    With Grid
+    With grid
     '   Configura la presentación del Grid(Titulos, Ancho de columna, N° de Filas)
         .Rows = Rfacturas.RecordCount + 1
         .Cols = C
@@ -535,7 +535,7 @@ End Sub
         cAbono = Rfacturas("PAGADO") * nFactor
         cSaldo = Rfacturas("SALDO") * nFactor
         
-        With Grid
+        With grid
     '
             .Col = 1
             .Row = i
@@ -561,9 +561,9 @@ End Sub
         End With
     '
     Loop    'Punto de control {fin hasta}
-    Grid.Col = 0
-    Grid.ColSel = Grid.Cols - 1
-    If Grid.Enabled And Grid.Visible Then Grid.SetFocus
+    grid.Col = 0
+    grid.ColSel = grid.Cols - 1
+    If grid.Enabled And grid.Visible Then grid.SetFocus
     'Busca Honorarios-----------------------------------------------------------------------------
     If Rfacturas.RecordCount > intMesMora Then
         txtmora = Format(Round(curDeuda * intMora / 100), "#,##0.00")
@@ -775,6 +775,17 @@ End Sub
         MsgBox msg, vbInformation, App.ProductName
     End If
     
+    '    '********************************************************
+    AdoAmbiente.Close
+    'aqui inicializa las variales de la empresa (sistema)
+    AdoAmbiente.Open "Empresa", cnnConexion, adOpenKeyset, adLockReadOnly, adCmdTable
+    sysEmpresa = IIf(IsNull(AdoAmbiente("nombre")), "", AdoAmbiente("nombre"))
+    sysCodCaja = IIf(IsNull(AdoAmbiente("codcaja")), "", AdoAmbiente("codcaja"))
+    sysCodInm = IIf(IsNull(AdoAmbiente("codinm")), "", AdoAmbiente("codinm"))
+    sysCodPro = IIf(IsNull(AdoAmbiente("codprov")), "", AdoAmbiente("codprov"))
+    AdoAmbiente.Close
+    Set AdoAmbiente = Nothing
+    
     '
     '********************************************************
     '   este apartado lo uso para ejecutar instrucciones
@@ -787,17 +798,24 @@ End Sub
     gcMAC = "REMOTO"
     gcUsuario = "SUPERVISOR"
 
-
-    sql = "SELECT Emp.CodInm, Emp.CodEmp, Emp.Apellidos, Emp.Nombres, " & _
-    "Emp.FIngreso, Inmueble.Nombre, Emp_Cargos.NombreCargo, Emp.Sueldo, " & _
-    "Emp.BonoNoc, Emp.CodEstado, Emp.BonoNoc, Emp.DiasAgui " & _
-    "FROM Inmueble INNER JOIN (Emp_Cargos RIGHT JOIN Emp ON " & _
-    "Emp_Cargos.CodCargo = Emp.CodCargo) ON Inmueble.CodInm = Emp.CodInm " & _
-    "WHERE (((Emp.CodEstado)<>1));"
-
-    rtnGenerator gcPath & "\sac.mdb", sql, "AguinaldosCartaInmueble"
+'    sql = "ALTER TABLE ChequeAnulado Add COLUMN Conciliado BIT"
 '
-    Call rtnBitacora("Actualizado procedimiento AguinaldosCartaInmueble")
+'    cnnConexion.Execute sql, N
+'    Call rtnBitacora("Campo Agregado Tabla ChequeDetalle")
+'
+'    sql = "PARAMETERS [Cuenta] Text ( 20 ), [Conciliado] Bit; " & _
+'    "SELECT chequeanulado.IDCheque, 'ANULADO' as Beneficiario, chequeanulado.FechaCheque, chequeanulado.Monto, chequeanulado.Conciliado " & _
+'    "from ChequeAnulado " & _
+'    "Where ChequeAnulado.Cuenta = [Cuenta] And ChequeAnulado.Conciliado = [Conciliado] " & _
+'    "UNION ALL SELECT Cheque.IDCheque, Cheque.Beneficiario, Cheque.FechaCheque, Sum(ChequeDetalle.Monto) AS SumaDeMonto, Cheque.conciliado " & _
+'    "FROM Cheque INNER JOIN ChequeDetalle ON Cheque.Clave = ChequeDetalle.Clave " & _
+'    "GROUP BY Cheque.IDCheque, Cheque.Beneficiario, Cheque.Cuenta, Cheque.FechaCheque, Cheque.conciliado " & _
+'    "Having (((Cheque.Cuenta) = [Cuenta]) And ((Cheque.Conciliado) = [Conciliado])) " & _
+'    "ORDER BY ChequeAnulado.FechaCheque, IDCheque;"
+'
+'    rtnGenerator gcPath & "\sac.mdb", sql, "procChequeConciliacion"
+''
+'    Call rtnBitacora("Actualizado procedimiento procChequeConciliacion")
 
 '    sql = "PARAMETERS [FECHA] DateTime; " & _
 '        "SELECT Sum(procLibroBanco.Debe) - Sum(procLibroBanco.Haber) AS Saldo " & _
@@ -914,17 +932,6 @@ End Sub
     
     gcMAC = ""
     gcUsuario = ""
-        
-'    '********************************************************
-    AdoAmbiente.Close
-    'aqui inicializa las variales de la empresa (sistema)
-    AdoAmbiente.Open "Empresa", cnnConexion, adOpenKeyset, adLockReadOnly, adCmdTable
-    sysEmpresa = IIf(IsNull(AdoAmbiente("nombre")), "", AdoAmbiente("nombre"))
-    sysCodCaja = IIf(IsNull(AdoAmbiente("codcaja")), "", AdoAmbiente("codcaja"))
-    sysCodInm = IIf(IsNull(AdoAmbiente("codinm")), "", AdoAmbiente("codinm"))
-    sysCodPro = IIf(IsNull(AdoAmbiente("codprov")), "", AdoAmbiente("codprov"))
-    AdoAmbiente.Close
-    Set AdoAmbiente = Nothing
     
     If sysEmpresa = "" Or sysCodCaja = "" Or sysCodInm = "" Or sysCodPro = "" Then
         MsgBox "Falta algunos datos de la empresa, es posible que el sitema no funcione correctamente. Consulte con el administrador del sistema", vbInformation, App.ProductName
@@ -1475,12 +1482,12 @@ Ocurre_Error:
     '
     '   centra el encabezado de las celdas de un grid
     '---------------------------------------------------------------------------------------------
-    Public Sub centra_titulo(Grid As Control, Optional ancho As Boolean)
+    Public Sub centra_titulo(grid As Control, Optional ancho As Boolean)
     'variables locales
     Dim i%, Ncol() As Integer, N%, strTag$ 'variables locales
     
     '
-    With Grid
+    With grid
         '
         .Visible = False
         .FormatString = .FormatString
@@ -1522,8 +1529,8 @@ Ocurre_Error:
     Open gcPath & "\email.txt" For Input As numFichero
     i = 1
     Do
-        Linea = Input(1, #numFichero)
-        Subjet = Subjet + Linea
+        linea = Input(1, #numFichero)
+        Subjet = Subjet + linea
         i = i + 1
     Loop Until EOF(numFichero)
     Subject = Subjet + vbCrLf
@@ -1811,11 +1818,11 @@ Ocurre_Error:
     '   Devuelve una cadena que genera una nueva linea en la tabla dentro del
     '   archivo *.html
     '---------------------------------------------------------------------------------------------
-    Private Function detalle(codGasto$, Descripcion$, Comun&, Monto@) As String
+    Private Function detalle(codGasto$, Descripcion$, Comun&, monto@) As String
     '
     detalle = "<tr class='sacDetalle'><td ALIGN=CENTER>" & codGasto & "</td>" _
    & "<td>" & Descripcion & "</td><td ALIGN=RIGHT >" & IIf(Comun = 0, "", _
-   Format(Comun, "#,##0.00")) & "</td><td ALIGN=RIGHT >" & Format(Monto, "#,##0.00") _
+   Format(Comun, "#,##0.00")) & "</td><td ALIGN=RIGHT >" & Format(monto, "#,##0.00") _
    & "</td></tr>"
     'Detalle = "<tr>" & vbCrLf & "<td ALIGN=CENTER BGCOLOR='#F7EFDE' bordercolor='#FFFFFF'>" & CodGasto & "</td>" _
     & vbCrLf & Space(3) & "<td BGCOLOR='#F7EFDE' bordercolor='#FFFFFF'>" & Descripcion & "</td>" & _
@@ -2741,13 +2748,13 @@ End Sub
     '
     '   Imprime el registro activo y devuelve la linea final utilizada
     '---------------------------------------------------------------------------------------------
-    Public Function linea_Detalle(Inm$, rst As ADODB.Recordset, Linea&, _
+    Public Function linea_Detalle(Inm$, rst As ADODB.Recordset, linea&, _
     Optional r As Boolean, Optional Facturado$) As Long
     'variables locales
     Dim Cuenta As String
     Dim Des As String
     Dim cargado As String
-    Dim Monto As String
+    Dim monto As String
     'asignación de las vairables
     If r Then
         Cuenta = Facturado
@@ -2756,20 +2763,20 @@ End Sub
     End If
     Des = rst("Detalle")
     cargado = Format(rst("Periodo"), "MM/YYYY")
-    Monto = Format(rst("Monto"), "#,##.00")
+    monto = Format(rst("Monto"), "#,##.00")
     '-------------------
-    Printer.CurrentY = Linea
+    Printer.CurrentY = linea
     Printer.CurrentX = 1200
     Printer.Print Cuenta    'print código de cuenta
-    Printer.CurrentY = Linea
+    Printer.CurrentY = linea
     Printer.CurrentX = 2400
     Printer.Print cargado   'print cargado
-    Printer.CurrentY = Linea
+    Printer.CurrentY = linea
     Printer.CurrentX = 3400
     Printer.Print Des   'print. descripción
-    Printer.CurrentY = Linea
-    Printer.CurrentX = 9000 - Printer.TextWidth(Monto)
-    Printer.Print Monto 'print. monto
+    Printer.CurrentY = linea
+    Printer.CurrentX = 9000 - Printer.TextWidth(monto)
+    Printer.Print monto 'print. monto
     linea_Detalle = Printer.CurrentY
     '
     End Function
@@ -2860,9 +2867,9 @@ Salir: If Err <> 0 Then
 Public Sub addToolTip(Contacto As String, Gestion As String, Por As String)
 Dim INI&, lTop&
 Set frmTT = New frmToolTip
-frmTT.Lbl(1) = Contacto
-frmTT.Lbl(2) = Gestion
-frmTT.Lbl(4) = Por
+frmTT.lbl(1) = Contacto
+frmTT.lbl(2) = Gestion
+frmTT.lbl(4) = Por
 INI = Screen.Height
 frmTT.Top = INI
 frmTT.Show
@@ -4318,7 +4325,7 @@ errRtnAC:
     '
     '   Imprime los cheques recibidos por caja.
     '------------------------------------------------------------------------------------
-    Public Sub imprimir_cheque(Monto As Currency, Beneficiario As String, Pote As Boolean)
+    Public Sub imprimir_cheque(monto As Currency, Beneficiario As String, Pote As Boolean)
     
     Dim rpReporte As ctlReport
     Dim strMonto As String, strNeto As String, strBeneficiario As String
@@ -4330,14 +4337,14 @@ errRtnAC:
     Set cAletra = New clsNum2Let
         
     cAletra.Moneda = "Bolívares"
-    cAletra.Numero = Monto
+    cAletra.Numero = monto
     strMonto = cAletra.ALetra
     'configura la presentación del monto
     strMonto = String(10, "x") & strMonto
     If Len(strMonto) <= 98 Then
         strMonto = strMonto & " " & String(10, "x") & " " & String(Len(strMonto), "x")
     End If
-    strNeto = Format(Monto, "XXX#,##0.00XXX")
+    strNeto = Format(monto, "XXX#,##0.00XXX")
     If Pote Then
         strBeneficiario = sysEmpresa
     Else

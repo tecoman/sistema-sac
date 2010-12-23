@@ -13,8 +13,8 @@ Begin VB.Form frmConciliacion
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MDIChild        =   -1  'True
-   ScaleHeight     =   3135
-   ScaleWidth      =   4680
+   ScaleHeight     =   14850
+   ScaleWidth      =   19080
    Tag             =   "1"
    WindowState     =   2  'Maximized
    Begin VB.Frame fraCon 
@@ -362,6 +362,6 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Private Sub Form_Load()
 'carga el formulario
-Call centra_titulo(grid(0), True)
+Call centra_titulo(Grid(0), True)
 End Sub
 
