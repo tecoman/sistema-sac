@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{F0D2F211-CCB0-11D0-A316-00AA00688B10}#1.0#0"; "MSDATLST.OCX"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Begin VB.Form frmMail 
    Caption         =   "Enviar Correo Electrónico"
    ClientHeight    =   9900
@@ -408,7 +408,7 @@ Select Case Index
         Set frmMail = Nothing
     
     Case 1  'adjutar archivo
-        If List(2).ListCount <= 3 Then
+        If list(2).ListCount <= 3 Then
             With FrmAdmin.CDlMain
             
                  .CancelError = True
@@ -418,23 +418,23 @@ Select Case Index
                 .ShowOpen
                 
                 If Err.Number = cdlCancel Then Exit Sub
-                List(2).AddItem .FileName
+                list(2).AddItem .FileName
             End With
         Else
             MsgBox "Solo puede adjuntar hasta 3 archivos", vbInformation, App.ProductName
         End If
     
     Case 0
-        List(1).Clear
-        List(4).Clear
-        List(1).Visible = False
+        list(1).Clear
+        list(4).Clear
+        list(1).Visible = False
         cmd(0).Visible = False
     
     Case 2
         Call enviar_email
     
     Case 3
-        List(2).RemoveItem List(2).ListIndex
+        list(2).RemoveItem list(2).ListIndex
 End Select
 End Sub
 
@@ -443,12 +443,12 @@ Dim rstlocal As ADODB.Recordset
 
 If Area = 2 Then
     
-    List(0).Clear
-    List(1).Clear
-    List(2).Clear
-    List(3).Clear
-    List(4).Clear
-    Opt(0).Value = True
+    list(0).Clear
+    list(1).Clear
+    list(2).Clear
+    list(3).Clear
+    list(4).Clear
+    opt(0).Value = True
     dtc(IIf(Index = 0, 1, 0)) = dtc(Index).BoundText
     If Not dtc(IIf(Index = 0, 1, 0)).MatchedWithList Then
         dtc(IIf(Index = 0, 1, 0)) = ""
@@ -477,8 +477,8 @@ If sArchivo <> "" Then 'envia un reporte por mail
     
     dtc(0) = gcCodInm
     Call dtc_Click(0, 2)
-    Opt(2).Value = True
-    List(2).AddItem sArchivo
+    opt(2).Value = True
+    list(2).AddItem sArchivo
 'Else
 '    MsgBox "No se encuentra el archivo", vbInformation, App.ProductName
 End If
@@ -488,17 +488,17 @@ End Sub
 Private Sub List_Click(Index As Integer)
 Select Case Index
     Case 1
-        List(3).AddItem List(1).List(List(1).ListIndex)
-        List(0).AddItem List(4).List(List(1).ListIndex)
-        List(4).RemoveItem (List(1).ListIndex)
-        List(1).RemoveItem (List(1).ListIndex)
+        list(3).AddItem list(1).list(list(1).ListIndex)
+        list(0).AddItem list(4).list(list(1).ListIndex)
+        list(4).RemoveItem (list(1).ListIndex)
+        list(1).RemoveItem (list(1).ListIndex)
         
         
     Case 3
-        List(1).AddItem List(3).List(List(3).ListIndex)
-        List(4).AddItem List(3).List(List(3).ListIndex)
-        List(0).RemoveItem (List(3).ListIndex)
-        List(3).RemoveItem (List(3).ListIndex)
+        list(1).AddItem list(3).list(list(3).ListIndex)
+        list(4).AddItem list(3).list(list(3).ListIndex)
+        list(0).RemoveItem (list(3).ListIndex)
+        list(3).RemoveItem (list(3).ListIndex)
         
         
 End Select
@@ -512,9 +512,9 @@ Private Sub cargar_destinatarios(Index As Integer)
 'variables locales
 Dim rstlocal As ADODB.Recordset
 
-List(3).Clear
-List(0).Clear
-List(1).Visible = False
+list(3).Clear
+list(0).Clear
+list(1).Visible = False
 cmd(0).Visible = False
 
 Select Case Index
@@ -529,22 +529,22 @@ Select Case Index
                 If Not .EOF And Not .BOF Then
                     .MoveFirst
                     If Index = 0 Then
-                        List(3).Clear
-                        List(0).Clear
+                        list(3).Clear
+                        list(0).Clear
                         Do
-                            List(3).AddItem !Codigo + " - " + !Nombre
-                            List(0).AddItem !email
+                            list(3).AddItem !Codigo + " - " + !Nombre
+                            list(0).AddItem !email
                             .MoveNext
                         Loop Until .EOF
                     Else
-                        List(1).Clear
-                        List(4).Clear
+                        list(1).Clear
+                        list(4).Clear
                          Do
-                            List(1).AddItem !Codigo + " - " + !Nombre
-                            List(4).AddItem !email
+                            list(1).AddItem !Codigo + " - " + !Nombre
+                            list(4).AddItem !email
                             .MoveNext
                         Loop Until .EOF
-                        List(1).Visible = True
+                        list(1).Visible = True
                         cmd(0).Visible = True
                     End If
                 End If
@@ -562,8 +562,8 @@ Select Case Index
                 If Not .EOF And Not .BOF Then
                     .MoveFirst
                     Do
-                        List(3).AddItem !Codigo + " - " + !Nombre
-                        List(0).AddItem !email
+                        list(3).AddItem !Codigo + " - " + !Nombre
+                        list(0).AddItem !email
                         .MoveNext
                     Loop Until .EOF
                 End If
@@ -579,95 +579,129 @@ End Sub
 
 Private Sub enviar_email()
 'variables locales
-Set poSendMail = New clsSendMail
+'Set poSendMail = New clsSendMail
 
-Dim I%, Y%, msg$, Dir1$, Dir2$
+Dim I%, Y%, n%, msg$, Dir1$, Dir2$, archivos$
 'valida los campos necesarios para enviar el email
-If txt(0) = "" Then msg = "- Falta el sujeto del mensaje." & vbCrLf
-If txt(1) = "" Then msg = msg + "- Debe escribir en el cuerpo del mensaje." & vbCrLf
-If List(0).ListCount = 0 Then msg = msg + "- Agregue destinatario(s) a su mensaje." & vbCrLf
+If Txt(0) = "" Then msg = "- Falta el sujeto del mensaje." & vbCrLf
+If Txt(1) = "" Then msg = msg + "- Debe escribir en el cuerpo del mensaje." & vbCrLf
+If list(0).ListCount = 0 Then msg = msg + "- Agregue destinatario(s) a su mensaje." & vbCrLf
 If msg <> "" Then
     MsgBox "No se puede enviar el mensaje:" & vbCrLf & vbCrLf & msg, vbCritical, App.ProductName
     Exit Sub
 End If
+pBar.Visible = True
+pBar.Max = list(0).ListCount
+MousePointer = vbHourglass
+cmd(4).Enabled = False
+cmd(1).Enabled = False
+cmd(2).Enabled = False
+For I = 0 To list(2).ListCount - 1
+    archivos = archivos & list(2).list(I) & IIf(I = list(2).ListCount - 1, "", ",")
+Next
 
-'On Error Resume Next
-
-With poSendMail
-    .SMTPHostValidation = VALIDATE_HOST_DNS
-    .EmailAddressValidation = VALIDATE_SYNTAX
-    .Delimiter = ";"
-        
-    .SMTPHost = "mail.cantv.net"
-    .from = IIf(gcNivel = nuADSYS, "sistemas@administradorasac.com", "administracion@administradorasac.com.ve")
-    .FromDisplayName = "Servicio de Administración de Condominios"
+For I = 0 To list(0).ListCount - 1
     
-    'mail.HOST = "mail.cantv.net"
-    'mail.from = IIf(gcNivel = nuADSYS, "sistemas@administradorasac.com", "administracion@administradorasac.com.ve")
-    'mail.FromName = "Servicio de Administración de Condominios"
-    pBar.Visible = True
-    pBar.Max = List(0).ListCount
-    MousePointer = vbHourglass
-    cmd(4).Enabled = False
-    cmd(1).Enabled = False
-    cmd(2).Enabled = False
-    Do
-        'mail.Reset
-        If InStr(List(0).List(I), ";") Then
-            Dir1 = Left(List(0).List(I), InStr(List(0).List(I), ";") - 1)
-            Dir2 = Mid(List(0).List(I), InStr(List(0).List(I), ";") + 1, Len(List(0).List(I)))
-            'mail.AddAddress Dir1, List(3).List(i)
-            'mail.AddAddress Dir2, List(3).List(i)
-            .Recipient = Dir1 & ";" & Dir2
-            .RecipientDisplayName = List(3).List(I)
-            '.Recipient = Dir2
-            '.RecipientDisplayName = List(3).List(i)
-            
-        Else
-            'mail.AddAddress List(0).List(i), List(3).List(i)
-            .Recipient = List(0).List(I)
-            .RecipientDisplayName = List(3).List(I)
-            
-        End If
-        'mail.AddAddress "ynfantes@cantv.net", "Edgar"
-        I = I + 1
-        pBar.Value = I
-        'mail.Subject = txt(0)
-        'mail.Body = txt(1)
-        .Subject = txt(0)
-        .Message = txt(1)
-        
-        Y = 0
-        If List(2).ListCount > 0 Then
-            Do
-                'mail.AddAttachment List(2).List(Y)
-                .Attachment = List(2).List(Y)
-                Y = Y + 1
-            Loop Until Y = List(2).ListCount
-        End If
-        .Send
-        'mail.Send
+    If InStr(list(0).list(I), ";") Then
+        Dir1 = Left(list(0).list(I), InStr(list(0).list(I), ";") - 1)
+    Else
+        Dir1 = list(0).list(I)
+    End If
+    If ModGeneral.enviar_email(Dir1, "administracion@administradorasac.com", Txt(0), True, Txt(1), archivos) Then
+        n = n + 1
+        pBar.Value = n
+    Else
         If Err = 2 Then
             MsgBox "No se encontró el servidor de correo electrónico. Revise su conexión a Internet." & _
             vbCrLf & "Si el problema persiste pongase en contacto con el administrador del sistema", _
             vbCritical, "No se envió el mensaje"
             Exit Sub
-        ElseIf Err <> 0 Then
-            MsgBox Err.Description, vbCritical, "Error al enviar: " & List(3).List(I)
+        Else
+            MsgBox Err.Description, vbCritical, "Error al enviar: " & Dir1
         End If
-    
-    
-    Loop Until I = List(0).ListCount
-End With
+    End If
+Next
+If n > 0 Then
+    MsgBox pBar.Max & IIf(pBar.Max > 1, " Mensajes Enviados ", " Mensaje Enviado ") & "con éxito.", _
+    vbInformation, App.ProductName
+End If
+'On Error Resume Next
+
+'With poSendMail
+'    .SMTPHostValidation = VALIDATE_HOST_DNS
+'    .EmailAddressValidation = VALIDATE_SYNTAX
+'    .Delimiter = ";"
+'    .SMTPHost = "mail.cantv.net"
+'    .from = IIf(gcNivel = nuADSYS, "sistemas@administradorasac.com", "administracion@administradorasac.com.ve")
+'    .FromDisplayName = "Servicio de Administración de Condominios"
+'
+'    'mail.HOST = "mail.cantv.net"
+'    'mail.from = IIf(gcNivel = nuADSYS, "sistemas@administradorasac.com", "administracion@administradorasac.com.ve")
+'    'mail.FromName = "Servicio de Administración de Condominios"
+'    pBar.Visible = True
+'    pBar.Max = List(0).ListCount
+'    MousePointer = vbHourglass
+'    cmd(4).Enabled = False
+'    cmd(1).Enabled = False
+'    cmd(2).Enabled = False
+'    Do
+'        'mail.Reset
+'        If InStr(List(0).List(I), ";") Then
+'            Dir1 = Left(List(0).List(I), InStr(List(0).List(I), ";") - 1)
+'            Dir2 = Mid(List(0).List(I), InStr(List(0).List(I), ";") + 1, Len(List(0).List(I)))
+'            'mail.AddAddress Dir1, List(3).List(i)
+'            'mail.AddAddress Dir2, List(3).List(i)
+'            .Recipient = Dir1 & ";" & Dir2
+'            .RecipientDisplayName = List(3).List(I)
+'            '.Recipient = Dir2
+'            '.RecipientDisplayName = List(3).List(i)
+'
+'        Else
+'            'mail.AddAddress List(0).List(i), List(3).List(i)
+'            .Recipient = List(0).List(I)
+'            .RecipientDisplayName = List(3).List(I)
+'
+'        End If
+'        'mail.AddAddress "ynfantes@cantv.net", "Edgar"
+'        I = I + 1
+'        pBar.Value = I
+'        'mail.Subject = txt(0)
+'        'mail.Body = txt(1)
+'        .Subject = Txt(0)
+'        .Message = Txt(1)
+'
+'        Y = 0
+'        If List(2).ListCount > 0 Then
+'            Do
+'                'mail.AddAttachment List(2).List(Y)
+'                .Attachment = List(2).List(Y)
+'                Y = Y + 1
+'            Loop Until Y = List(2).ListCount
+'        End If
+'        .Send
+'        'mail.Send
+'        If Err = 2 Then
+'            MsgBox "No se encontró el servidor de correo electrónico. Revise su conexión a Internet." & _
+'            vbCrLf & "Si el problema persiste pongase en contacto con el administrador del sistema", _
+'            vbCritical, "No se envió el mensaje"
+'            Exit Sub
+'        ElseIf Err <> 0 Then
+'            MsgBox Err.Description, vbCritical, "Error al enviar: " & List(3).List(I)
+'        End If
+'
+'
+'    Loop Until I = List(0).ListCount
+'End With
+
 MousePointer = vbDefault
 pBar.Visible = False
 cmd(4).Enabled = True
 cmd(1).Enabled = True
 cmd(2).Enabled = True
 
-If Err = 0 Then
-    MsgBox pBar.Max & IIf(pBar.Max > 1, " Mensajes Enviados ", " Mensaje Enviado ") & "con éxito.", _
-    vbInformation, App.ProductName
-End If
+'If Err = 0 Then
+'    MsgBox pBar.Max & IIf(pBar.Max > 1, " Mensajes Enviados ", " Mensaje Enviado ") & "con éxito.", _
+'    vbInformation, App.ProductName
+'End If
 '
 End Sub
