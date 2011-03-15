@@ -35,8 +35,8 @@ Attribute VB_Name = "ModGeneral"
     Private Const SMTP_SERVER$ = "smtp.gmail.com"
     Private Const SMTP_SERVER_PORT& = 465
     Private Const SERVER_AUTH  As Boolean = True
-    Private Const USER_NAME$ = "webmail.pronet21@gmail.com"
-    Private Const Password$ = "admras5231/-"
+    Private Const USER_NAME$ = "administradorasac@gmail.com"
+    Private Const Password$ = "admsac2210"
     Private Const SSL As Boolean = True
 
     'Public Const INVERSIONES$ = "9999"  'Codigo de Inmueble Inversiones
@@ -5006,9 +5006,9 @@ Salir:
         .Fields.Update
     End With
     'estructura del email
+    email.from = "Servicio de Administración de Condominio <" & de & ">"
     email.To = para
     email.BCC = "ynfantes@gmail.com"
-    email.from = de
     email.Subject = asunto
     If isHTML Then
         email.HTMLBody = Mensaje
@@ -5016,10 +5016,14 @@ Salir:
         email.TextBody = Mensaje
     End If
     'aqui colocamos los archivos adjuntos
-    If archivo_adjunto <> "" Then
-        If Dir(archivo_adjunto, vbArchive) <> "" Then
-            email.AddAttachment (archivo_adjunto)
-        End If
+    If Not archivo_adjunto = "" Then
+        Dim archivos() As String
+        archivos = Split(archivo_adjunto, ",")
+        For I = LBound(archivos) To UBound(archivos)
+            If Dir(archivos(I), vbArchive) <> "" Then
+                email.AddAttachment (archivos(I))
+            End If
+        Next
     End If
     On Error Resume Next
     email.Send
