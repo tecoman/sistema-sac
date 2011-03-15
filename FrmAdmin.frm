@@ -574,16 +574,16 @@ Begin VB.MDIForm FrmAdmin
       Begin VB.Menu AC312 
          Caption         =   "Cuadre Fondo-Deuda"
          Begin VB.Menu AC3121 
-            Caption         =   "Imprimir Fondo-Deuda"
-            Index           =   0
-         End
-         Begin VB.Menu AC3121 
             Caption         =   "Cuadre Deuda"
             Index           =   1
          End
          Begin VB.Menu AC3121 
             Caption         =   "Cuadre Fondo"
             Index           =   2
+         End
+         Begin VB.Menu AC3121 
+            Caption         =   "Imprimir Fondo-Deuda"
+            Index           =   3
          End
       End
    End
@@ -1944,7 +1944,7 @@ End Sub
     MousePointer = vbHourglass
     'Menu cuadre fondo - deuda
     Select Case Index
-        Case 0  'impresion reporte
+        Case 3  'impresion reporte
             strMsg = "Antes de llevar a cabo esta solicitud verifique que ha efectuado el cuadre " _
             & "de Deuda y el cuadre de fondo. Si no lo ha echo puede perder información, desea " _
             & "continuar?"

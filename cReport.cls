@@ -236,9 +236,9 @@ If orden Then
         
     Next
 End If
-If DataSource Then
-    mReport.Database.SetDataSource DataSource, 3, 1
-End If
+'If Not IsMissing(DataSource) Then
+'    mReport.Database.SetDataSource DataSource, 3, 1
+'End If
 If Salida = 1 Then
     mReport.PrintOut False, IIf(Copias = 0, 1, Copias)
 ElseIf Salida = crPantalla Then
