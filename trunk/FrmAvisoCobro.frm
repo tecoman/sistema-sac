@@ -563,7 +563,7 @@ Attribute poSendMail.VB_VarHelpID = -1
     '
         .Reporte = gcReport + StrReport
         .OrigenDatos(0) = gcPath + StrRutaInmueble + "inm.mdb"
-        If UCase(StrReport) <> "AVISO11.RPT" Then .OrigenDatos(1) = gcPath + "\sac.mdb"
+        If (UCase(StrReport) <> "AVISO11.RPT" And UCase(StrReport) <> "TELEGRAMA1.RPT") Then .OrigenDatos(1) = gcPath + "\sac.mdb"
         .FormuladeSeleccion = StrSeleccion
         .Formulas(0) = "Fecha = '" & Format(Date, "Long date") & "'"
         .Formulas(1) = "Inmueble = '" & DtcAviso(1) & "'"
@@ -694,7 +694,7 @@ Attribute poSendMail.VB_VarHelpID = -1
     'variables locales
     Dim rstlocal As New ADODB.Recordset
     Dim strSQL As String, archivo As String, PyC As Integer
-    Dim N(1) As Long
+    Dim n(1) As Long
     MousePointer = vbHourglass
     If ChkAviso(0).Value = vbChecked Then
         strSQL = "SELECT * FROM PROPIETARIOs WHERE Recibos=3 AND Convenio=False and email<>''"
@@ -754,14 +754,14 @@ Attribute poSendMail.VB_VarHelpID = -1
                     ChkAviso(0) & "," & !Recibos & ",'" & !Deuda & "',Date(),Time(),'" & gcUsuario & "','" & _
                     gcMAC & "','" & !email & "',-1)"
                     Call rtnBitacora("Aviso de Cobro vía email " & DtcAviso(0) & "/" & !Codigo & "....Ok.")
-                    N(0) = N(0) + 1
+                    n(0) = n(0) + 1
                 Else
                     cnnConexion.Execute "INSERT INTO Notificaciones_Email (CodInm,Propietario,Nombre,Aviso,Recibos," _
                     & "Deuda,Fecha,Hora,Usuario,PC,email,Ok) VALUES ('" & DtcAviso(0) & "','" & !Codigo & "','" & !Nombre & "'," & _
                     ChkAviso(0) & "," & !Recibos & ",'" & !Deuda & "',Date(),Time(),'" & gcUsuario & "','" & _
                     gcMAC & "','" & !email & "',0)"
                     Call rtnBitacora("Aviso de Cobro vía email " & DtcAviso(0) & "/" & !Codigo & "....Fallido.")
-                    N(1) = N(1) + 1
+                    n(1) = n(1) + 1
                 End If
                 
                 'mail.Reset
@@ -771,7 +771,7 @@ Attribute poSendMail.VB_VarHelpID = -1
                 
                 
             Loop Until .EOF
-            MsgBox "Proceso finalizado." & vbCrLf & vbCrLf & "mail enviado(s): " & N(0) + N(1) & vbCrLf & "Con éxito: " & N(0) & " - Fallido: " & N(1) & vbCrLf
+            MsgBox "Proceso finalizado." & vbCrLf & vbCrLf & "mail enviado(s): " & n(0) + n(1) & vbCrLf & "Con éxito: " & n(0) & " - Fallido: " & n(1) & vbCrLf
         End If
     End With
     MousePointer = vbDefault
@@ -782,13 +782,13 @@ Attribute poSendMail.VB_VarHelpID = -1
 
     
     'variables locales
-    Dim N As Long
+    Dim n As Long
     Dim Dato As Byte
     Dim O As Integer
-    N = FreeFile
-    Open archivo For Binary As #N
-        Do While Not EOF(N)
-            Get N, , Dato
+    n = FreeFile
+    Open archivo For Binary As #n
+        Do While Not EOF(n)
+            Get n, , Dato
             If Dato = 63 Then
                 Mensaje = Mensaje & Space(1) & datos(I)
                 I = I + 1
@@ -797,6 +797,6 @@ Attribute poSendMail.VB_VarHelpID = -1
             End If
         Loop
         
-    Close #N
+    Close #n
 
 End Function

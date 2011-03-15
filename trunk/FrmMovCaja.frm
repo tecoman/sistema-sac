@@ -1,12 +1,12 @@
 VERSION 5.00
 Object = "{F0D2F211-CCB0-11D0-A316-00AA00688B10}#1.0#0"; "MSDATLST.OCX"
 Object = "{CDE57A40-8B86-11D0-B3C6-00A0C90AEA82}#1.0#0"; "MSDATGRD.OCX"
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
 Object = "{C932BA88-4374-101B-A56C-00AA003668DC}#1.1#0"; "MSMASK32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{67397AA1-7FB1-11D0-B148-00A0C922E820}#6.0#0"; "MSADODC.OCX"
-Object = "{5E9E78A0-531B-11CF-91F6-C2863C385E30}#1.0#0"; "msflxgrd.ocx"
+Object = "{5E9E78A0-531B-11CF-91F6-C2863C385E30}#1.0#0"; "MSFLXGRD.OCX"
 Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "MSWINSCK.OCX"
 Begin VB.Form FrmMovCaja 
    Caption         =   "Cobranza por Caja"
@@ -19,8 +19,8 @@ Begin VB.Form FrmMovCaja
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MDIChild        =   -1  'True
-   ScaleHeight     =   45
-   ScaleWidth      =   2475
+   ScaleHeight     =   11460
+   ScaleWidth      =   18960
    WindowState     =   2  'Maximized
    Begin ComctlLib.Toolbar Toolbar1 
       Align           =   1  'Align Top
@@ -28,8 +28,8 @@ Begin VB.Form FrmMovCaja
       Left            =   0
       TabIndex        =   97
       Top             =   0
-      Width           =   2475
-      _ExtentX        =   4366
+      Width           =   18960
+      _ExtentX        =   33443
       _ExtentY        =   847
       ButtonWidth     =   714
       ButtonHeight    =   688
@@ -156,8 +156,8 @@ Begin VB.Form FrmMovCaja
       Tag             =   "0"
       Top             =   5130
       Visible         =   0   'False
-      Width           =   2460
-      _ExtentX        =   4339
+      Width           =   2355
+      _ExtentX        =   4154
       _ExtentY        =   4075
       _Version        =   393216
       ForeColor       =   -2147483630
@@ -174,7 +174,7 @@ Begin VB.Form FrmMovCaja
          Strikethrough   =   0   'False
       EndProperty
       ShowToday       =   0   'False
-      StartOfWeek     =   51773441
+      StartOfWeek     =   84803585
       TitleBackColor  =   -2147483646
       TitleForeColor  =   16777215
       CurrentDate     =   37319
@@ -261,25 +261,25 @@ Begin VB.Form FrmMovCaja
       TabCaption(1)   =   "Lista"
       TabPicture(1)   =   "FrmMovCaja.frx":035E
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "FrmBusca"
-      Tab(1).Control(1)=   "FrmBusca1"
-      Tab(1).Control(2)=   "Frame2"
-      Tab(1).Control(3)=   "DataGrid1"
+      Tab(1).Control(0)=   "DataGrid1"
+      Tab(1).Control(1)=   "Frame2"
+      Tab(1).Control(2)=   "FrmBusca1"
+      Tab(1).Control(3)=   "FrmBusca"
       Tab(1).ControlCount=   4
       TabCaption(2)   =   "Deducciones"
       TabPicture(2)   =   "FrmMovCaja.frx":037A
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "frame3(3)"
-      Tab(2).Control(1)=   "frame3(1)"
-      Tab(2).Control(2)=   "frame3(2)"
-      Tab(2).Control(3)=   "Command3(0)"
-      Tab(2).Control(4)=   "Command3(1)"
+      Tab(2).Control(0)=   "Label16(2)"
+      Tab(2).Control(1)=   "Label16(0)"
+      Tab(2).Control(2)=   "ADOcontrol(4)"
+      Tab(2).Control(3)=   "dtc"
+      Tab(2).Control(4)=   "Winsock1"
       Tab(2).Control(5)=   "AdoDeducciones"
-      Tab(2).Control(6)=   "Winsock1"
-      Tab(2).Control(7)=   "dtc"
-      Tab(2).Control(8)=   "ADOcontrol(4)"
-      Tab(2).Control(9)=   "Label16(0)"
-      Tab(2).Control(10)=   "Label16(2)"
+      Tab(2).Control(6)=   "Command3(1)"
+      Tab(2).Control(7)=   "Command3(0)"
+      Tab(2).Control(8)=   "frame3(2)"
+      Tab(2).Control(9)=   "frame3(1)"
+      Tab(2).Control(10)=   "frame3(3)"
       Tab(2).ControlCount=   11
       TabCaption(3)   =   "Lista Cheques"
       TabPicture(3)   =   "FrmMovCaja.frx":0396
@@ -1121,7 +1121,7 @@ Begin VB.Form FrmMovCaja
                _Version        =   393216
                CalendarTitleBackColor=   -2147483646
                CalendarTitleForeColor=   -2147483643
-               Format          =   54329345
+               Format          =   84803585
                CurrentDate     =   37417
             End
             Begin MSDataListLib.DataCombo Dat 
@@ -1859,6 +1859,7 @@ Begin VB.Form FrmMovCaja
             Style           =   1  'Graphical
             TabIndex        =   153
             Top             =   1200
+            Visible         =   0   'False
             Width           =   1095
          End
          Begin VB.CheckBox CHK 
@@ -3603,7 +3604,7 @@ Attribute VB_Exposed = False
     End Enum
     '---------------------------------------------------------------------------------------------
     
-    Private Sub cmb_Click(Index%): If Index = 0 Then cmb(0).SetFocus
+    Private Sub cmb_Click(Index%): If Index = 0 Then Cmb(0).SetFocus
     End Sub
 
     Private Sub Cmb_KeyDown(Index%, KeyCode%, Shift%)
@@ -3622,7 +3623,7 @@ Attribute VB_Exposed = False
         Select Case Index
     '
             Case 2, 3, 4
-                If cmb(Index) = "" Then txt(2 + 4).SetFocus
+                If Cmb(Index) = "" Then Txt(2 + 4).SetFocus
             End Select
     '
     End If
@@ -3633,22 +3634,22 @@ Attribute VB_Exposed = False
     '
             Case 0
             
-                If Not inLista(cmb(0)) Then Exit Sub
-                If txt(5) = "" Then MsgBox "No Existe Monto a Cancelar " & Chr(13) _
+                If Not inLista(Cmb(0)) Then Exit Sub
+                If Txt(5) = "" Then MsgBox "No Existe Monto a Cancelar " & Chr(13) _
                     & "Verifique e intente nuevamente", vbInformation, "Error": Exit Sub
     '
-                If cmb(Index) = "" Then MsgBox "Debe Introducir un Valor, por favor....", _
+                If Cmb(Index) = "" Then MsgBox "Debe Introducir un Valor, por favor....", _
                     vbCritical: Exit Sub
     '
     '---------------------------------------------------------------------------------------------
                 If LblHono = "" Then LblHono = 0    'Si tiene honorarios
     '
-                    If cmb(1) = "INGRESO" And LblHono > 0 Then
+                    If Cmb(1) = "INGRESO" And LblHono > 0 Then
                         curHono = CCur(LblHono)
                         'booHA = True
                         Mensaje = "Propietario tiene honorarios por " & Format(LblHono, "#,##0") _
                             & (Chr(13)) & "Monto total: Bs " _
-                            & Format(CCur(txt(5)) + CCur(LblHono), "#,##0.00") _
+                            & Format(CCur(Txt(5)) + CCur(LblHono), "#,##0.00") _
                             & (Chr(13)) & "¿Desea Aplicar Honorarios? "
                             
                        If Respuesta(Mensaje) = False Then 'MUESTRA LA FICHA DEDUCCIONES
@@ -3673,7 +3674,7 @@ Attribute VB_Exposed = False
                             End With
                             Exit Sub
                        Else
-                            txt(5) = Format(CCur(txt(5)) + CCur(LblHono), "#,##0.00")
+                            Txt(5) = Format(CCur(Txt(5)) + CCur(LblHono), "#,##0.00")
                             LblHono = "0,00"
                             curPagoHono = curHono
                        End If
@@ -3684,7 +3685,7 @@ Attribute VB_Exposed = False
     '               ----------------------------------
                 Case 1
                     If Dat(0) = sysCodInm Or FlexFacturas.TextMatrix(1, 2) = "" Then
-                        txt(5).SetFocus
+                        Txt(5).SetFocus
                     Else
                         Command1(0).Enabled = True: Command1(0).SetFocus
                     End If
@@ -3693,7 +3694,7 @@ Attribute VB_Exposed = False
                                                         
                 Case 5, 6, 7
                     Call Validacion(KeyAscii, "ABCDEFGHIJKLMNOPQRSTUVWXYZ.,")
-                    txt(Index + 1).SetFocus
+                    Txt(Index + 1).SetFocus
             
             End Select
         '
@@ -3710,36 +3711,36 @@ Attribute VB_Exposed = False
     
     Private Sub Cmb_LostFocus(Index As Integer)
     '
-    If Index >= 5 And Index <= 7 And (cmb(Index) = "DEPOSITO" Or cmb(Index) = "TRANSFERENCIA") Then
+    If Index >= 5 And Index <= 7 And (Cmb(Index) = "DEPOSITO" Or Cmb(Index) = "TRANSFERENCIA") Then
     
             frmCajaCta.strTitulo = "Cuentas Inm: " & Dat(0)
             Matriz_A = varCuentas
             If UBound(Matriz_A, 2) = 0 Then
                 NCta = Matriz_A(0, 0)
-                cmb(Index - 3) = Matriz_A(2, 0)
+                Cmb(Index - 3) = Matriz_A(2, 0)
             Else
                 frmCajaCta.Show
                 Unload frmCajaCta
-                cmb(Index - 3) = frmCajaCta.strTitulo
+                Cmb(Index - 3) = frmCajaCta.strTitulo
             End If
-            cmb(Index).Tag = NCta
+            Cmb(Index).Tag = NCta
             
             
-    ElseIf Index = 0 And Not inLista(cmb(0)) Then
+    ElseIf Index = 0 And Not inLista(Cmb(0)) Then
         Exit Sub
     End If
     '
     End Sub
 
     Private Sub Command_KeyPress(Index%, KeyAscii%)
-    If Index > 0 And KeyAscii = 8 Then cmb(Index + 1).SetFocus
+    If Index > 0 And KeyAscii = 8 Then Cmb(Index + 1).SetFocus
     End Sub
 
 
     'Rev.26/08/2002-------------------------------------------------------------------------------
     Private Sub Command1_Click(Index As Integer)
     '---------------------------------------------------------------------------------------------
-    cmb(0).Enabled = True
+    Cmb(0).Enabled = True
     Select Case Index
     '
         Case 0  'permite al objeto responder a los eventos generados por el usuario
@@ -3768,31 +3769,31 @@ Attribute VB_Exposed = False
                 FlexFacturas.Row = mnrow: FlexFacturas.Col = 6
                 
             Loop
-            txt(10) = Format(CCur(txt(10)) + CCur(txt(5)), "#,##0.00")
-            txt(11) = Format(CCur(txt(10)) + CCur(LblHono), "#,##0.00")
+            Txt(10) = Format(CCur(Txt(10)) + CCur(Txt(5)), "#,##0.00")
+            Txt(11) = Format(CCur(Txt(10)) + CCur(LblHono), "#,##0.00")
             Command1(1).Caption = "&Distribuir": Frame1.Enabled = False
-            Command1(0).Enabled = True: txt(5) = 0: txt(9) = ""
+            Command1(0).Enabled = True: Txt(5) = 0: Txt(9) = ""
         Else
             
-            If (CCur(txt(5)) > CCur(txt(10))) And CCur(txt(10)) > 0 Then  'Si el monto a pagar > Deuda
+            If (CCur(Txt(5)) > CCur(Txt(10))) And CCur(Txt(10)) > 0 Then  'Si el monto a pagar > Deuda
                 Dim strMensaje$
                 strMensaje = "Monto a distribuir es mayor a la deuda del propietario," _
                 & vbCrLf & "Desea aplicar la diferencia a la próxima facturación?"
                 If Not Respuesta(strMensaje) Then
-                    txt(5).SetFocus
-                    txt(5).SelStart = 0
-                    txt(5).SelLength = Len(txt(5).Text)
+                    Txt(5).SetFocus
+                    Txt(5).SelStart = 0
+                    Txt(5).SelLength = Len(Txt(5).Text)
                     Exit Sub
                 End If
             End If
             Frame1.Enabled = True
-            If txt(5) = "" Or IsNull(txt(5)) Or txt(5) <= 0 Then
+            If Txt(5) = "" Or IsNull(Txt(5)) Or Txt(5) <= 0 Then
                 MsgBox "Debe introducir una cantidad válida en el campo Monto", vbExclamation, _
                 App.ProductName
-                txt(5).SetFocus
+                Txt(5).SetFocus
                 Exit Sub
             End If
-            IntMonto = CCur(txt(5))
+            IntMonto = CCur(Txt(5))
             I = 1
             Command1(0).Enabled = False
         '
@@ -3808,14 +3809,14 @@ Attribute VB_Exposed = False
                         CDbl(FlexFacturas.TextMatrix(I, 3)), "#,##0.00")
                         FlexFacturas.TextMatrix(I, 4) = 0
                         FlexFacturas.TextMatrix(I, 6) = "SI"
-                        txt(9) = IIf(txt(9) = "", "", txt(9) + " / ") + FlexFacturas.TextMatrix(I, 1)
+                        Txt(9) = IIf(Txt(9) = "", "", Txt(9) + " / ") + FlexFacturas.TextMatrix(I, 1)
                     Else
             '
                         FlexFacturas.TextMatrix(I, 3) = Format(IntMonto + vecFPS(I, 1), "#,##0.00")
                         FlexFacturas.TextMatrix(I, 4) = Format(FlexFacturas.TextMatrix(I, 2) - _
                         FlexFacturas.TextMatrix(I, 3), "#,##0.00")
                         FlexFacturas.TextMatrix(I, 6) = "SI"
-                        txt(9) = IIf(txt(9) = "", FlexFacturas.TextMatrix(I, 1), txt(9) + _
+                        Txt(9) = IIf(Txt(9) = "", FlexFacturas.TextMatrix(I, 1), Txt(9) + _
                         " / " + "Abono a Cuenta " + FlexFacturas.TextMatrix(I, 1))
                         IntMonto = 0
                     
@@ -3828,15 +3829,15 @@ Attribute VB_Exposed = False
                 I = I + 1
             Loop
             If IntMonto > 0 Then
-                txt(9) = IIf(txt(9) = "", "Abono a Prox.Facturación", txt(9) + _
+                Txt(9) = IIf(Txt(9) = "", "Abono a Prox.Facturación", Txt(9) + _
                 " / Abono a Prox.Facturación")
             Else
                 IntMonto = 0
             End If
-            txt(10) = Format(CCur(txt(10)) - CCur(txt(5)), "#,##0.00")
-            txt(11) = Format(CCur(LblHono) + CCur(txt(10)), "#,##0.00")
-            Command1(1).Caption = "&Deshacer": Frame1.Enabled = True: cmb(0).Enabled = True
-            cmb(0).SetFocus
+            Txt(10) = Format(CCur(Txt(10)) - CCur(Txt(5)), "#,##0.00")
+            Txt(11) = Format(CCur(LblHono) + CCur(Txt(10)), "#,##0.00")
+            Command1(1).Caption = "&Deshacer": Frame1.Enabled = True: Cmb(0).Enabled = True
+            Cmb(0).SetFocus
         End If
         '
     End Select
@@ -3856,15 +3857,15 @@ Attribute VB_Exposed = False
         
     Else
         '
-        If txt(Index - 3) = "" Then txt(Index - 3) = 0
+        If Txt(Index - 3) = "" Then Txt(Index - 3) = 0
         
-        If cmb(Index + 1) <> "CHEQUE" Then
+        If Cmb(Index + 1) <> "CHEQUE" Then
             strMsg = "Debe seleccionar cheque para continuar."
-        ElseIf txt(Index + 2) = "" Then
+        ElseIf Txt(Index + 2) = "" Then
             strMsg = "Falta Número del documento."
-        ElseIf cmb(Index - 2) = "" Then
+        ElseIf Cmb(Index - 2) = "" Then
             strMsg = "Falta Banco a/c del documento."
-        ElseIf CCur(txt(Index - 3)) = 0 Then
+        ElseIf CCur(Txt(Index - 3)) = 0 Then
             strMsg = "Falta la cantidad del cheque."
         ElseIf Dat(4) = "" Then
             strMsg = "Falta el beneficiario del cheque."
@@ -3873,7 +3874,7 @@ Attribute VB_Exposed = False
         If strMsg <> "" Then
             MsgBox strMsg, vbCritical, App.ProductName
         Else
-            Call imprimir_cheque(txt(Index - 3), Dat(1), Dat(3) = sysCodCaja)
+            Call imprimir_cheque(Txt(Index - 3), Dat(1), Dat(3) = sysCodCaja)
         End If
         '
     End If
@@ -4019,7 +4020,7 @@ Attribute VB_Exposed = False
                 '
             End With
             'verifica datos mínimos requeridos para procesar el depósito
-            If Trim(txt(4)) = "" Then   'nº de depósito
+            If Trim(Txt(4)) = "" Then   'nº de depósito
                 MsgBox "Introduzaca el Nº de Depósito", vbCritical, App.ProductName
                 Exit Sub
             ElseIf Dat(10) = "" Then    'nombre bancpo
@@ -4035,7 +4036,7 @@ Attribute VB_Exposed = False
             '
             Command3(5).Enabled = False
             'asigna valores a lacas variables
-            NDep = Trim(txt(4))
+            NDep = Trim(Txt(4))
             Bco = Dat(10)
             Cta = Dat(9)
             Cja = Dat(7)
@@ -4087,11 +4088,11 @@ Attribute VB_Exposed = False
                         
                     If Label16(30).Tag = "BSF" Then   ' dep. tiene Bs. fuertes
                         strSQL = Replace(strSQL, "[variable]", "not Like 'Bs%'")
-                        cnnConexion.Execute strSQL, N
+                        cnnConexion.Execute strSQL, n
                     
                     ElseIf Label16(30).Tag = "BS" Then
                         strSQL = Replace(strSQL, "[variable]", "Like 'Bs%'")
-                        cnnConexion.Execute strSQL, N
+                        cnnConexion.Execute strSQL, n
                     End If
                     '
                     Call rtnBitacora("Ingresado Efectivo Dep.: " & NDep & " Caja " & Cja)
@@ -4168,7 +4169,7 @@ finalizar:
                 'envia un mensaje al usuario de finalizado el proceso
                 MsgBox "Procesado Deposito '" & NDep & "' por Bs. " & Label16(31), _
                 vbInformation, App.ProductName
-                txt(4) = "": Label16(30) = "0,00": Label16(31) = "0,00"
+                Txt(4) = "": Label16(30) = "0,00": Label16(31) = "0,00"
                 '
                 Set objRst = New ADODB.Recordset
                 '
@@ -4187,28 +4188,28 @@ finalizar:
             
         Case 3 'CONSULTAR DEPOSITO
         
-            If txt(4) = "" Or IsNull(txt(4)) Then
+            If Txt(4) = "" Or IsNull(Txt(4)) Then
                 MsgBox "Introduzca el Número del Depósito a Consultar", vbInformation, _
                 App.ProductName
                 Exit Sub
             End If
             '
             Set ObjRstDep = New ADODB.Recordset
-            strNdeposito = Trim(txt(4))
+            strNdeposito = Trim(Txt(4))
             ObjRstDep.Open "SELECT TDFDepositos.*, Caja.DescripCaja FROM TDFDepositos INNER JOI" _
             & "N Caja ON TDFDepositos.Caja = Caja.CodigoCaja WHERE TDFDepositos.IDDeposito=" _
             & "'" & strNdeposito & "'", cnnConexion, adOpenStatic, adLockReadOnly, adCmdText
             '
             With ObjRstDep
                 If .EOF Then
-                    MsgBox "No se encuentra informacion sobre el depósito Nº '" & txt(4) & "'" _
+                    MsgBox "No se encuentra informacion sobre el depósito Nº '" & Txt(4) & "'" _
                     & vbCr & "Verifique este dato e intente nuevamente...", vbCritical, _
                     App.ProductName
                 
                 Else
                 Command3(5).Enabled = True
                 .MoveFirst
-                txt(4) = !IDDeposito
+                Txt(4) = !IDDeposito
                 Dat(10) = !Banco
                 Dat(9) = !Cuenta
                 'Frame3(7).Tag = !Caja
@@ -4269,7 +4270,7 @@ finalizar:
         
         Case 4  'EDITAR DEPOSITO
     '   -------------------------------
-            If txt(4) = "" Or Dat(10) = "" Or Dat(9) = "" Then
+            If Txt(4) = "" Or Dat(10) = "" Or Dat(9) = "" Then
                 MsgBox "Faltan datos para actualizar la información  de este depósito", _
                 vbInformation, App.ProductName
                 Exit Sub
@@ -4277,15 +4278,15 @@ finalizar:
                 On Error Resume Next
                 'actualiza la tabla depositos
                 cnnConexion.BeginTrans
-                cnnConexion.Execute "UPDATE TDFDepositos SET IDDeposito = '" & txt(4) & "'," _
+                cnnConexion.Execute "UPDATE TDFDepositos SET IDDeposito = '" & Txt(4) & "'," _
                 & "Banco = '" & Dat(10) & "', Cuenta = '" & Dat(9) & "', Fecha = '" & DTPicker1 _
                 & "', Usuario = '" & gcUsuario & "' WHERE IDDeposito= '" & strNdeposito & "'"
                 'actualiza la tabla cheques
-                cnnConexion.Execute "UPDATE TDFCheques SET IDDeposito='" & txt(4) & "' WHERE ID" _
+                cnnConexion.Execute "UPDATE TDFCheques SET IDDeposito='" & Txt(4) & "' WHERE ID" _
                 & "Deposito='" & strNdeposito & "'"
                 If Err.Number = 0 Then
                     cnnConexion.CommitTrans
-                    Call rtnBitacora("Depósito Actulizado de " & strNdeposito & " a " & txt(4))
+                    Call rtnBitacora("Depósito Actulizado de " & strNdeposito & " a " & Txt(4))
                     MsgBox "Depósito Actualizado...", vbInformation, App.ProductName
                 Else
                     cnnConexion.RollbackTrans
@@ -4301,7 +4302,7 @@ finalizar:
 '
                 ObjRstDep.Open "SELECT TDFDepositos.*, Inmueble.CodInm FROM TDFDepositos INNER " _
                 & "JOIN Inmueble ON TDFDepositos.Caja = Inmueble.Caja WHERE TDFDepositos.IDDepo" _
-                & "sito ='" & txt(4) & "'", cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
+                & "sito ='" & Txt(4) & "'", cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
 
                 If ObjRstDep.EOF And ObjRstDep.BOF Then
                 
@@ -4387,26 +4388,26 @@ finalizar:
                 IntMonto = 0: curHono = 0   'Declara variables globales de módulo en cero
                 Frame1.Enabled = False
                 Call Desmarca
-                txt(5) = "0,00"
+                Txt(5) = "0,00"
                 If Dat(2) = "" Then Exit Sub
                 Call BuscaPropietario("Codigo", Dat(2), "Nombre", DatProp)
-                With cmb(1)
+                With Cmb(1)
                     .Enabled = True
                     .SetFocus
                     .ListIndex = 1
                 End With
-                cmb(0) = ""
-                For I = 1 To 3: txt(I) = ""
+                Cmb(0) = ""
+                For I = 1 To 3: Txt(I) = ""
                 Next
                 Call RtnFlex(Dat(2), FlexFacturas, IntMesesMora, IntHonoMorosidad, _
-                    FlexFacturas.Cols, txt(11), cnnPropietario)
-                LblHono = txt(11)
+                    FlexFacturas.Cols, Txt(11), cnnPropietario)
+                LblHono = Txt(11)
                 'campo deuda y deuda + honorarios
-                If IsNumeric(txt(11)) And IsNumeric(txt(10)) Then
-                    txt(11) = Format(CCur(txt(11)) + CCur(txt(10)), "#,##0.00")
+                If IsNumeric(Txt(11)) And IsNumeric(Txt(10)) Then
+                    Txt(11) = Format(CCur(Txt(11)) + CCur(Txt(10)), "#,##0.00")
                 Else
-                    txt(10) = "0,00"
-                    txt(11) = "0,00"
+                    Txt(10) = "0,00"
+                    Txt(11) = "0,00"
                 End If
                 curAbono = IIf(FlexFacturas.TextArray(12) <> "", FlexFacturas.TextArray(12), 0)
                 
@@ -4449,8 +4450,8 @@ finalizar:
                         If FlexFacturas.TextMatrix(I, 6) = "SI" Then
                             If CCur(FlexFacturas.TextMatrix(I, 4)) = 0 Then
                                 Dat(5) = strCodPC
-                                If UCase(txt(9)) Like "ABONO*" Then Dat(5) = strCodAbonoCta
-                                If UCase(txt(9)) Like "CH*" Then Dat(5) = strCodRCheq
+                                If UCase(Txt(9)) Like "ABONO*" Then Dat(5) = strCodAbonoCta
+                                If UCase(Txt(9)) Like "CH*" Then Dat(5) = strCodRCheq
                                 Exit For
                             Else
                                 Dat(5) = strCodAbonoCta
@@ -4492,22 +4493,22 @@ finalizar:
                     'del propietario de ese apartamento
                     Frame1.Enabled = False
                     Call Desmarca
-                    txt(5) = "0,00"
+                    Txt(5) = "0,00"
                     If Dat(2) = "" Then DatProp.SetFocus: Exit Sub
                     ADOcontrol(2).Refresh
                     IntMonto = 0: curHono = 0   'Declara variables globales de módulo en cero
                     Call BuscaPropietario("Codigo", Dat(2).Text, "Nombre", DatProp)
                     If Dat(0) <> "" And DatProp <> "" Then
-                        cmb(1).Enabled = True: cmb(1).SetFocus: cmb(1).ListIndex = 1
+                        Cmb(1).Enabled = True: Cmb(1).SetFocus: Cmb(1).ListIndex = 1
                         Call RtnFlex(Dat(2), FlexFacturas, IntMesesMora, IntHonoMorosidad, _
-                            FlexFacturas.Cols, txt(11), cnnPropietario, Dat(0))
-                            LblHono = IIf(txt(11) > 0, txt(11), "0,00")
-                            If txt(10) = "" Then txt(10) = 0
-                            If txt(11) = "" Then txt(11) = 0
-                            If txt(11) > 0 Then
-                                txt(11) = Format(CCur(txt(11)) + CCur(txt(10)), "#,##0.00")
+                            FlexFacturas.Cols, Txt(11), cnnPropietario, Dat(0))
+                            LblHono = IIf(Txt(11) > 0, Txt(11), "0,00")
+                            If Txt(10) = "" Then Txt(10) = 0
+                            If Txt(11) = "" Then Txt(11) = 0
+                            If Txt(11) > 0 Then
+                                Txt(11) = Format(CCur(Txt(11)) + CCur(Txt(10)), "#,##0.00")
                             Else
-                                txt(11) = txt(10)
+                                Txt(11) = Txt(10)
                             End If
                             curAbono = IIf(FlexFacturas.TextArray(12) <> "", FlexFacturas.TextArray(12), 0)
                     End If
@@ -4537,7 +4538,7 @@ finalizar:
             
             Case 2: If Dat(Index) = "" Then Dat(Index - 1).SetFocus
             
-            Case 5: If Dat(Index) = "" Then cmb(0).SetFocus
+            Case 5: If Dat(Index) = "" Then Cmb(0).SetFocus
             
             Case 6: If Dat(Index) = "" Then Dat(Index - 1).SetFocus
                 
@@ -4576,15 +4577,15 @@ finalizar:
                         'propietario seleccionado
         Frame1.Enabled = False
         Call Desmarca
-        txt(5) = "0,00"
+        Txt(5) = "0,00"
         Call BuscaPropietario("Nombre", DatProp.Text, "Codigo", Dat(2))
-        cmb(1).Enabled = True
-        cmb(1).SetFocus
-        cmb(1).ListIndex = 1
+        Cmb(1).Enabled = True
+        Cmb(1).SetFocus
+        Cmb(1).ListIndex = 1
         Call RtnFlex(Dat(2), FlexFacturas, IntMesesMora, IntHonoMorosidad, _
-            FlexFacturas.Cols, txt(11), cnnPropietario)
-        LblHono = txt(11)
-        txt(11) = Format(CCur(txt(11)) + CCur(txt(10)), "#,##0.00")
+            FlexFacturas.Cols, Txt(11), cnnPropietario)
+        LblHono = Txt(11)
+        Txt(11) = Format(CCur(Txt(11)) + CCur(Txt(10)), "#,##0.00")
         curAbono = IIf(FlexFacturas.TextArray(12) <> "", FlexFacturas.TextArray(12), 0)
     End If
     '
@@ -4605,14 +4606,14 @@ finalizar:
         End If
         
         Call Desmarca
-        txt(5) = "0,00"
+        Txt(5) = "0,00"
         Call BuscaPropietario("Nombre", DatProp.Text, "Codigo", Dat(2))
         If Dat(2) <> "" And DatProp <> "" Then
-        cmb(1).Enabled = True: cmb(1).SetFocus: cmb(1).ListIndex = 1
+        Cmb(1).Enabled = True: Cmb(1).SetFocus: Cmb(1).ListIndex = 1
         Call RtnFlex(Dat(2), FlexFacturas, IntMesesMora, IntHonoMorosidad, _
-            FlexFacturas.Cols, txt(11), cnnPropietario)
-        LblHono = txt(11)
-        txt(11) = Format(CCur(txt(11)) + CCur(txt(10)), "#,##0.00")
+            FlexFacturas.Cols, Txt(11), cnnPropietario)
+        LblHono = Txt(11)
+        Txt(11) = Format(CCur(Txt(11)) + CCur(Txt(10)), "#,##0.00")
         curAbono = IIf(FlexFacturas.TextArray(12) <> "", FlexFacturas.TextArray(12), 0)
         End If
     End If
@@ -4770,17 +4771,17 @@ End Sub
                 .Row = FlexFacturas.RowSel
                 .Col = 6
                 Set .CellPicture = Nothing
-                If txt(5) = "" Then txt(5) = 0
-                    txt(5) = Format(CCur(txt(5)) - (CCur(.TextMatrix(.Row, 3) - vecFPS(.RowSel, 1))), "##,##0.00")
-                    txt(10) = Format(CCur(txt(10) + CCur(.TextMatrix(.Row, 3)) - vecFPS(.RowSel, 1)), "#,##0.00")
-                    txt(11) = Format(CCur(txt(10) + CCur(LblHono)), "#,##0.00")
+                If Txt(5) = "" Then Txt(5) = 0
+                    Txt(5) = Format(CCur(Txt(5)) - (CCur(.TextMatrix(.Row, 3) - vecFPS(.RowSel, 1))), "##,##0.00")
+                    Txt(10) = Format(CCur(Txt(10) + CCur(.TextMatrix(.Row, 3)) - vecFPS(.RowSel, 1)), "#,##0.00")
+                    Txt(11) = Format(CCur(Txt(10) + CCur(LblHono)), "#,##0.00")
                     .TextMatrix(.RowSel, 3) = Format(vecFPS(.RowSel, 1), "#,##0.00")
                     .TextMatrix(.RowSel, 4) = Format(vecFPS(.RowSel, 2), "#,##0.00")
                     .TextMatrix(.RowSel, 4) = Format(.TextMatrix(.RowSel, 4), "#,##0.00")
                     .TextMatrix(.Row, 6) = "NO"
                     TxtBuscar = .TextMatrix(.RowSel, 1)  'Busca el mes a borrar
-                    txt(9) = Replace(txt(9), TxtBuscar & " /", "")
-                    txt(9) = Replace(txt(9), TxtBuscar, "")
+                    Txt(9) = Replace(Txt(9), TxtBuscar & " /", "")
+                    Txt(9) = Replace(Txt(9), TxtBuscar, "")
                     
                     'byDonde = InStr(Txt(9).Text, TxtBuscar)
 '                    If byDonde > 0 Then  'Marca la posicion donde se encuenta
@@ -4965,11 +4966,11 @@ End Sub
     Text3 = Date
     If gcNivel = nuADSYS Then Text2.Visible = True: Text3.Visible = True
     
-    lbl(0) = LoadResString(101)
-    lbl(3) = LoadResString(102)
-    lbl(2) = LoadResString(103)
-    lbl(17) = LoadResString(119)
-    lbl(14) = LoadResString(120)
+    Lbl(0) = LoadResString(101)
+    Lbl(3) = LoadResString(102)
+    Lbl(2) = LoadResString(103)
+    Lbl(17) = LoadResString(119)
+    Lbl(14) = LoadResString(120)
     Command3(2).Picture = LoadResPicture("Deposito1", vbResIcon)
     Command3(3).Picture = LoadResPicture("Deposito", vbResIcon)
     Command3(4).Picture = LoadResPicture("Deposito2", vbResIcon)
@@ -4987,7 +4988,7 @@ End Sub
         DoEvents
         Call RtnProUtility("Cargando Lista de Bancos....", F)
         For I = 2 To 4
-            cmb(I).AddItem (objRst.Fields("NombreBanco"))
+            Cmb(I).AddItem (objRst.Fields("NombreBanco"))
         Next
         objRst.MoveNext
     Loop
@@ -5130,10 +5131,10 @@ Call RtnEstado(6, Toolbar1, ADOcontrol(0).Recordset.EOF Or ADOcontrol(0).Records
     If FrmMovCaja.WindowState = vbMaximized Then
         DoEvents
         SSTab1.Left = (Screen.Width - (Screen.TwipsPerPixelY * 4) - SSTab1.Width) / 2
-        lbl(7).Left = SSTab1.Left
-        lbl(19).Left = SSTab1.Left
-        txt(13).Left = lbl(7).Left + lbl(7).Width
-        lbl(20).Left = lbl(19).Left + lbl(19).Width
+        Lbl(7).Left = SSTab1.Left
+        Lbl(19).Left = SSTab1.Left
+        Txt(13).Left = Lbl(7).Left + Lbl(7).Width
+        Lbl(20).Left = Lbl(19).Left + Lbl(19).Width
     End If
     End Sub
 
@@ -5154,9 +5155,9 @@ Select Case Index
     Case 0  'LISTA DE CHEQUES EN TRANSITO
         
         If GridCheques(0).Text = "" Then Exit Sub
-        If txt(4) = "" And Dat(10) <> "PROVINCIAL" Then
+        If Txt(4) = "" And Dat(10) <> "PROVINCIAL" Then
             MsgBox "Primero Indique el Nº del Deposito", vbExclamation, App.ProductName
-            txt(4).SetFocus
+            Txt(4).SetFocus
             Exit Sub
         End If
         If GridCheques(1).Rows = 12 Then
@@ -5282,7 +5283,7 @@ End Sub
                 cnnPropietario.Close
                 Set cnnPropietario = Nothing
                 TimDemonio.Interval = 0
-                Frame3(3).Visible = False
+                frame3(3).Visible = False
                 Command3(0).Enabled = True
                 Call rtnTab(0)
                 'Elimina la marca de la factura
@@ -5325,13 +5326,13 @@ End Sub
         
     Private Sub MntCalendar_DateClick(ByVal DateClicked As Date)
         MntCalendar.Visible = False
-        MskFecha(B) = DateClicked: txt(B).SetFocus
+        MskFecha(B) = DateClicked: Txt(B).SetFocus
     End Sub
     
     Private Sub MntCalendar_KeyPress(KeyAscii As Integer)
-    If KeyAscii = 27 Then MntCalendar.Visible = False: txt(B).SetFocus
+    If KeyAscii = 27 Then MntCalendar.Visible = False: Txt(B).SetFocus
     
-    If KeyAscii = 13 Then MskFecha(B) = MntCalendar.Value: MntCalendar.Visible = False: txt(B).Enabled = True: txt(B).SetFocus
+    If KeyAscii = 13 Then MskFecha(B) = MntCalendar.Value: MntCalendar.Visible = False: Txt(B).Enabled = True: Txt(B).SetFocus
     
     End Sub
     
@@ -5355,7 +5356,7 @@ Select Case KeyAscii
             
             Case 1, 2, 3
                 
-                If MskFecha(Index) = "" Then cmb(Index + 1).SetFocus
+                If MskFecha(Index) = "" Then Cmb(Index + 1).SetFocus
         
         End Select
 
@@ -5367,7 +5368,7 @@ Select Case KeyAscii
     
         Case 1, 2, 3
         
-            If MskFecha(Index) <> "" Then txt(Index).SetFocus
+            If MskFecha(Index) <> "" Then Txt(Index).SetFocus
             
     End Select
 
@@ -5509,7 +5510,7 @@ End Sub
 Private Sub Text2_KeyPress(KeyAscii As Integer)
 'Ver todas las cajas o una caja determinada
 Dim strSQL As String
-On Error GoTo salir:
+On Error GoTo Salir:
 '
 If KeyAscii = 13 Then
 
@@ -5530,7 +5531,7 @@ If KeyAscii = 13 Then
     ADOcontrol(3).Refresh
     '
 End If
-salir:
+Salir:
     If Err.Number <> 0 Then
         MsgBox Err.Description, vbCritical, "Error " & Err
     End If
@@ -5551,10 +5552,10 @@ End Sub
             If .Fields("CodGasto") = strCodRebHA Then
                 'If curPagoHono = 0 Then booHA = False
                 LblHono = Format(0, "#,##0.00")
-                txt(5) = Format(CCur(txt(5) + CCur(curPagoHono)), "#,##.000")
-                txt(11) = Format(CCur(txt(10) - CCur(LblHono)), "#,##0.00")
+                Txt(5) = Format(CCur(Txt(5) + CCur(curPagoHono)), "#,##.000")
+                Txt(11) = Format(CCur(Txt(10) - CCur(LblHono)), "#,##0.00")
             Else
-                txt(5) = Format(CCur(txt(5)) - CCur(Label16(0)), "#,##0.00")
+                Txt(5) = Format(CCur(Txt(5)) - CCur(Label16(0)), "#,##0.00")
             End If
             '
             With FlexFacturas
@@ -5568,10 +5569,10 @@ End Sub
             '
             Label16(17) = Format(CCur(Label16(17)) + CCur(Label16(0)), "#,##0.00")
             TimDemonio.Interval = 0
-            Frame3(3).Visible = False
+            frame3(3).Visible = False
             Call rtnTab(0)
             On Error Resume Next
-            If cmb(0).Enabled Then cmb(0).SetFocus
+            If Cmb(0).Enabled Then Cmb(0).SetFocus
             '
         End With
     '
@@ -5590,7 +5591,7 @@ End Sub
             Case 1      'Primer Registro
                     If .RecordCount <= 0 Then Exit Sub
                     .MoveFirst
-                    If txt(12) <> "" And txt(12) <> 0 Then
+                    If Txt(12) <> "" And Txt(12) <> 0 Then
                     Else
                         Call RtnVisible("TRUE")
                         Call RtnVisible("FALSE")
@@ -5603,7 +5604,7 @@ End Sub
                             .MovePrevious
                             'On Error Resume Next
                             If Not .BOF Then
-                            If txt(12) <> "" And txt(12) <> 0 Then
+                            If Txt(12) <> "" And Txt(12) <> 0 Then
                                 Call RtnVisible("TRUE")
                             Else
                                 Call RtnVisible("FALSE")
@@ -5611,7 +5612,7 @@ End Sub
                             RtnAvanza
                         Else
                             .MoveFirst
-                            If txt(12) <> "" And txt(12) <> 0 Then
+                            If Txt(12) <> "" And Txt(12) <> 0 Then
                                 Call RtnVisible("TRUE")
                             Else
                                 Call RtnVisible("FALSE")
@@ -5625,7 +5626,7 @@ End Sub
                     .MoveNext
                     If Not .EOF Then
                         On Error Resume Next
-                        If txt(12).Text <> "" And txt(12) <> 0 Then
+                        If Txt(12).Text <> "" And Txt(12) <> 0 Then
                             Call RtnVisible("TRUE")
                         Else
                             Call RtnVisible("FALSE")
@@ -5633,7 +5634,7 @@ End Sub
                         RtnAvanza
                     Else
                         .MoveLast
-                        If txt(12) <> "" And txt(12) <> 0 Then
+                        If Txt(12) <> "" And Txt(12) <> 0 Then
                             Call RtnVisible("TRUE")
                         Else
                             Call RtnVisible("FALSE")
@@ -5644,7 +5645,7 @@ End Sub
                 
                 If .RecordCount <= 0 Then Exit Sub
                 .MoveLast
-                If txt(12) <> "" And txt(12) <> 0 Then
+                If Txt(12) <> "" And Txt(12) <> 0 Then
                     Call RtnVisible("TRUE")
                 Else
                     Call RtnVisible("FALSE")
@@ -5674,7 +5675,7 @@ End Sub
                 chkBs.Value = vbUnchecked
                 MntCalendar.Tag = 0
                 Call RtnEstado(5, Toolbar1, True)
-                chk.Value = vbUnchecked
+                CHK.Value = vbUnchecked
                 If Dir(App.Path & Archivo_Temp) <> "" Then Call Imprimir_Recibos
                 Frame6.Enabled = True
                 cnnConexion.BeginTrans  'comienza el proceso por lotes
@@ -5685,8 +5686,8 @@ End Sub
                 FmeCuentas.Enabled = True
                 Dat(0).SetFocus
                 DatProp.Enabled = False
-                cmb(0).Enabled = False
-                cmb(1).Enabled = False
+                Cmb(0).Enabled = False
+                Cmb(1).Enabled = False
                 MskFecha(0) = Date
                 Command1(0).Enabled = False
                 SSTab1 = 0
@@ -5699,11 +5700,11 @@ End Sub
                 Dat(5) = ""
                 LblHono = ""
                 DatProp = ""
-                txt(10) = ""
-                txt(11) = ""
+                Txt(10) = ""
+                Txt(11) = ""
                 Label16(17) = "0,00"
-                lbl(20) = ""
-                txt(13) = ""
+                Lbl(20) = ""
+                Txt(13) = ""
                 Call rtnLimpiar_Grid(FlexFacturas)
                 '
                 'actualiza las banderas
@@ -5744,12 +5745,12 @@ End Sub
                     '-
                     For I = 1 To 3
                         j = I - 1
-                        If txt(I) = "" Or IsNull(txt(I)) Then txt(I) = 0
-                        .Fields("FPago" & IIf(I = 1, "", j)) = cmb(4 + I)
+                        If Txt(I) = "" Or IsNull(Txt(I)) Then Txt(I) = 0
+                        .Fields("FPago" & IIf(I = 1, "", j)) = Cmb(4 + I)
                         .Fields("NumDocumentoMovimientoCaja" & IIf(I = 1, "", j)) = _
-                        txt(5 + I)
+                        Txt(5 + I)
                         .Fields("BancoDocumentoMovimientoCaja" & IIf(I = 1, "", j)) _
-                        = cmb(1 + I)
+                        = Cmb(1 + I)
                         If IsDate(MskFecha(I)) Then
                             .Fields("FechaChequeMovimientoCaja" & IIf(I = 1, "", j)) = _
                             MskFecha(I)
@@ -5757,7 +5758,7 @@ End Sub
                             .Fields("FechaChequeMovimientoCaja" & IIf(I = 1, "", j)) = Null
                             MskFecha(I).PromptInclude = False
                         End If
-                       .Fields("MontoCheque" & IIf(I = 1, "", j)) = CCur(txt(I))
+                       .Fields("MontoCheque" & IIf(I = 1, "", j)) = CCur(Txt(I))
                     Next I
                     '
                     Call rtnBitacora("Actualizar Transaccion #" & strRecibo)
@@ -5783,10 +5784,10 @@ End Sub
             '
             Command1(1).Caption = "&Distribuir"
         '   Resume la descripción es un pago de condominio y la longitud es mayor a 70 caracteres
-            If Len(txt(9)) > 70 And Dat(5) = strCodPC Then Call RtnDescripcion
+            If Len(Txt(9)) > 70 And Dat(5) = strCodPC Then Call RtnDescripcion
         '   Si es un egreso de caja el monto lo convierte en negativo e imprime recibo de egreso
-            If cmb(1).ListIndex = 0 Then
-                txt(5) = Format(CCur(txt(5) * -1), "#,##0.00")
+            If Cmb(1).ListIndex = 0 Then
+                Txt(5) = Format(CCur(Txt(5) * -1), "#,##0.00")
                 booEV = False
             End If
         '   -------------------------------------------------------------------------------------
@@ -5797,7 +5798,7 @@ End Sub
             .Fields("IDTaquilla") = IntTaquilla
             .Fields("IdRecibo") = strRecibo
             .Fields("Hora") = Format(Time, "hh:mm ampm")
-            If Not IsNumeric(txt(12)) Then txt(12) = 0
+            If Not IsNumeric(Txt(12)) Then Txt(12) = 0
             .Update
             Call rtnBitacora("Guardar Transaccion Caja " & IntTaquilla & " Op." & .Fields("IDRecibo"))
             FmeCuentas.Enabled = False
@@ -5809,9 +5810,9 @@ End Sub
                 '
                 cnnConexion.Execute "INSERT INTO MovFondo(CodGasto,Fecha,Tipo,Periodo,Concepto" _
                 & ",Debe,Haber) IN '" & StrRutaInmueble & "' VALUES('" & Dat(5) & "',Date(),'" & _
-                IIf(cmb(1) = "EGRESO", "ND", "NC") & "','01/" & Format(Date, "mm/yyyy") & "','" _
-                & txt(9) & "','" & IIf(cmb(1) = "EGRESO", txt(5), 0) & "','" & IIf(cmb(1) = _
-                "EGRESO", 0, txt(5)) & "');"
+                IIf(Cmb(1) = "EGRESO", "ND", "NC") & "','01/" & Format(Date, "mm/yyyy") & "','" _
+                & Txt(9) & "','" & IIf(Cmb(1) = "EGRESO", Txt(5), 0) & "','" & IIf(Cmb(1) = _
+                "EGRESO", 0, Txt(5)) & "');"
                 '
             End If
         '----------------------------------------
@@ -5957,15 +5958,15 @@ End Sub
         '      Actualiza la deuda general del propietario
                 cnnConexion.Execute "UPDATE Propietarios IN '" & StrRutaInmueble & "' SET Deuda" _
                 & "=Deuda - '" & CurFs & "', Recibos = Recibos - " & CurRecibo & ", UltPago = '" _
-                & txt(5) & "', FecUltPag ='" & Date & "', FecReg='" & Date & "', Usuario ='" & _
-                gcUsuario & "', Notas = '" & txt(13) & "' WHERE codigo = '" & Dat(2) & "'"
+                & Txt(5) & "', FecUltPag ='" & Date & "', FecReg='" & Date & "', Usuario ='" & _
+                gcUsuario & "', Notas = '" & Txt(13) & "' WHERE codigo = '" & Dat(2) & "'"
         '       Registra el pago en la tabla convenio (si el propietario tiene uno)
 '                If booCon Then Call Regristra_Pago
                 
             ElseIf Dat(5) = strCodAbonoFut Then 'Es un Abono A Fututo
             
                 strParam = Format(Date + 1, "mm-YY")
-                CurFs = CCur(txt(5))
+                CurFs = CCur(Txt(5))
                 Call RtnAbonoFut(CurFs, strParam)
         '      Actualiza la deuda general del inmueble
                 cnnConexion.Execute "UPDATE Inmueble SET Deuda = Deuda - '" & CurFs _
@@ -5973,15 +5974,15 @@ End Sub
         '      Actualiza la deuda general del propietario
                 cnnConexion.Execute "UPDATE Propietarios IN '" & StrRutaInmueble & "' SET Deuda" _
                 & "= Deuda - '" & CurFs & "', Recibos = Recibos - " & CurRecibo & ", UltPago='" _
-                & txt(5) & "', FecUltPag ='" & Date & "', FecReg='" & Date & "', Usuario ='" & _
-                gcUsuario & "', Notas = '" & txt(13) & "' WHERE codigo = '" & Dat(2) & "'"
+                & Txt(5) & "', FecUltPag ='" & Date & "', FecReg='" & Date & "', Usuario ='" & _
+                gcUsuario & "', Notas = '" & Txt(13) & "' WHERE codigo = '" & Dat(2) & "'"
             
             ElseIf Dat(5) = strCodIV Then   'ingresos varios
                 booIV = True
             '
             ElseIf Dat(5) = strCodCCHeq Then 'Cambio de cheques
                 
-                CurEfectivo = CCur(txt(5)) * -1
+                CurEfectivo = CCur(Txt(5)) * -1
                 strBco = IIf(chkBs.Value = vbChecked, "BsCcheq", "Ccheq")
                 
                 cnnConexion.Execute "INSERT INTO tdfCHEQUES (IDRecibo,IdTaquilla, CodInmueble, " _
@@ -6188,8 +6189,8 @@ rtnReversa:
                 
                 If Dat(0) = "" Or IsNull(Dat(0)) Then
                 
-                        txt(11) = ""
-                        txt(10) = ""
+                        Txt(11) = ""
+                        Txt(10) = ""
                         Dat(1) = ""
                         DatProp = ""
                         Dat(3) = ""
@@ -6334,7 +6335,7 @@ rtnReversa:
     If StrControl = "" Then Exit Sub
     FlexFacturas.Rows = 2
     Call rtnLimpiar_Grid(FlexFacturas)
-    txt(13) = ""
+    Txt(13) = ""
     With ADOcontrol(2).Recordset
         '
             If .EOF And .BOF Then Exit Sub
@@ -6344,8 +6345,8 @@ rtnReversa:
             If .EOF Then
                 MsgBox "No Tengo Registrado ese Propietario " & "'" & StrControl & "'", _
                 vbInformation, App.ProductName
-                txt(10) = "0,00"
-                txt(11) = "0,00"
+                Txt(10) = "0,00"
+                Txt(11) = "0,00"
                 If StrCampo = "Codigo" Then
                     Dat(2).SetFocus
                 Else
@@ -6356,12 +6357,12 @@ rtnReversa:
             StrControl1.Text = .Fields(StrRecord)
             Dat(2) = .Fields("Codigo")
             DatProp = .Fields("Nombre")
-            txt(13) = IIf(IsNull(.Fields("Notas")) Or .Fields("Notas") = "", "", .Fields("Notas"))
-            txt(10) = Format(.Fields("deuda"), "#,##0.00")
+            Txt(13) = IIf(IsNull(.Fields("Notas")) Or .Fields("Notas") = "", "", .Fields("Notas"))
+            Txt(10) = Format(.Fields("deuda"), "#,##0.00")
             LblHono = Format(0, "#,##0.00")
-            txt(11) = txt(10)
+            Txt(11) = Txt(10)
             'numero de recibo ó operación
-            strRecibo = Right(Dat(0), 2) & Dat(2) & Format(Date, "ddmmyy") & Format(txt(0), "00")
+            strRecibo = Right(Dat(0), 2) & Dat(2) & Format(Date, "ddmmyy") & Format(Txt(0), "00")
             If !Convenio Then
                 frmConsultaCon.Show vbModal, FrmAdmin
                 booCon = True
@@ -6394,8 +6395,8 @@ rtnReversa:
     End Sub
     
     Sub RtnVisible(valor As String)
-        lbl(8).Visible = valor
-        txt(12).Visible = valor
+        Lbl(8).Visible = valor
+        Txt(12).Visible = valor
     End Sub
     
     
@@ -6432,9 +6433,9 @@ rtnReversa:
     '
     If Index = 5 Or Index = 12 Then
         '
-        If txt(Index) = "" Then txt(Index) = 0
-        If CLng(txt(Index)) > 0 Then
-            frmResto.curBs = txt(Index)
+        If Txt(Index) = "" Then Txt(Index) = 0
+        If CLng(Txt(Index)) > 0 Then
+            frmResto.curBs = Txt(Index)
             frmResto.Show
         End If
         '
@@ -6445,36 +6446,36 @@ rtnReversa:
     Private Sub txt_GotFocus(Index As Integer)
     
     If Index = 5 Then Command1(1).Enabled = True
-    txt(5).SelStart = 0
-    txt(5).SelLength = 20
+    Txt(5).SelStart = 0
+    Txt(5).SelLength = 20
     
     Select Case Index
     
         Case 1
-            If txt(5) = "" Then cmb(0).SetFocus: Exit Sub
-            txt(12) = IIf(IsNull(txt(12)) Or txt(12) = "", 0, txt(12))
-            txt(Index) = Format(txt(5) - CCur(txt(12)), "#,##0.00")
-            With txt(Index)
+            If Txt(5) = "" Then Cmb(0).SetFocus: Exit Sub
+            Txt(12) = IIf(IsNull(Txt(12)) Or Txt(12) = "", 0, Txt(12))
+            Txt(Index) = Format(Txt(5) - CCur(Txt(12)), "#,##0.00")
+            With Txt(Index)
                 .SelStart = 0
                 .SelLength = Len(.Text)
             End With
             
         Case 2
         
-            If (txt(1)) = "" Then cmb(0).SetFocus: Exit Sub
-            txt(12) = IIf(IsNull(txt(12)) Or txt(12) = "", 0, txt(12))
-            txt(Index) = Format(CCur(txt(5)) - CCur(txt(1)) - CCur(txt(12)), "#,##0.00")
-            With txt(Index)
+            If (Txt(1)) = "" Then Cmb(0).SetFocus: Exit Sub
+            Txt(12) = IIf(IsNull(Txt(12)) Or Txt(12) = "", 0, Txt(12))
+            Txt(Index) = Format(CCur(Txt(5)) - CCur(Txt(1)) - CCur(Txt(12)), "#,##0.00")
+            With Txt(Index)
                 .SelStart = 0
                 .SelLength = Len(.Text)
             End With
             
         Case 3
         
-            If txt(1) = "" Or (txt(2)) = "" Then cmb(0).SetFocus: Exit Sub
-            txt(12) = IIf(IsNull(txt(12)) Or txt(12) = "", 0, txt(12))
-            txt(Index) = Format(CCur(txt(5)) - CCur(txt(1)) - CCur(txt(2)) - CCur(txt(12)), "#,##0.00")
-            With txt(Index)
+            If Txt(1) = "" Or (Txt(2)) = "" Then Cmb(0).SetFocus: Exit Sub
+            Txt(12) = IIf(IsNull(Txt(12)) Or Txt(12) = "", 0, Txt(12))
+            Txt(Index) = Format(CCur(Txt(5)) - CCur(Txt(1)) - CCur(Txt(2)) - CCur(Txt(12)), "#,##0.00")
+            With Txt(Index)
                 .SelStart = 0
                 .SelLength = Len(.Text)
             End With
@@ -6511,7 +6512,7 @@ rtnReversa:
     '
             Case 6, 7, 8
     '       --------------
-                If txt(Index) = "" Then cmb(Index - 1).SetFocus
+                If Txt(Index) = "" Then Cmb(Index - 1).SetFocus
     '
         End Select
     '
@@ -6524,52 +6525,52 @@ rtnReversa:
         Case 1, 2, 3    'CUADRO DE TEXTO MONTO DE CHEQUES
     '   -----------------
             Dim Resp As Boolean
-            If txt(Index) <> "" Then
+            If Txt(Index) <> "" Then
                 Resp = FtnValidaCheque(Index)
                 If Resp = True Then Exit Sub
             End If
             
     '
             For I = 1 To 3  'SUMA EL CONTENIDO DE LOS TRES EN LA VARIABLE SUMA
-                txt(I) = IIf(txt(I) = "", 0, txt(I))
-                suma = suma + CCur(txt(I))
-                txt(I) = Format(CCur(txt(I)), "#,##0.00")
+                Txt(I) = IIf(Txt(I) = "", 0, Txt(I))
+                suma = suma + CCur(Txt(I))
+                Txt(I) = Format(CCur(Txt(I)), "#,##0.00")
             Next
             '
-            suma = suma + CCur(txt(12))
+            suma = suma + CCur(Txt(12))
             'SI EL CAMPO MONTO ESTA VACIO SE LLENA CON LA VARIABLE SUMA
-            If txt(5) = "" Then txt(5) = Format(CCur(suma), "#,##0.00")
+            If Txt(5) = "" Then Txt(5) = Format(CCur(suma), "#,##0.00")
             'SI LA VARIABLE SUMA ES MAYOR QUE EL MONTO A CANCELAR
-            If CCur(suma) > txt(5) Then  'SE ENVIA UN MENSAJE DE PANTALLA AL USUARIO, SE SALE
+            If CCur(suma) > Txt(5) Then  'SE ENVIA UN MENSAJE DE PANTALLA AL USUARIO, SE SALE
                 MsgBox "Monto del Cheque mayor a Total a Pagar", vbExclamation, App.ProductName
-                txt(Index).SelStart = 0
-                txt(Index).SelLength = Len(txt(Index))
+                Txt(Index).SelStart = 0
+                Txt(Index).SelLength = Len(Txt(Index))
                 Exit Sub
             End If
             ' CUANDO LA SUMA DE LOS CHEQUES COMPLETE EN TOTAL DEL
-            If CCur(suma) = txt(5) Then 'MONTO A CANCELAR PASA EL FOCO A COD.CTA.INGRESO/EGRESO
+            If CCur(suma) = Txt(5) Then 'MONTO A CANCELAR PASA EL FOCO A COD.CTA.INGRESO/EGRESO
                 Dat(5).Enabled = True: Dat(6).Enabled = True: Dat(5).SetFocus
             Else
                 '
                 If Index = 3 Then     'SI ESTA EN EL MONTO(3) PASA EL FOCO COD.CTA.INGRESO/EGRESO
                     Dat(5).Enabled = True: Dat(6).Enabled = True: Dat(5).SetFocus
                 Else
-                cmb(Index + 5).Enabled = True
-                cmb(Index + 5).SetFocus     'SI NUNGUNA DE LAS ANTERIORES PASA EL FOCO A LA
+                Cmb(Index + 5).Enabled = True
+                Cmb(Index + 5).SetFocus     'SI NUNGUNA DE LAS ANTERIORES PASA EL FOCO A LA
                     '
-                    Select Case cmb(0).Text 'SIGUIENTE LINEA
+                    Select Case Cmb(0).Text 'SIGUIENTE LINEA
                         '
                         Case "CHEQUE", "AMBOS"  'SI FORMA DE PAGO CHEQUE O AMBOS SELECCIONA CHEQUE
-                            cmb(Index + 5).ListIndex = 0
+                            Cmb(Index + 5).ListIndex = 0
                         '
                         Case "DEPOSITO" 'SI FORMA DE PAGO DEPOSITO SELECCIONA DEPOSITO
-                            cmb(Index + 5).ListIndex = 1: txt(Index + 6).SetFocus
+                            Cmb(Index + 5).ListIndex = 1: Txt(Index + 6).SetFocus
                         '
                         Case "TJTA.CREDITO" 'SI FORMA DE PAGO T.CREDITO SELECCIONA T.CREDITO
-                            cmb(Index + 5).ListIndex = 2:: txt(Index + 6).SetFocus
+                            Cmb(Index + 5).ListIndex = 2:: Txt(Index + 6).SetFocus
                         '
                         Case "TJTA.DEBITO"  'SI FORMA DE PAGO T.DEBITO SELECCIONA T.DEBITO
-                            cmb(Index + 5).ListIndex = 3:: txt(Index + 6).SetFocus
+                            Cmb(Index + 5).ListIndex = 3:: Txt(Index + 6).SetFocus
                     End Select
                     '
                 End If
@@ -6579,20 +6580,20 @@ rtnReversa:
         Case 5      'Monto a cancelar
         '---------------------------------
             If Dat(0) = sysCodInm Or FlexFacturas = "" Then
-                cmb(0).Enabled = True: cmb(0).SetFocus
+                Cmb(0).Enabled = True: Cmb(0).SetFocus
             Else
                 Command1(1).SetFocus
             End If
-            txt(5) = Format(txt(5), "#,##0.00")
+            Txt(5) = Format(Txt(5), "#,##0.00")
             
         Case 12     'Bs. en efectivo
         '-------------------------------
-            txt(Index) = Format(txt(Index), "#,##0.00")
-            cmb(5).ListIndex = 0: cmb(5).SetFocus
+            Txt(Index) = Format(Txt(Index), "#,##0.00")
+            Cmb(5).ListIndex = 0: Cmb(5).SetFocus
          '
     End Select
     '
-    If Index > 5 And Index < 9 Then cmb(Index - 4).Enabled = True: cmb(Index - 4).SetFocus
+    If Index > 5 And Index < 9 Then Cmb(Index - 4).Enabled = True: Cmb(Index - 4).SetFocus
     '
     End If
     '
@@ -6610,7 +6611,7 @@ rtnReversa:
         MntCalendar.Value = Date
         MntCalendar.Tag = 1
     Else
-        txt(Indice).SetFocus
+        Txt(Indice).SetFocus
         MntCalendar.Tag = 0
         'Exit Sub
     End If
@@ -6640,9 +6641,9 @@ rtnReversa:
         MsgBox "No Tengo Registrado ese propietario '" & StrParametro & "'", vbInformation, _
         App.ProductName: Exit Sub
         DatProp = !Nombre:   'Dat(2) = !Codigo
-        txt(13) = IIf(IsNull(!Notas), "", !Notas)
-        txt(10) = IIf(IsNull(!Deuda), 0, Format(!Deuda, "#,##0.00"))
-        txt(11) = "0,00"
+        Txt(13) = IIf(IsNull(!Notas), "", !Notas)
+        Txt(10) = IIf(IsNull(!Deuda), 0, Format(!Deuda, "#,##0.00"))
+        Txt(11) = "0,00"
     End With
     'Destruye el Recorset y la conexion al inmueble del propietario
     objRst.Close: Set objRst = Nothing: cnnPropietario.Close: Set cnnPropietario = Nothing
@@ -6723,7 +6724,7 @@ rtnReversa:
     '
             End With
             .Recordset.Close    'cierra el objeto ADODB.Recordset y la conexion
-            Frame3(3).Visible = True
+            frame3(3).Visible = True
     '
             'N3
             With AdoDeducciones
@@ -6812,7 +6813,7 @@ rtnReversa:
 
     Sub RtnBuscaInmueble(Qdf$, DC As DataCombo)
     '
-    txt(13) = ""
+    Txt(13) = ""
     Call BuscaInmueble(Qdf, DC)
     Set objRst = ObjCmd.Execute
     Call rtnLimpiar_Grid(FlexFacturas)
@@ -6828,7 +6829,7 @@ rtnReversa:
         Dat(1) = .Fields("Nombre")
         Dat(3) = .Fields("Caja")
         Dat(4) = .Fields("DescripCaja")
-        lbl(20) = IIf(IsNull(.Fields("Notas")) Or .Fields("notas") = "", "", .Fields("Notas"))
+        Lbl(20) = IIf(IsNull(.Fields("Notas")) Or .Fields("notas") = "", "", .Fields("Notas"))
         StrRutaInmueble = gcPath & .Fields("Ubica") & "inm.mdb"
         strCodIV = .Fields("CodIngresosVarios")
         strCodHA = .Fields("CodHA")
@@ -6874,7 +6875,7 @@ rtnReversa:
 '
 '    Else
         
-        txt(0) = Format(objRst.Fields(0) + 1, "00")
+        Txt(0) = Format(objRst.Fields(0) + 1, "00")
     
 '    End If
     '
@@ -6922,18 +6923,18 @@ If Dat(2) = "U" & Dat(0) And Dat(5) = strCodAbonoFut Then
     vbExclamation, App.ProductName)
 End If
 '
-If txt(9) = "" Then         'Valida la descripción de la operación
+If Txt(9) = "" Then         'Valida la descripción de la operación
     ftnValidar = MsgBox("Falta la Descripción de la operación..", vbExclamation, Titulo)
-    txt(9).SetFocus
+    Txt(9).SetFocus
     Exit Function
 End If
 '
 For I = 0 To 1  'VERIFICA FORMA DE PAGO / TIPO DE MOVIMIENTO
 
-    If cmb(I) = "" Then
+    If Cmb(I) = "" Then
 '
-        ftnValidar = MsgBox("Falta '" & cmb(I).ToolTipText & "'", vbExclamation, Titulo)
-        cmb(I).SetFocus
+        ftnValidar = MsgBox("Falta '" & Cmb(I).ToolTipText & "'", vbExclamation, Titulo)
+        Cmb(I).SetFocus
         Exit Function
 '
     End If
@@ -6941,36 +6942,36 @@ For I = 0 To 1  'VERIFICA FORMA DE PAGO / TIPO DE MOVIMIENTO
 Next
 '
 'DE ACUERDO A LA FORMA DE PAGO VERIFICA EL DETALLE DEL MISMO
-Select Case cmb(0).ListIndex
+Select Case Cmb(0).ListIndex
 '
     Case 0  'EN CASO DE 'AMBOS'
 '               -----------------------------
 
-        If txt(12) = "" Then
-            ftnValidar = MsgBox("Falta '" & txt(12).ToolTipText & "'", vbExclamation, Titulo)
+        If Txt(12) = "" Then
+            ftnValidar = MsgBox("Falta '" & Txt(12).ToolTipText & "'", vbExclamation, Titulo)
             Exit Function
         End If
 '
     Case 3  'EFECTIVO
 '   -----------------------
-        If txt(5) < 0 Or txt(5) = "" Then
+        If Txt(5) < 0 Or Txt(5) = "" Then
             ftnValidar = MsgBox("Error en el Monto a Cancelar", vbCritical, Titulo)
             Exit Function
         End If
     Case 1, 2, 4, 5  'CASO 'CHEQUE','DEPOSITO' O 'TARJETAS'
 '   -----------------------------------------------------------------------------
         For I = 1 To 3
-            If IsNull(txt(I)) Then txt(I) = "0,00"
-            If txt(I) = "" Then txt(I) = "0,00"
+            If IsNull(Txt(I)) Then Txt(I) = "0,00"
+            If Txt(I) = "" Then Txt(I) = "0,00"
         Next
-        CurCheques = CCur(txt(1) + CCur(txt(2)) + CCur(txt(3)))
+        CurCheques = CCur(Txt(1) + CCur(Txt(2)) + CCur(Txt(3)))
          For I = 5 To 7
-            If (cmb(I) = "DEPOSITO" Or cmb(I) = "TRANSFERENCIA") And cmb(I).Tag = "" Then
+            If (Cmb(I) = "DEPOSITO" Or Cmb(I) = "TRANSFERENCIA") And Cmb(I).Tag = "" Then
                 ftnValidar = MsgBox("No selecciono ninguna de las cuentas del condominio...", _
                 vbInformation, Titulo)
                 Exit Function
             End If
-            If cmb(I) <> "DEPOSITO" And cmb(I) <> "TRANSFERENCIA" Then cmb(I).Tag = ""
+            If Cmb(I) <> "DEPOSITO" And Cmb(I) <> "TRANSFERENCIA" Then Cmb(I).Tag = ""
          Next I
 End Select
 '
@@ -7007,17 +7008,17 @@ If Dat(5) = strCodPC Or Dat(5) = strCodAbonoCta Then
             End If
             Total = Total - CCur(Label16(17)) + curHono + IntMonto
                 
-            If Total <> CCur(txt(5)) Then  'SI CAMPO MONTO DIFERENTE A:
+            If Total <> CCur(Txt(5)) Then  'SI CAMPO MONTO DIFERENTE A:
                                            'FACTURAS MARCADAS - HON.ABOG. - DEDUCCIONES
                 ftnValidar = MsgBox("Ha Transgredido Niveles de Seguridad," & Chr(13) & "Monto " _
                 & "Marcado para Cancelar: " & Format(Total, "#,##0.00") & Chr(13) & "Monto Regi" _
-                & "strado a Cancelar: " & Format(txt(5), "#,##0.00"), vbExclamation, Titulo)
+                & "strado a Cancelar: " & Format(Txt(5), "#,##0.00"), vbExclamation, Titulo)
                 Exit Function
                     
             End If
-            If Total <> CurCheques And cmb(0).ListIndex <> 0 And cmb(0).ListIndex <> 3 Then
+            If Total <> CurCheques And Cmb(0).ListIndex <> 0 And Cmb(0).ListIndex <> 3 Then
                 ftnValidar = MsgBox("Total Detalle del Pago discrepa del " & vbCr & "Total a Ca" _
-                & "ncelar, Revise Monto del " & vbCr & "o los " & cmb(0).Text & "S.....", _
+                & "ncelar, Revise Monto del " & vbCr & "o los " & Cmb(0).Text & "S.....", _
                 vbExclamation, Titulo)
                 Exit Function
             End If
@@ -7053,7 +7054,7 @@ X = 1
 End With
 X = X - 1
 Z = 1
-txt(9) = ""
+Txt(9) = ""
 
 Do While X >= Z
     strDesde = Left(vecFECHA(Z), 2)
@@ -7066,16 +7067,16 @@ Do While X >= Z
     End If
 
 If strHasta = "" Then
-    If txt(9) = "" Then
-        txt(9) = vecFECHA(Z)
+    If Txt(9) = "" Then
+        Txt(9) = vecFECHA(Z)
     Else
-        txt(9) = txt(9) + " / " + vecFECHA(Z)
+        Txt(9) = Txt(9) + " / " + vecFECHA(Z)
     End If
 Else
-    If txt(9) = "" Then
-        txt(9) = strDesde + " A " + vecFECHA(Z)
+    If Txt(9) = "" Then
+        Txt(9) = strDesde + " A " + vecFECHA(Z)
     Else
-        txt(9) = txt(9) + " / " + strDesde + " A " + vecFECHA(Z)
+        Txt(9) = Txt(9) + " / " + strDesde + " A " + vecFECHA(Z)
     End If
 End If
 Z = Z + 1
@@ -7094,11 +7095,11 @@ End Sub
     '
     Command3(5).Enabled = False
     Dat(A) = Dat(B).BoundText
-    Frame3(7).Caption = "Detalle de Deposito"
+    frame3(7).Caption = "Detalle de Deposito"
     Label16(30) = "0,00"
     Label16(31) = "0,00"
     Label16(30).Tag = ""
-    txt(4) = ""
+    Txt(4) = ""
     '
     'label(33) bs viejos
     
@@ -7133,9 +7134,9 @@ End Sub
         Next
         If UCase(RstCuentas.Fields("NombreBanco")) Like "*PROVINCIAL*" Then
             Randomize
-            txt(4) = Int((999999 - 1 + 1) * Rnd + 1)
+            Txt(4) = Int((999999 - 1 + 1) * Rnd + 1)
         End If
-        txt(4).SetFocus
+        Txt(4).SetFocus
         '
     End If
     '
@@ -7228,14 +7229,14 @@ End Sub
     Set ObjCheques = New ADODB.Recordset
     '-------------------------------------------------------------------------------------------------
     'Valida los campos requeridos por el registro {FPago + Ndoc + Banco + FechaDoc + Monto }
-    If txt(Indice) > 0 Then  'Si la cantidad es superior a cero
+    If Txt(Indice) > 0 Then  'Si la cantidad es superior a cero
     '
-            If cmb(Indice + 4) = "" Then cmb(Indice + 4).SetFocus: FtnValidaCheque = _
-                MsgBox("Falta '" & cmb(Indice).ToolTipText & "'")
-            If txt(Indice + 5) = "" Then txt(Indice + 5).SetFocus: FtnValidaCheque = _
-                MsgBox("Falta '" & txt(Indice + 5).ToolTipText & "'")
-            If cmb(Indice + 1) = "" Then cmb(Indice + 1).SetFocus: FtnValidaCheque = _
-                MsgBox("Falta '" & cmb(Indice + 1).ToolTipText & "'")
+            If Cmb(Indice + 4) = "" Then Cmb(Indice + 4).SetFocus: FtnValidaCheque = _
+                MsgBox("Falta '" & Cmb(Indice).ToolTipText & "'")
+            If Txt(Indice + 5) = "" Then Txt(Indice + 5).SetFocus: FtnValidaCheque = _
+                MsgBox("Falta '" & Txt(Indice + 5).ToolTipText & "'")
+            If Cmb(Indice + 1) = "" Then Cmb(Indice + 1).SetFocus: FtnValidaCheque = _
+                MsgBox("Falta '" & Cmb(Indice + 1).ToolTipText & "'")
             If MskFecha(Indice) = "" Then MskFecha(Indice).SetFocus: FtnValidaCheque = _
                 MsgBox("Falta '" & MskFecha(Indice).ToolTipText & "'")
             If FtnValidaCheque = True Then Exit Function
@@ -7243,8 +7244,8 @@ End Sub
     End If
     '
     '--------------------------------------------------Selecciona alguna coincidencia-----------------
-    ObjCheques.Open "SELECT * FROM tdfCheques WHERE Ndoc ='" & txt(Indice + 5) & "' AND BANCO ='" _
-    & "" & cmb(Indice + 1) & "' AND FPago='" & cmb(Indice + 4) & "'", cnnConexion, adOpenKeyset, _
+    ObjCheques.Open "SELECT * FROM tdfCheques WHERE Ndoc ='" & Txt(Indice + 5) & "' AND BANCO ='" _
+    & "" & Cmb(Indice + 1) & "' AND FPago='" & Cmb(Indice + 4) & "'", cnnConexion, adOpenKeyset, _
     adLockOptimistic
     '-------------------------------------------------------------------------------------------------
     With ObjCheques
@@ -7286,30 +7287,30 @@ End Sub
         .CellPictureAlignment = flexAlignRightTop
         Set .CellPicture = ImgAceptar(0).Picture    'Marca la factura
     '           ----------------------------------------------------------------------------------
-        If txt(5) = "" Then txt(5) = 0
+        If Txt(5) = "" Then Txt(5) = 0
         If booEvento = True Then    'La llamada la hace el evento click
-            txt(10) = Format(CCur(txt(10) - .TextMatrix(.Row, 4)), "#,##0.00")
-            txt(5) = Format(CCur(txt(5)) + CCur(.TextMatrix(.Row, 4)), "##,##0.00")
+            Txt(10) = Format(CCur(Txt(10) - .TextMatrix(.Row, 4)), "#,##0.00")
+            Txt(5) = Format(CCur(Txt(5)) + CCur(.TextMatrix(.Row, 4)), "##,##0.00")
             .TextMatrix(.Row, 3) = Format(CCur(.TextMatrix(.Row, 4)) + _
                 CCur(.TextMatrix(.Row, 3)), "#,##0.00")
     '
         Else    'La llamada la hace el evento KeyPress
     '
-            txt(10) = Format(CCur(txt(10) - .TextMatrix(.RowSel, 3)), "#,##0.00")
-            txt(5) = Format(CCur(txt(5)) + .TextMatrix(.RowSel, 3), "##,##0.00")
+            Txt(10) = Format(CCur(Txt(10) - .TextMatrix(.RowSel, 3)), "#,##0.00")
+            Txt(5) = Format(CCur(Txt(5)) + .TextMatrix(.RowSel, 3), "##,##0.00")
             vecFPS(.RowSel, 1) = 0
     '
         End If
         .TextMatrix(.Row, 4) = Format(CCur(.TextMatrix(.Row, 2) - _
                 .TextMatrix(.RowSel, 3)), "#,##0.00")
         .TextMatrix(.Row, 6) = "SI"
-        txt(11) = Format(CCur(txt(10) + CCur(LblHono)), "#,##0.00")
-        txt(9) = IIf(Trim(txt(9)) = "", "", txt(9) + " / ") + _
+        Txt(11) = Format(CCur(Txt(10) + CCur(LblHono)), "#,##0.00")
+        Txt(9) = IIf(Trim(Txt(9)) = "", "", Txt(9) + " / ") + _
             IIf(.TextMatrix(.Row, 0) Like "CH*", .TextMatrix(.Row, 0), _
             IIf(.TextMatrix(.Row, 4) = 0, .TextMatrix(.Row, 1), "Abono a Cta. " & .TextMatrix(.Row, 1)))
     '           ----------------------------------------------------------------------------------
     End With
-    If cmb(0).Enabled Then cmb(0).SetFocus
+    If Cmb(0).Enabled Then Cmb(0).SetFocus
     '
     End Sub
 
@@ -7322,9 +7323,9 @@ End Sub
     For I = 0 To 2: Dat(I).Locked = blnSINO
     Next
     DatProp.Locked = blnSINO
-    txt(5).Locked = blnSINO
+    Txt(5).Locked = blnSINO
     For I = 1 To 3
-        txt(I).Locked = blnSINO
+        Txt(I).Locked = blnSINO
     Next
     '
     End Sub
@@ -7388,8 +7389,8 @@ End Sub
 
     Private Sub Forma_Pago()
     '
-    Call mostrar_area(cmb(0).ListIndex)
-    Select Case cmb(0).ListIndex
+    Call mostrar_area(Cmb(0).ListIndex)
+    Select Case Cmb(0).ListIndex
         '
         Case 3  'Efectivo
             Call RtnVisible("False")
@@ -7398,37 +7399,37 @@ End Sub
             Dat(5).SetFocus
             '
             For I = 1 To 3
-                cmb(I + 4) = ""
-                txt(I + 5) = ""
-                cmb(I + 1) = ""
-                txt(I) = ""
+                Cmb(I + 4) = ""
+                Txt(I + 5) = ""
+                Cmb(I + 1) = ""
+                Txt(I) = ""
             Next I
             '
         Case 1  'cheque
             Call RtnVisible("False")
-            cmb(5).ListIndex = 0
-            txt(6).SetFocus
+            Cmb(5).ListIndex = 0
+            Txt(6).SetFocus
         
         Case 2  'Deposito
             Call RtnVisible("False")
-            cmb(5).ListIndex = 1
-            txt(6).SetFocus
+            Cmb(5).ListIndex = 1
+            Txt(6).SetFocus
             Cmb_LostFocus (5)
         
         Case 0  'ambos
             Call RtnVisible("True")
-            txt(12).SetFocus
+            Txt(12).SetFocus
             
         Case 4  'Tarjeta de Crédito
             Call RtnVisible("False")
-            cmb(5).ListIndex = 2
-            txt(6).SetFocus
+            Cmb(5).ListIndex = 2
+            Txt(6).SetFocus
             Cmb_LostFocus (5)
             
         Case 5  'Tarjeta de Débito
             Call RtnVisible("False")
-            cmb(5).ListIndex = 3
-            txt(6).SetFocus
+            Cmb(5).ListIndex = 3
+            Txt(6).SetFocus
             
     End Select
     
@@ -7500,7 +7501,7 @@ End Sub
             '
             Input #numFichero, Recibo, Pago
             
-            If chk.Value = vbUnchecked Then 'imprime el recibo
+            If CHK.Value = vbUnchecked Then 'imprime el recibo
                Carpeta = "\" & Dat(0) & "\"
                CodInm = Dat(0)
                NomInm = Dat(1)
@@ -7532,11 +7533,11 @@ End Sub
     'Variables locales
     Dim CurEfectivo@, Ind%, strBco As String
     
-    Select Case cmb(0).Text
+    Select Case Cmb(0).Text
     '
         Case Is = "EFECTIVO" 'El pago es efectivo
     '   -----------------------------------------------------------------------------
-            CurEfectivo = CCur(txt(5))
+            CurEfectivo = CCur(Txt(5))
             strBco = IIf(chkBs.Value = vbChecked, "Bs", "s/n")
             
             cnnConexion.Execute "INSERT INTO tdfCHEQUES (IDRecibo,IdTaquilla," & _
@@ -7550,9 +7551,9 @@ End Sub
         Case Is <> "EFECTIVO"
     '   -----------------------------------------------------------------------------
         '
-            If cmb(0) = "AMBOS" Then
+            If Cmb(0) = "AMBOS" Then
                 
-                CurEfectivo = IIf(cmb(1).Text = "INGRESO", CCur(txt(12)), CCur(txt(12) * -1))
+                CurEfectivo = IIf(Cmb(1).Text = "INGRESO", CCur(Txt(12)), CCur(Txt(12) * -1))
                 strBco = IIf(chkBs.Value = vbChecked, "Bs", "s/n")
                 
                 cnnConexion.Execute "INSERT INTO tdfCHEQUES (IDRecibo,IdTaquilla,CodInmueble, F" _
@@ -7564,10 +7565,10 @@ End Sub
             End If
             '
             For Ind = 1 To 3
-                If txt(Ind) > 0 Then
-                    FormaPago_Add IntTaquilla, cmb(4 + Ind), txt(5 + Ind), cmb(1 + Ind), _
-                    MskFecha(Ind), txt(Ind), strRecibo, Dat(0), _
-                    IIf(cmb(4 + Ind).Text = "CHEQUE", "", cmb(4 + Ind).Tag)
+                If Txt(Ind) > 0 Then
+                    FormaPago_Add IntTaquilla, Cmb(4 + Ind), Txt(5 + Ind), Cmb(1 + Ind), _
+                    MskFecha(Ind), Txt(Ind), strRecibo, Dat(0), _
+                    IIf(Cmb(4 + Ind).Text = "CHEQUE", "", Cmb(4 + Ind).Tag)
 '                    Call rtnBitacora(cmb(4 + Ind) & " " & txt(5 + Ind) & " " & cmb(1 + Ind) & _
 '                    " " & MskFecha(Ind) & " " & IDMoneda & "...." & txt(Ind))
                 End If
@@ -7587,7 +7588,7 @@ End Sub
     '
     On Error Resume Next
     Dim strSQL$, strFact$
-    Dim dateV As Date, N As Long
+    Dim dateV As Date, n As Long
     '
     If curPagoHono > 0 Then 'si realmente se cobran honorarios
     '
@@ -7601,9 +7602,9 @@ End Sub
         & "INM.:" & Dat(0) & " APTO.:" & Dat(2) & " Caja del " & Date & "','" & curPagoHono _
         & "',0,'" & curPagoHono & "',Date(),Date(),'" & dateV & "','" & Dat(0) & "','BS','P" _
         & "ENDIENTE','" & gcUsuario & "',Date())"
-        cnnConexion.Execute strSQL, N
+        cnnConexion.Execute strSQL, n
         '
-        Call rtnBitacora("Agregado [" & N & "] Cpp Hono. Abg. " & Dat(0) & "/" & Dat(2) & "/" & _
+        Call rtnBitacora("Agregado [" & n & "] Cpp Hono. Abg. " & Dat(0) & "/" & Dat(2) & "/" & _
         strN)
         '
     End If

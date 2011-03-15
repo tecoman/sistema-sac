@@ -85,11 +85,11 @@ Attribute VB_Name = "ModGeneral"
     Type rSSO
         CodInm As String * 6
         Nfact As String * 8
-        monto As String * 11
+        Monto As String * 11
     End Type
     Type Detalle_Cheque
         ID As String * 6
-        monto As String * 11
+        Monto As String * 11
         Clave As String * 30
     End Type
     Public Enum crSalida
@@ -195,22 +195,22 @@ Gestion_Error:
     '
             Case 5, 10 'AGREGAR/ELIMINAR REGISTRO
     '       -------------------------------------------------------
-                For i = 1 To 12
-                    If i = 6 Or i = 8 Then
-                        .Buttons(i).Enabled = True
+                For I = 1 To 12
+                    If I = 6 Or I = 8 Then
+                        .Buttons(I).Enabled = True
                     Else
-                        .Buttons(i).Enabled = False
+                        .Buttons(I).Enabled = False
                     End If
                 Next
                 If IntButton = 5 Then .Buttons(12).Enabled = False
     '
             Case 6, 8, 9 'GUARDAR/CANCELAR/ELIMINAR REGISTRO
     '       -------------------------------------------------------
-                For i = 1 To 12
-                    If i = 6 Or i = 8 Then
-                        .Buttons(i).Enabled = False
+                For I = 1 To 12
+                    If I = 6 Or I = 8 Then
+                        .Buttons(I).Enabled = False
                     Else
-                        .Buttons(i).Enabled = True
+                        .Buttons(I).Enabled = True
                     End If
                 Next
     '
@@ -218,8 +218,8 @@ Gestion_Error:
         'efectua una verificación de registros en el ADODB.Recordset
         'para activar los botones de la barra herramienta
         If Rstsr Then
-            For i = 1 To 4: .Buttons(i).Enabled = False
-            Next i
+            For I = 1 To 4: .Buttons(I).Enabled = False
+            Next I
         End If
     '
     End With
@@ -233,7 +233,7 @@ Dim objRst As ADODB.Recordset   'Información Movimiento de Caja
 Dim StrApto$, strCarpeta$, StrInmueble$ 'vairables cadena
 Dim VecInforma(0 To 1)  As Currency     'Contine inf. total Bs, N° Recibos
 Dim rstPago As ADODB.Recordset      '
-Dim Reg As Long, N As Long                                '
+Dim Reg As Long, n As Long                                '
 '--------------------------------------------------------
 Set objRst = New ADODB.Recordset       'Crea una instancia del ADODB.Recordset
 '
@@ -292,33 +292,33 @@ With objRst
     
     If .Fields("FormaPagoMovimientoCaja") = "EFECTIVO" Then
     
-        cnnConexion.Execute "DELETE * FROM tdfCheques WHERE IdRecibo='" & strID & "'", N
-        If N > 0 Then Call rtnBitacora("Pago en efectivo...Eliminado")
+        cnnConexion.Execute "DELETE * FROM tdfCheques WHERE IdRecibo='" & strID & "'", n
+        If n > 0 Then Call rtnBitacora("Pago en efectivo...Eliminado")
         
     Else
 '
         'cnnConexion.Execute "DELETE * FROM tdfCheques WHERE IdRecibo='" & strID & "'"
-        For i = 18 To 20    'elimina c/documento relacionado con el pago
-            If .Fields(i) <> "" Then
-                rstPago.Open "SELECT * FROM TDFCheques WHERE Ndoc='" & .Fields(i) & "' AND Banc" _
-                & "o='" & .Fields(3 + i) & "' AND FechaDoc=#" & Format(.Fields(6 + i), "mm/dd/yy") _
+        For I = 18 To 20    'elimina c/documento relacionado con el pago
+            If .Fields(I) <> "" Then
+                rstPago.Open "SELECT * FROM TDFCheques WHERE Ndoc='" & .Fields(I) & "' AND Banc" _
+                & "o='" & .Fields(3 + I) & "' AND FechaDoc=#" & Format(.Fields(6 + I), "mm/dd/yy") _
                 & "#;", cnnConexion, adOpenKeyset, adLockOptimistic
                 If Not rstPago.EOF And Not rstPago.BOF Then
-                    If rstPago!monto = .Fields(i + 10) Then
-                        cnnConexion.Execute "DELETE * FROM tdfCheques WHERE Ndoc='" & .Fields(i) & "'", N
-                        If N > 0 Then Call rtnBitacora(rstPago!FPago & " " & .Fields(i) & " Eliminado..")
+                    If rstPago!Monto = .Fields(I + 10) Then
+                        cnnConexion.Execute "DELETE * FROM tdfCheques WHERE Ndoc='" & .Fields(I) & "'", n
+                        If n > 0 Then Call rtnBitacora(rstPago!FPago & " " & .Fields(I) & " Eliminado..")
                     Else
-                        cnnConexion.Execute "UPDATE TdfCheques SET Monto = Monto - '" & CCur(.Fields(i + 10)) _
-                            & "' WHERE Ndoc='" & .Fields(i) & "' AND Banco='" & .Fields(3 + i) & "' AND FechaDoc=#" & Format(.Fields(6 + i), "mm/dd/yy") & "#", N
-                        If N > 0 Then Call rtnBitacora(N & " " & rstPago!FPago & " " & .Fields(i) & " Actualizado..")
+                        cnnConexion.Execute "UPDATE TdfCheques SET Monto = Monto - '" & CCur(.Fields(I + 10)) _
+                            & "' WHERE Ndoc='" & .Fields(I) & "' AND Banco='" & .Fields(3 + I) & "' AND FechaDoc=#" & Format(.Fields(6 + I), "mm/dd/yy") & "#", n
+                        If n > 0 Then Call rtnBitacora(n & " " & rstPago!FPago & " " & .Fields(I) & " Actualizado..")
                     End If
                 End If
                 rstPago.Close
             End If
         Next
         Set rstPago = Nothing
-        cnnConexion.Execute "DELETE * FROM tdfCheques WHERE IdRecibo='" & strID & "' AND FPago='EFECTIVO'", N
-        If N > 0 Then Call rtnBitacora(N & " Eliminado pago en efectivo")
+        cnnConexion.Execute "DELETE * FROM tdfCheques WHERE IdRecibo='" & strID & "' AND FPago='EFECTIVO'", n
+        If n > 0 Then Call rtnBitacora(n & " Eliminado pago en efectivo")
         '
     End If
 '   ----------------------------------------------------------------------------------------------
@@ -474,7 +474,7 @@ End Sub
     With FrmUtility
         CenterForm FrmUtility
         .Show vbModeless, FrmAdmin
-        For i = 0 To 2: .Label1(i).Visible = lbl_Visible
+        For I = 0 To 2: .Label1(I).Visible = lbl_Visible
         Next
         .Label1(0) = strMsg
         .Caption = strTitulo
@@ -525,7 +525,7 @@ End Sub
         .Cols = C
     '
     End With
-    i = 1
+    I = 1
     '
     curDeuda = 0
     
@@ -538,25 +538,25 @@ End Sub
         With grid
     '
             .Col = 1
-            .Row = i
+            .Row = I
             .CellAlignment = flexAlignCenterCenter
-            .TextMatrix(i, 0) = IIf(IsNull(Rfacturas("fact")), "", Rfacturas("fact"))
-            .TextMatrix(i, 1) = IIf(IsNull(Rfacturas("PERIODO")), "", _
+            .TextMatrix(I, 0) = IIf(IsNull(Rfacturas("fact")), "", Rfacturas("fact"))
+            .TextMatrix(I, 1) = IIf(IsNull(Rfacturas("PERIODO")), "", _
             Format(Rfacturas("PERIODO"), "MM-YY"))
-            .TextMatrix(i, 2) = Format(cFactura, "##,##0.00")
-            .TextMatrix(i, 3) = Format(cAbono, "##,##0.00")
-            .TextMatrix(i, 4) = Format(cSaldo, "##,##0.00")
+            .TextMatrix(I, 2) = Format(cFactura, "##,##0.00")
+            .TextMatrix(I, 3) = Format(cAbono, "##,##0.00")
+            .TextMatrix(I, 4) = Format(cSaldo, "##,##0.00")
             curDeuda = curDeuda + cSaldo
     '
-            If i = 1 Then
-                .TextMatrix(i, 5) = .TextMatrix(i, 4)
+            If I = 1 Then
+                .TextMatrix(I, 5) = .TextMatrix(I, 4)
             Else
-                .TextMatrix(i, 5) = Format(CCur(.TextMatrix(i - 1, 5)) + _
-                CCur(.TextMatrix(i, 4)), "#,##0.00")
+                .TextMatrix(I, 5) = Format(CCur(.TextMatrix(I - 1, 5)) + _
+                CCur(.TextMatrix(I, 4)), "#,##0.00")
             End If
     '
             Rfacturas.MoveNext
-            i = i + 1
+            I = I + 1
     
         End With
     '
@@ -622,7 +622,7 @@ End Sub
     '---------------------------------------------------------------------------------------------
     Public Sub rtnGenerator(strPath$, strQDF$, strName$) '
     '
-    Dim N As Long
+    Dim n As Long
     Dim dbSac As Database
     Dim qdfTemp As QueryDef
     '
@@ -637,12 +637,12 @@ End Sub
         
     Next
     'Crea la consulta con los parametros indicados en strQDF
-    N = dbSac.QueryDefs.Count
+    n = dbSac.QueryDefs.Count
     Set qdfTemp = dbSac.CreateQueryDef(strName, strQDF)
     Do
     dbSac.QueryDefs.Refresh
     DoEvents
-    Loop Until dbSac.QueryDefs.Count = N + 1
+    Loop Until dbSac.QueryDefs.Count = n + 1
     qdfTemp.Close
     Set qdfTemp = Nothing
     dbSac.Close
@@ -1088,7 +1088,7 @@ Cerrar:
     If F Then
         FrmEmisionFactura.lblFactura(0) = "Imprimiendo el Análisis de Facturación"
         FrmEmisionFactura.lblFactura(1).Width = 9200
-        For i = 0 To 1: FrmEmisionFactura.lblFactura(i).Refresh
+        For I = 0 To 1: FrmEmisionFactura.lblFactura(I).Refresh
         Next
     End If
     'Imprime el análisis de facturación
@@ -1096,7 +1096,7 @@ Cerrar:
     If F Then   'si está facturando msg en pantalla
         FrmEmisionFactura.lblFactura(0) = "Imprimiendo el Pre-Recibo"
         FrmEmisionFactura.lblFactura(1).Width = 9400
-        For i = 0 To 1: FrmEmisionFactura.lblFactura(i).Refresh
+        For I = 0 To 1: FrmEmisionFactura.lblFactura(I).Refresh
         Next
     End If
     '
@@ -1105,7 +1105,7 @@ Cerrar:
     If F Then   'si está fact. msg en pantalla
         FrmEmisionFactura.lblFactura(0) = "Imprimiendo Reporte Gastos No Comunes"
         FrmEmisionFactura.lblFactura(1).Width = 9500
-        For i = 0 To 1: FrmEmisionFactura.lblFactura(i).Refresh
+        For I = 0 To 1: FrmEmisionFactura.lblFactura(I).Refresh
         Next
     End If
     '
@@ -1115,7 +1115,7 @@ Cerrar:
     If F Then   'si esta facturando msg en pantalla
         FrmEmisionFactura.lblFactura(0) = "Imprimiendo la Facturación Mensual"
         FrmEmisionFactura.lblFactura(1).Width = 9700
-        For i = 0 To 1: FrmEmisionFactura.lblFactura(i).Refresh
+        For I = 0 To 1: FrmEmisionFactura.lblFactura(I).Refresh
         Next
     End If
     '
@@ -1128,7 +1128,7 @@ Cerrar:
     If F Then
         FrmEmisionFactura.lblFactura(0) = "Imprimiendo el Control de Facturación"
         FrmEmisionFactura.lblFactura(1).Width = 9900
-        For i = 0 To 1: FrmEmisionFactura.lblFactura(i).Refresh
+        For I = 0 To 1: FrmEmisionFactura.lblFactura(I).Refresh
         Next
     End If
     '
@@ -1173,7 +1173,7 @@ Cerrar:
     If F Then
         FrmEmisionFactura.lblFactura(0) = "Imprimiendo Reportes Finales"
         FrmEmisionFactura.lblFactura(1).Width = 10000
-        For i = 0 To 1: FrmEmisionFactura.lblFactura(i).Refresh
+        For I = 0 To 1: FrmEmisionFactura.lblFactura(I).Refresh
         Next
     End If
     '
@@ -1323,14 +1323,14 @@ Ocurre_Error:
     vecGasto(4) = strGes
     vecGasto(5) = strNotIn
     '
-    For i = 2 To 5
+    For I = 2 To 5
         strSQL = "SELECT CodApto, Periodo, Clng(CCUR(Sum(Monto))*100)/100 AS GNC FROM GastoNoComun WHERE CodG" _
-        & "asto " & vecGasto(i) & " AND Periodo=#" & Periodo & "# AND CodApto <> 'U" & gcCodInm _
+        & "asto " & vecGasto(I) & " AND Periodo=#" & Periodo & "# AND CodApto <> 'U" & gcCodInm _
         & "' GROUP BY CodApto, Periodo UNION SELECT Codigo,'" & Format(Periodo, "mm/dd/yyyy") & _
         "' as P, 0 as G FROM Propietarios WHERE Codigo Not In (SELECT CodApto FROM GastoNoComun" _
-        & " WHERE CodGasto " & vecGasto(i) & " AND Periodo=#" & Periodo & "#) AND Codigo <> 'U" _
+        & " WHERE CodGasto " & vecGasto(I) & " AND Periodo=#" & Periodo & "#) AND Codigo <> 'U" _
         & gcCodInm & "';"
-        Call rtnGenerator(mcDatos, strSQL, "FACT" & i)
+        Call rtnGenerator(mcDatos, strSQL, "FACT" & I)
     Next
     '/10 + 0.01)*10
     strSQL = "SELECT Propietarios.Codigo, Propietarios.Nombre, FACT1.Periodo, FACT1.GC, FACT2.G" _
@@ -1484,7 +1484,7 @@ Ocurre_Error:
     '---------------------------------------------------------------------------------------------
     Public Sub centra_titulo(grid As Control, Optional ancho As Boolean)
     'variables locales
-    Dim i%, Ncol() As Integer, N%, strTag$ 'variables locales
+    Dim I%, Ncol() As Integer, n%, strTag$ 'variables locales
     
     '
     With grid
@@ -1494,16 +1494,16 @@ Ocurre_Error:
         .Refresh
         strTag = .Tag
         .Row = 0
-        N = 1
-        For i = 0 To .Cols - 1
-            .Col = i
+        n = 1
+        For I = 0 To .Cols - 1
+            .Col = I
             .CellAlignment = flexAlignCenterCenter
             If ancho Then
-                N = InStr(strTag, "|")
-                .ColWidth(i) = Left(strTag, IIf(N = 0, Len(strTag), N - 1))
-                If N > 0 Then strTag = Right(strTag, Len(strTag) - N)
+                n = InStr(strTag, "|")
+                .ColWidth(I) = Left(strTag, IIf(n = 0, Len(strTag), n - 1))
+                If n > 0 Then strTag = Right(strTag, Len(strTag) - n)
             End If
-        Next i
+        Next I
         .Col = 0
         .Row = 0
         .Visible = True
@@ -1521,17 +1521,17 @@ Ocurre_Error:
     Public Function Subjet() As String
     'Variables locales
     Dim numFichero As Integer
-    Dim i As Integer
+    Dim I As Integer
     '
     On Error Resume Next
     numFichero = FreeFile
     '
     Open gcPath & "\email.txt" For Input As numFichero
-    i = 1
+    I = 1
     Do
-        linea = Input(1, #numFichero)
-        Subjet = Subjet + linea
-        i = i + 1
+        Linea = Input(1, #numFichero)
+        Subjet = Subjet + Linea
+        I = I + 1
     Loop Until EOF(numFichero)
     Subject = Subjet + vbCrLf
     '
@@ -1757,7 +1757,7 @@ Ocurre_Error:
     'apto$, Nombre_Propietario$, N_Aviso$, Alicuota@, _
     Fecha_Impresion$, Neto_Pagar@, Deuda_Acumulada@, MP$, Periodo$, FondoR@
     'variables locales
-    Dim N As Long, Contador As Long, Dato As Byte
+    Dim n As Long, Contador As Long, Dato As Byte
     '------------------------------------'-------
     '
     '<script language="javascript">
@@ -1765,10 +1765,10 @@ Ocurre_Error:
     '</script>
     '
     '------------------------------------'-------
-    N = FreeFile
-    Open gcPath & "\encabezado.txt" For Binary As #N
-        Do While Not EOF(N)
-            Get N, , Dato
+    n = FreeFile
+    Open gcPath & "\encabezado.txt" For Binary As #n
+        Do While Not EOF(n)
+            Get n, , Dato
             If Dato <> 13 And Dato <> 10 Then
                 If Dato = 63 Then
                     Encabezado = Encabezado & data(Contador)
@@ -1779,7 +1779,7 @@ Ocurre_Error:
             End If
         Loop
         
-    Close #N
+    Close #n
     Contador = 0
     '
     'Encabezado = "<HTML>" & vbCrLf & "<head>" & vbCrLf & Space(3) & "<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>" & vbCrLf & Space(3) _
@@ -1818,11 +1818,11 @@ Ocurre_Error:
     '   Devuelve una cadena que genera una nueva linea en la tabla dentro del
     '   archivo *.html
     '---------------------------------------------------------------------------------------------
-    Private Function detalle(codGasto$, Descripcion$, Comun&, monto@) As String
+    Private Function detalle(codGasto$, Descripcion$, Comun&, Monto@) As String
     '
     detalle = "<tr class='sacDetalle'><td ALIGN=CENTER>" & codGasto & "</td>" _
    & "<td>" & Descripcion & "</td><td ALIGN=RIGHT >" & IIf(Comun = 0, "", _
-   Format(Comun, "#,##0.00")) & "</td><td ALIGN=RIGHT >" & Format(monto, "#,##0.00") _
+   Format(Comun, "#,##0.00")) & "</td><td ALIGN=RIGHT >" & Format(Monto, "#,##0.00") _
    & "</td></tr>"
     'Detalle = "<tr>" & vbCrLf & "<td ALIGN=CENTER BGCOLOR='#F7EFDE' bordercolor='#FFFFFF'>" & CodGasto & "</td>" _
     & vbCrLf & Space(3) & "<td BGCOLOR='#F7EFDE' bordercolor='#FFFFFF'>" & Descripcion & "</td>" & _
@@ -1892,8 +1892,8 @@ Ocurre_Error:
     Open datos For Binary As #1
     Seek #1, &H42
     '
-    For N = 1 To 14
-        s1 = Mid(Mascara, N, 1)
+    For n = 1 To 14
+        s1 = Mid(Mascara, n, 1)
         s2 = Input(1, 1)
         If (Asc(s1) Xor Asc(s2)) <> 0 Then
                 strPSWD = strPSWD & Chr(Asc(s1) Xor Asc(s2))
@@ -1983,11 +1983,11 @@ Ocurre_Error:
                 If IsNull(.Fields("CtaInm")) Then
                     errMsg = errMsg + "- La cuenta del inmueble " & .Fields("CodInm") _
                     & " no está establecida." & vbCrLf
-                    i = i + 1
+                    I = I + 1
                 End If
                 .MoveNext
             Loop Until .EOF
-            If i > 0 Then
+            If I > 0 Then
                 cierre_nomina = MsgBox("No se puede procesar esta nómina: " & vbCrLf & vbCrLf & errMsg, _
                 vbInformation, App.ProductName)
                 .Close
@@ -2481,8 +2481,8 @@ Cerrar:
     Dim rpReporte As ctlReport
     '
     If UBound(Nom) >= 0 Then
-        For i = 0 To UBound(Nom)
-            strFiltro = strFiltro & IIf(strFiltro = "", "", " AND ") & "Nom_Temp.IDnomina =" & Nom(i)
+        For I = 0 To UBound(Nom)
+            strFiltro = strFiltro & IIf(strFiltro = "", "", " AND ") & "Nom_Temp.IDnomina =" & Nom(I)
         Next
         strFiltro = "WHERE " & strFiltro
         If UBound(Nom) = 0 Then
@@ -2491,8 +2491,8 @@ Cerrar:
         Else
             strSTitulo = "Desde: " & Left(Nom(0), 1) & "º Q. " & _
             UCase(MonthName(Mid(Nom(0), 2, 2)) & "/" & Right(Nom(0), 4)) & " Hasta: " & _
-            Left(Nom(i - 1), 1) & "º Q. " & UCase(MonthName(Mid(Nom(i - 1), 2, 2)) & "/" & _
-            Right(Nom(i - 1), 4))
+            Left(Nom(I - 1), 1) & "º Q. " & UCase(MonthName(Mid(Nom(I - 1), 2, 2)) & "/" & _
+            Right(Nom(I - 1), 4))
         End If
     Else
         
@@ -2748,13 +2748,13 @@ End Sub
     '
     '   Imprime el registro activo y devuelve la linea final utilizada
     '---------------------------------------------------------------------------------------------
-    Public Function linea_Detalle(Inm$, rst As ADODB.Recordset, linea&, _
+    Public Function linea_Detalle(Inm$, rst As ADODB.Recordset, Linea&, _
     Optional r As Boolean, Optional Facturado$) As Long
     'variables locales
     Dim Cuenta As String
     Dim Des As String
     Dim cargado As String
-    Dim monto As String
+    Dim Monto As String
     'asignación de las vairables
     If r Then
         Cuenta = Facturado
@@ -2763,20 +2763,20 @@ End Sub
     End If
     Des = rst("Detalle")
     cargado = Format(rst("Periodo"), "MM/YYYY")
-    monto = Format(rst("Monto"), "#,##.00")
+    Monto = Format(rst("Monto"), "#,##.00")
     '-------------------
-    Printer.CurrentY = linea
+    Printer.CurrentY = Linea
     Printer.CurrentX = 1200
     Printer.Print Cuenta    'print código de cuenta
-    Printer.CurrentY = linea
+    Printer.CurrentY = Linea
     Printer.CurrentX = 2400
     Printer.Print cargado   'print cargado
-    Printer.CurrentY = linea
+    Printer.CurrentY = Linea
     Printer.CurrentX = 3400
     Printer.Print Des   'print. descripción
-    Printer.CurrentY = linea
-    Printer.CurrentX = 9000 - Printer.TextWidth(monto)
-    Printer.Print monto 'print. monto
+    Printer.CurrentY = Linea
+    Printer.CurrentX = 9000 - Printer.TextWidth(Monto)
+    Printer.Print Monto 'print. monto
     linea_Detalle = Printer.CurrentY
     '
     End Function
@@ -2795,7 +2795,7 @@ End Sub
     Dim strSQL As String
     Dim NDoc As String
     Dim Npro As String
-    Dim N As Long
+    Dim n As Long
     Call rtnBitacora("Registro de Proveedor" & IIf(Cpp, " y Cpp", ""))
     cnnConexion.BeginTrans
     On Error GoTo Salir:
@@ -2820,8 +2820,8 @@ End Sub
                 strSQL = "INSERT INTO Proveedores(Codigo,NombProv,Beneficiario,Usuario,Freg,Nac" _
                 & "ional,FecReg) VALUES ('" & Npro & "','" & Nombre & "','" & Nombre & "','" & gcUsuario _
                 & "',Date(),-1,Date())"
-                cnnConexion.Execute strSQL, N
-                Call rtnBitacora("Ingresado " & N & " proveedor- Nº Prov.: " & Npro)
+                cnnConexion.Execute strSQL, n
+                Call rtnBitacora("Ingresado " & n & " proveedor- Nº Prov.: " & Npro)
             Else
                 Npro = !Codigo
             End If
@@ -2876,8 +2876,8 @@ frmTT.Show
 'Call SetWindowPos(frmTT.hWnd, -1, 0, 0, 0, 0, 1 Or 2)
 lTop = Screen.Height - frmTT.Height - 500
 frmTT.Left = Screen.Width - frmTT.Width
-For i = INI To lTop Step -10
-    frmTT.Top = i
+For I = INI To lTop Step -10
+    frmTT.Top = I
     DoEvents
 Next
 
@@ -2979,7 +2979,7 @@ Dim rstGM As ADODB.Recordset
 Dim rstlocal As ADODB.Recordset
 Dim cnnGM As ADODB.Connection
 Dim strSQL As String, NDoc As String
-Dim Reporte(), i&
+Dim Reporte(), I&
 Dim mPeriodo As Date, Descripcion As String
 
 Set rstInm = New ADODB.Recordset
@@ -3061,15 +3061,15 @@ If Not (rstInm.EOF And rstInm.BOF) Then
                     & "',Date(),Time(),'" & gcUsuario & "')"
                     cnnGM.Execute strSQL
                     '
-                    ReDim Preserve Reporte(5, i)
-                    Reporte(0, i) = rstInm!CodInm
-                    Reporte(1, i) = rstInm!Nombre
-                    Reporte(2, i) = NDoc
-                    Reporte(3, i) = rstGM!Nombre
-                    Reporte(4, i) = rstGM!Descripcion
-                    Reporte(5, i) = Format(rstGM!MontoFijo, "#,##0.00")
+                    ReDim Preserve Reporte(5, I)
+                    Reporte(0, I) = rstInm!CodInm
+                    Reporte(1, I) = rstInm!Nombre
+                    Reporte(2, I) = NDoc
+                    Reporte(3, I) = rstGM!Nombre
+                    Reporte(4, I) = rstGM!Descripcion
+                    Reporte(5, I) = Format(rstGM!MontoFijo, "#,##0.00")
                     DoEvents
-                    i = i + 1
+                    I = I + 1
                     
                 End If
                 rstlocal.Close
@@ -3087,7 +3087,7 @@ rstInm.Close
 
 Set rstInm = Nothing
 'impresión del reporte
-If i > 0 Then
+If I > 0 Then
     Dim Y&
     Dim strNombre As String
     Dim strBenef As String
@@ -3119,16 +3119,16 @@ If i > 0 Then
     Printer.CurrentX = Printer.ScaleWidth - Printer.TextWidth("Monto")
     Printer.Print "Monto"
     Printer.CurrentY = Printer.CurrentY + 50
-    For i = 0 To UBound(Reporte, 2)
-        Call RtnProUtility("Imprimiendo registros " & i + 1 & "/" & UBound(Reporte, 2) + 1)
+    For I = 0 To UBound(Reporte, 2)
+        Call RtnProUtility("Imprimiendo registros " & I + 1 & "/" & UBound(Reporte, 2) + 1)
         Y = Printer.CurrentY
-        strMonto = Reporte(5, i)
+        strMonto = Reporte(5, I)
         Printer.CurrentX = Printer.ScaleWidth - Printer.TextWidth(strMonto)
         Printer.Print strMonto
         Total = Total + CDbl(strMonto)
         Printer.CurrentY = Y
         Printer.CurrentX = 7400
-        strDescrip = Reporte(4, i)
+        strDescrip = Reporte(4, I)
         If Printer.TextWidth(strDescrip) > 3000 Then
             Do
                 strDescrip = Left(strDescrip, Len(strDescrip) - 1)
@@ -3138,7 +3138,7 @@ If i > 0 Then
         
         Printer.CurrentY = Y
         Printer.CurrentX = 4900
-        strBenef = Reporte(3, i)
+        strBenef = Reporte(3, I)
         If Printer.TextWidth(strBenef) > 2400 Then
             Do
                 strBenef = Left(strBenef, Len(strBenef) - 1)
@@ -3148,7 +3148,7 @@ If i > 0 Then
         
         Printer.CurrentY = Y
         Printer.CurrentX = 1900
-        strNombre = Reporte(1, i)
+        strNombre = Reporte(1, I)
         'If Reporte(0, I) = "2560" Then Stop
         If Printer.TextWidth(strNombre) > 2800 Then
             Do
@@ -3159,11 +3159,11 @@ If i > 0 Then
         
         Printer.CurrentY = Y
         Printer.CurrentX = 1000
-        Printer.Print Reporte(2, i)
+        Printer.Print Reporte(2, I)
         
         Printer.CurrentY = Y
         Printer.CurrentX = 100
-        Printer.Print Reporte(0, i)
+        Printer.Print Reporte(0, I)
         
         Next
     Printer.Print
@@ -3173,7 +3173,7 @@ If i > 0 Then
 
     Printer.EndDoc
     
-    Call RtnProUtility("Gastos Menores procesados (" & i & ")")
+    Call RtnProUtility("Gastos Menores procesados (" & I & ")")
     MsgBox "Proceso llevado a cabo con éxito." & vbCrLf & _
     "Retire el reporte en la impresora.", vbInformation, App.ProductName
 Else
@@ -4325,7 +4325,7 @@ errRtnAC:
     '
     '   Imprime los cheques recibidos por caja.
     '------------------------------------------------------------------------------------
-    Public Sub imprimir_cheque(monto As Currency, Beneficiario As String, Pote As Boolean)
+    Public Sub imprimir_cheque(Monto As Currency, Beneficiario As String, Pote As Boolean)
     
     Dim rpReporte As ctlReport
     Dim strMonto As String, strNeto As String, strBeneficiario As String
@@ -4337,14 +4337,14 @@ errRtnAC:
     Set cAletra = New clsNum2Let
         
     cAletra.Moneda = "Bolívares"
-    cAletra.Numero = monto
+    cAletra.Numero = Monto
     strMonto = cAletra.ALetra
     'configura la presentación del monto
     strMonto = String(10, "x") & strMonto
     If Len(strMonto) <= 98 Then
         strMonto = strMonto & " " & String(10, "x") & " " & String(Len(strMonto), "x")
     End If
-    strNeto = Format(monto, "XXX#,##0.00XXX")
+    strNeto = Format(Monto, "XXX#,##0.00XXX")
     If Pote Then
         strBeneficiario = sysEmpresa
     Else
@@ -4406,7 +4406,7 @@ errRtnAC:
     ' 5 = Usuario
     '-------------------------------------------
     Dim rpReporte As ctlReport
-    Dim i As Integer
+    Dim I As Integer
     Dim errLocal As Long
     
     Set rpReporte = New ctlReport
@@ -4571,26 +4571,26 @@ errRtnAC:
             strSQL = "DELETE FROM AsignaGasto In '" & gcPath & rstNom("ubica") & "inm.mdb' WHERE " & _
             "NDoc='NOMINA' and CodGasto='" & rstNom("CodGasto") & "' and Monto = " & Replace(rstNom("TOTALA"), ",", ".")
             
-            cnnConexion.Execute strSQL, N 'SUELDOS
+            cnnConexion.Execute strSQL, n 'SUELDOS
             
             If rstNom("DiasL") > 0 Then
                 strSQL = "DELETE FROM AsignaGasto In '" & gcPath & rstNom("ubica") & "inm.mdb' WHERE " & _
                 "NDoc='NOMINA' and CodGasto='" & codNom(0) & "' and Monto = " & Replace(rstNom("diasL"), ",", ".")
                 
-                cnnConexion.Execute strSQL, N 'dias libres laborados
+                cnnConexion.Execute strSQL, n 'dias libres laborados
             End If
             
             If rstNom("DiasF") > 0 Then
                 strSQL = "DELETE FROM AsignaGasto In '" & gcPath & rstNom("ubica") & "inm.mdb' WHERE " & _
                 "NDoc='NOMINA' and CodGasto='" & codNom(1) & "' and Monto = " & Replace(rstNom("diasF"), ",", ".")
                 
-                cnnConexion.Execute strSQL, N 'dias feriados
+                cnnConexion.Execute strSQL, n 'dias feriados
             End If
             If rstNom("OA") > 0 Then
                 strSQL = "DELETE FROM AsignaGasto In '" & gcPath & rstNom("ubica") & "inm.mdb' WHERE " & _
                 "NDoc='NOMINA' and CodGasto='" & codNom(2) & "' and Monto = " & Replace(rstNom("OA"), ",", ".")
                 
-                cnnConexion.Execute strSQL, N 'otras asignaciones
+                cnnConexion.Execute strSQL, n 'otras asignaciones
             End If
             
             rstNom.MoveNext
@@ -4618,7 +4618,7 @@ errRtnAC:
                     strSQL = "DELETE FROM AsignaGasto in '" & gcPath & !Ubica & "inm.mdb' " & _
                     "WHERE NDoc='NOMINA' and CodGasto='192020' and Cargado=#02/01/2008# and " & _
                     "Monto =" & Replace(!sumSSO * -1, ",", ".")
-                    cnnConexion.Execute strSQL, N
+                    cnnConexion.Execute strSQL, n
                     
                 End If
                 .MoveNext
@@ -4643,7 +4643,7 @@ errRtnAC:
                     strSQL = "DELETE FROM AsignaGasto in '" & gcPath & !Ubica & "inm.mdb' " & _
                     "WHERE NDoc='NOMINA' and CodGasto='192026' and Cargado=#02/01/2008# and " & _
                     "Monto =" & Replace(!sumLPH * -1, ",", ".")
-                    cnnConexion.Execute strSQL, N
+                    cnnConexion.Execute strSQL, n
                 End If
                 .MoveNext
             Loop Until .EOF
@@ -4673,10 +4673,10 @@ errRtnAC:
             '"' and Monto=" & Replace(rstNom("neto"), ",", ".") & " and CodInm='" & _
             'rstNom("CodInm") & "' and Benef='" & rstNom("name") & "'"
             strSQL = "DELETE FROM Cargado in '" & gcPath & "\" & rstNom("CodInm") & "\inm.mdb' WHERE Ndoc='" & NDoc & "'"
-            cnnConexion.Execute strSQL, N
+            cnnConexion.Execute strSQL, n
             strSQL = "DELETE FROM Cpp WHERE Ndoc='" & NDoc & "'"
             
-            cnnConexion.Execute strSQL, N
+            cnnConexion.Execute strSQL, n
             
             rstNom.MoveNext
         Loop Until rstNom.EOF
@@ -4685,7 +4685,7 @@ errRtnAC:
     Set rstNom = Nothing
     
     strSQL = "DELETE FROM Nom_Inf WHERE IDNomina=" & IDNomina
-    cnnConexion.Execute strSQL, N
+    cnnConexion.Execute strSQL, n
     
     If Err <> 0 Then
         cnnConexion.RollbackTrans
@@ -4827,8 +4827,8 @@ Salir:
     cmdCP.ActiveConnection = cnnConexion
     cmdCP.CommandText = nombre_procedimiento
     cmdCP.CommandType = adCmdTable
-    For i = 0 To UBound(Parametros)
-        cmdCP.Parameters(i) = Parametros(i)
+    For I = 0 To UBound(Parametros)
+        cmdCP.Parameters(I) = Parametros(I)
     Next
     
     Set ejecutar_procedure = cmdCP.Execute
@@ -4847,8 +4847,8 @@ Salir:
 '        cmdCP.Parameters(0) = Parametros(I)
 '    Next
 '
-    cmdCP.Execute N, Parametros()
-    Call rtnBitacora(Parametros(4) & "  " & Parametros(5) & "  " & Parametros(6) & "  " & Parametros(7) & "  Bs..." & Parametros(8) & "  " & IIf(N = 0, "Falló", "OK"))
+    cmdCP.Execute n, Parametros()
+    Call rtnBitacora(Parametros(4) & "  " & Parametros(5) & "  " & Parametros(6) & "  " & Parametros(7) & "  Bs..." & Parametros(8) & "  " & IIf(n = 0, "Falló", "OK"))
     End Sub
     
     Public Function listar_valores(strSQL As String, IncluirVacio As Boolean) As String
@@ -4889,19 +4889,19 @@ Salir:
     TiuloReporte As String, Optional mostrarArbolGrupo As Boolean)
     
     Dim crReporte As ctlReport
-    Dim i As Integer
+    Dim I As Integer
     
     Set crReporte = New ctlReport
     crReporte.Reporte = gcReport + NombreReporte
-    For i = 0 To UBound(OrigenDatos)
-        crReporte.OrigenDatos(i) = gcPath + "\" + OrigenDatos(i)
+    For I = 0 To UBound(OrigenDatos)
+        crReporte.OrigenDatos(I) = gcPath + "\" + OrigenDatos(I)
     Next
-    For i = 0 To UBound(Formulas)
-        crReporte.Formulas(i) = Formulas(i)
+    For I = 0 To UBound(Formulas)
+        crReporte.Formulas(I) = Formulas(I)
     Next
     If Not array_vacio(Params) Then
-        For i = 0 To UBound(Params)
-            crReporte.Parametros(i) = Params(i)
+        For I = 0 To UBound(Params)
+            crReporte.Parametros(I) = Params(I)
         Next
     End If
     'guarda una copia local
@@ -4921,9 +4921,9 @@ Salir:
     End Sub
     
     Function array_vacio(sParams() As Variant) As Boolean
-    Dim i As Integer
+    Dim I As Integer
     On Error Resume Next
-    i = UBound(sParams)
+    I = UBound(sParams)
     array_vacio = Err.Number <> 0
     End Function
     Public Sub printer_recibo_pago(IDNomina As Long, Guardar_Copia As Boolean, _

@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Begin VB.Form FrmPeriodo 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Proceso de Pre-Facturación"
@@ -97,15 +97,15 @@ Attribute VB_Exposed = False
     '29/08/2002: Módulo de prefacturación. Proceso cerrado que genera los gastos los gastos fijos-
     'Comunes, los gastos fijos no comunes y los honorarios profesionales. Emite el Pre'Recibo de -
     'facturación. Necesarios parámetros de prefacturación y selección del usuario del periodo-----
-    Dim WrkPreFactura As Workspace      'Espacio de Trabajo para la facturación
+    'Dim WrkPreFactura As Workspace      'Espacio de Trabajo para la facturación
     Dim cnnInmueble As ADODB.Connection 'Conexión publica a nivel de módulo al inmueble selec.
     Dim datPeriodo As Date                      'Periodo de pre - facturado
     Dim intAptos As Integer          '# de apartamentos en el inmueble
     
-    Private Sub CmbPeriodo_KeyPress(index As Integer, KeyAscii As Integer)
+    Private Sub CmbPeriodo_KeyPress(Index As Integer, KeyAscii As Integer)
     '
-    If KeyAscii = 13 And index = 0 Then CmbPeriodo(1).SetFocus
-    If KeyAscii = 13 And index = 1 Then CmdOk.SetFocus
+    If KeyAscii = 13 And Index = 0 Then CmbPeriodo(1).SetFocus
+    If KeyAscii = 13 And Index = 1 Then CmdOk.SetFocus
     '
     End Sub
 
@@ -448,18 +448,35 @@ Attribute VB_Exposed = False
     CmdOk.Picture = LoadResPicture("OK", vbResIcon)
     CmdSalir.Picture = LoadResPicture("Salir", vbResIcon)
     'Crea una instancia del espacio de trabajo para este proceso
-    Set WrkPreFactura = CreateWorkspace("", "Admin", "")
+    'Set WrkPreFactura = CreateWorkspace("", "Admin", "")
     '
-    For i = 0 To 1: CmbPeriodo(1).AddItem (Year(Date) + i)
-    Next
-    If Month(Date) = 1 Then CmbPeriodo(1).AddItem (Year(Date) - 1)
-    'Presenta el periodo al mes actual
-    CmbPeriodo(0).Text = CmbPeriodo(0).List(Month(Date) - 1)
-    CmbPeriodo(1).Text = CmbPeriodo(1).List(IIf(Month(Date) = 1, 1, 0))
     Set cnnInmueble = New ADODB.Connection
-    'cnnInmueble.CursorLocation = adUseClient
-    cnnInmueble.Open cnnOLEDB & mcDatos '& "; Jet OLEDB:DataBase Password=" & strPSWD(gcpath_
-    '& "\sac.mdb")
+    cnnInmueble.Open cnnOLEDB & mcDatos
+    
+    Dim strSQL  As String
+    Dim ultimoPeriodoFacturado As Date
+    strSQL = "SELECT MAX(Periodo) FROM Factura WHERE Fact Not Like 'CH%' or IsNull(F" _
+            & "act)"
+    
+    ultimoPeriodoFacturado = IIf(IsNull(cnnInmueble.Execute(strSQL)(0).Value), Date, cnnInmueble.Execute(strSQL)(0).Value)
+    If (utlimoperiodofacturado = Date) Then
+        For I = 0 To 1: CmbPeriodo(1).AddItem (Year(Date) + I)
+        Next
+        If Month(Date) = 1 Then CmbPeriodo(1).AddItem (Year(Date) - 1)
+         'Presenta el periodo al mes actual
+        CmbPeriodo(0).Text = CmbPeriodo(0).List(Month(Date) - 1)
+        CmbPeriodo(1).Text = CmbPeriodo(1).List(IIf(Month(Date) = 1, 1, 0))
+    Else
+        ultimoPeriodoFacturado = DateAdd("m", 1, ultimoPeriodoFacturado)
+        For I = 0 To 1: CmbPeriodo(1).AddItem (Year(ultimoPeriodoFacturado) + I)
+        Next
+        'If Month(ultimoPeriodoFacturado) = 1 Then CmbPeriodo(1).AddItem (Year(ultimoPeriodoFacturado) - 1)
+         'Presenta el periodo al mes actual
+        CmbPeriodo(0).Text = CmbPeriodo(0).List(Month(ultimoPeriodoFacturado) - 1)
+        CmbPeriodo(1).Text = CmbPeriodo(1).List(IIf(Month(ultimoPeriodoFacturado) = 1, 1, 0))
+    End If
+   
+    
     '
     End Sub
 
@@ -467,8 +484,8 @@ Attribute VB_Exposed = False
     Private Sub Form_Unload(Cancel As Integer)
     cnnInmueble.Close
     Set cnnInmueble = Nothing
-    WrkPreFactura.Close
-    Set WrkPreFactura = Nothing
+    'WrkPreFactura.Close
+    'Set WrkPreFactura = Nothing
     End Sub
 
     '---------------------------------------------------------------------------------------------
@@ -482,8 +499,8 @@ Attribute VB_Exposed = False
     On Error Resume Next
     Dim Calc$
     '
-    For i = 0 To 1
-        If i = 0 Then   'Por alícuota
+    For I = 0 To 1
+        If I = 0 Then   'Por alícuota
             Calc = "MontoFijo * T2.Alicuota/100"
             Alicuota = "True"
         Else    'en partes iguales
