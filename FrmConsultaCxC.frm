@@ -1031,7 +1031,7 @@ Private Sub cmdSol_Click()
 '-------------------------------------------
 Dim rstlocal As ADODB.Recordset
 Dim sFacturado As String, sCancelado As String
-Dim N%
+Dim n%
 Set rstlocal = New ADODB.Recordset
 rstlocal.CursorLocation = adUseClient
 rstlocal.Open "factura", cnnOLEDB + gcPath & "\" & Dat(0) & "\inm.mdb", adOpenStatic, _
@@ -1048,13 +1048,13 @@ If Not rstlocal.EOF And Not rstlocal.BOF Then
         End If
         
         rstlocal.MoveNext
-        N = N + 1
-        If N > 1 Then
+        n = n + 1
+        If n > 1 Then
             MsgBox "No se puede emitir solvencia: " & vbCrLf & vbCrLf & "Propietario tiene más de 1 recibo pendiente.", vbInformation, App.ProductName
             Exit Do
         End If
     Loop
-    If N < 2 Then Call emitir_solvencia(Dat(2), sCancelado, sFacturado, Dat(1), Dat(3), gcUsuario, Dat(0))
+    If n < 2 Then Call emitir_solvencia(Dat(2), sCancelado, sFacturado, Dat(1), Dat(3), gcUsuario, Dat(0))
 Else
     MsgBox "Imposible emitir la solvencia. No se encuentra la" & vbCrLf & _
     "información del propietario '" & Dat(2) & "'", vbInformation, App.ProductName
@@ -1425,7 +1425,7 @@ End Sub
                     
                     sArchivo = gcPath & "\" & Dat(0) & "\reportes\AC" & _
                     Format(dPeriodo, "MMMYY") & ".rpt"
-                    If Dir$(sArchivo) = "" Then
+                    If Dir$(sArchivo, vbArchive) = "" Then
                         If Not IsNumeric(FlexFacturas(0).TextMatrix(FlexFacturas(0).Row, 0)) Then
                             MsgBox "No se puede mostrar la información solicitada." & vbCrLf & _
                             "El período no corresponde a una factura", vbInformation, App.ProductName
