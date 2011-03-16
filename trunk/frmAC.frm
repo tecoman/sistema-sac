@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}#1.1#0"; "shdocvw.dll"
+Object = "{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}#1.1#0"; "ieframe.dll"
 Object = "{8767A745-088E-4CA6-8594-073D6D2DE57A}#9.2#0"; "crviewer9.dll"
 Object = "{20C62CAE-15DA-101B-B9A8-444553540000}#1.1#0"; "MSMAPI32.OCX"
 Begin VB.Form frmAC 
@@ -21,7 +21,7 @@ Begin VB.Form frmAC
       TabIndex        =   4
       Top             =   195
       Width           =   7920
-      lastProp        =   600
+      lastProp        =   500
       _cx             =   13970
       _cy             =   9790
       DisplayGroupTree=   -1  'True
@@ -136,7 +136,7 @@ Public strEmail As String
 Private WithEvents poSendMail As clsSendMail
 Attribute poSendMail.VB_VarHelpID = -1
 
-Private Sub Cmd_Click(index As Integer)
+Private Sub cmd_Click(Index As Integer)
 'variables locales
 Dim errLocal As Long
 Dim gsTEMPDIR As String
@@ -145,7 +145,7 @@ Dim m_report As CRAXDRT.Report
 Dim strTitulo As String
 
 
-Select Case index
+Select Case Index
     
     Case 0  'cerrar
         Me.Hide
@@ -163,7 +163,7 @@ Select Case index
     
     Case 2  'enviar por email
         MousePointer = vbHourglass
-        On Error GoTo salir:
+        On Error GoTo Salir:
         If strEmail <> "" Then  'envia el email
             strTitulo = Mid(Replace(Me.Caption, "-", ""), 5, Len(Me.Caption))
             
@@ -185,53 +185,68 @@ Select Case index
 '                'retardo
 '            Next
             Set m_report = Nothing
-            'envia el archivo via mail
-            Set poSendMail = New clsSendMail
-            Dim Dir1$, Dir2$
-            With poSendMail
-                .SMTPHostValidation = VALIDATE_HOST_DNS
-                .EmailAddressValidation = VALIDATE_SYNTAX
-                .Delimiter = ";"
-                .SMTPHost = "mail.cantv.net"
-                .from = IIf(gcNivel = nuADSYS, "sistemas@administradorasac.com", "info@administradorasac.com")
-                .FromDisplayName = "Servicio Administración de Condominio"
-                
-                If InStr(strEmail, ";") Then
-                    
-                    Dir1 = Left(strEmail, InStr(strEmail, ";") - 1)
-                    Dir2 = Mid(strEmail, InStr(strEmail, ";") + 1, Len(strEmail))
-                    
-                    'mail.AddAddress Dir1, FrmConsultaCxC.Dat(3)
-                    'mail.AddAddress Dir2, FrmConsultaCxC.Dat(3)
-                    .Recipient = Dir1 & ";" & Dir2
-                    .RecipientDisplayName = FrmConsultaCxC.Dat(3)
-                    '.CcRecipient = Dir2
-                    '.CcDisplayName = FrmConsultaCxC.Dat(3)
-                Else
-                    .Recipient = strEmail
-                    .RecipientDisplayName = FrmConsultaCxC.Dat(3)
-                    
-                    'mail.AddAddress strEmail, FrmConsultaCxC.Dat(3)
-                End If
-                .Subject = "Aviso de Cobro " & Me.Caption
-                .Message = Subject
-                .Attachment = strArchivo
-                .Send
-                
-                'mail.Subject = "Aviso de Cobro " & Me.Caption
-                'mail.Body = Subjet
-                'mail.AddAttachment strArchivo
-                'mail.Send
+            Dim Dir1$, Dir2$, subject$
+            If InStr(strEmail, ";") Then
+                Dir1 = Left(strEmail, InStr(strEmail, ";") - 1)
+                Dir2 = Mid(strEmail, InStr(strEmail, ";") + 1, Len(strEmail))
+            Else
+                Dir1 = strEmail
+            End If
+            subject = "Estimado cliente, adjunto le estamos enviando su aviso de cobro, correpondiente al " & Me.Caption
+            If ModGeneral.enviar_email(Dir1, "pagoscondominio@administradorasac.com", "Aviso de Cobro " & Me.Caption, _
+            True, subject, strArchivo) Then
+                MsgBox "Mensaje enviado con éxito", vbInformation, strEmail
+            Else
+                MsgBox "Error al enviar mensaje." & vbCrLf & Err.Description, vbCritical, strEmail
+            End If
             
-            End With
-            MsgBox "Mail enviado OK", vbInformation, strEmail
-            Set mail = Nothing
+            'envia el archivo via mail
+'            Set poSendMail = New clsSendMail
+'            Dim Dir1$, Dir2$
+'            With poSendMail
+'                .SMTPHostValidation = VALIDATE_HOST_DNS
+'                .EmailAddressValidation = VALIDATE_SYNTAX
+'                .Delimiter = ";"
+'                .SMTPHost = "mail.cantv.net"
+'                .from = IIf(gcNivel = nuADSYS, "sistemas@administradorasac.com", "info@administradorasac.com")
+'                .FromDisplayName = "Servicio Administración de Condominio"
+'
+'                If InStr(strEmail, ";") Then
+'
+'                    Dir1 = Left(strEmail, InStr(strEmail, ";") - 1)
+'                    Dir2 = Mid(strEmail, InStr(strEmail, ";") + 1, Len(strEmail))
+'
+'                    'mail.AddAddress Dir1, FrmConsultaCxC.Dat(3)
+'                    'mail.AddAddress Dir2, FrmConsultaCxC.Dat(3)
+'                    .Recipient = Dir1 & ";" & Dir2
+'                    .RecipientDisplayName = FrmConsultaCxC.Dat(3)
+'                    '.CcRecipient = Dir2
+'                    '.CcDisplayName = FrmConsultaCxC.Dat(3)
+'                Else
+'                    .Recipient = strEmail
+'                    .RecipientDisplayName = FrmConsultaCxC.Dat(3)
+'
+'                    'mail.AddAddress strEmail, FrmConsultaCxC.Dat(3)
+'                End If
+'                .Subject = "Aviso de Cobro " & Me.Caption
+'                .Message = Subject
+'                .Attachment = strArchivo
+'                .Send
+'
+'                'mail.Subject = "Aviso de Cobro " & Me.Caption
+'                'mail.Body = Subjet
+'                'mail.AddAttachment strArchivo
+'                'mail.Send
+'
+'            End With
+'            MsgBox "Mail enviado OK", vbInformation, strEmail
+'            Set mail = Nothing
             If Me.crView.Visible Then Kill (strArchivo)
         Else
             MsgBox "Este propietario no tiene email registrado", vbCritical, App.ProductName
         End If
         MousePointer = vbDefault
-salir:
+Salir:
     If Err.Number <> 0 Then
         MsgBox Err.Description, vbCritical, "Error " & Err.Number
         'If MAPs.SessionID <> 0 Then MAPs.SignOff
@@ -261,9 +276,9 @@ wb.Top = crView.Top
 wb.Left = crView.Left
 wb.Height = crView.Height
 wb.Width = crView.Width
-For i = 0 To 2
-    cmd(i).Left = Me.ScaleWidth - (cmd(i).Width * (i + 1)) - 200
-    cmd(i).Top = crView.Height + crView.Top + 100
+For I = 0 To 2
+    cmd(I).Left = Me.ScaleWidth - (cmd(I).Width * (I + 1)) - 200
+    cmd(I).Top = crView.Height + crView.Top + 100
 Next
 
 End Sub

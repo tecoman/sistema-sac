@@ -1,9 +1,9 @@
 VERSION 5.00
 Object = "{F0D2F211-CCB0-11D0-A316-00AA00688B10}#1.0#0"; "MSDATLST.OCX"
 Object = "{CDE57A40-8B86-11D0-B3C6-00A0C90AEA82}#1.0#0"; "MSDATGRD.OCX"
-Object = "{C932BA88-4374-101B-A56C-00AA003668DC}#1.1#0"; "msmask32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{C932BA88-4374-101B-A56C-00AA003668DC}#1.1#0"; "MSMASK32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{67397AA1-7FB1-11D0-B148-00A0C922E820}#6.0#0"; "MSADODC.OCX"
 Object = "{0ECD9B60-23AA-11D0-B351-00A0C9055D8E}#6.0#0"; "MSHFLXGD.OCX"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
@@ -2601,11 +2601,11 @@ Attribute rstInmueble.VB_VarHelpID = -1
     End Sub
 
     Private Sub Form_Unload(Cancel As Integer)
-    Dim i%
+    Dim I%
     On Error Resume Next
-    For i = 0 To 4
-        rstInmueble(i).Close
-        Set rstInmueble(i) = Nothing
+    For I = 0 To 4
+        rstInmueble(I).Close
+        Set rstInmueble(I) = Nothing
     Next
     CnTabla.Close
     Set CnTabla = Nothing
@@ -2655,7 +2655,7 @@ Attribute rstInmueble.VB_VarHelpID = -1
     Private Sub SSTab1_Click(PreviousTab As Integer)    '
     '---------------------------------------------------------------------------------------------
     '
-    Select Case SSTab1.Tab
+    Select Case SSTab1.tab
         'Datos Generales,Administrativos,Servicios,Adicionales
         Case 0, 1, 2, 3: fraInm(0).Visible = True
         '   ---------------------
@@ -2714,13 +2714,13 @@ Attribute rstInmueble.VB_VarHelpID = -1
     cnnConexion, adOpenStatic, adLockReadOnly, adCmdText
     Set cmbInm(3).RowSource = rstInmueble(tipoCta)
     '
-    SSTab1.Tab = 0
+    SSTab1.tab = 0
     For H = 0 To 2
         Set gridServicios(H).FontFixed = LetraTitulo(LoadResString(527), 7, , True)
         gridServicios(H).ColWidth(0) = 1790
-        For J = 0 To 1
+        For j = 0 To 1
             gridServicios(H).Row = 0
-            gridServicios(H).Col = J
+            gridServicios(H).Col = j
             gridServicios(H).CellAlignment = flexAlignCenterCenter
         Next
     Next
@@ -2774,7 +2774,7 @@ Attribute rstInmueble.VB_VarHelpID = -1
                 
             Case "NEW"          ' Nuevo FrmInmueble.
         '   -----------------
-                For i = 0 To 3: fraInm(i).Enabled = True
+                For I = 0 To 3: fraInm(I).Enabled = True
                 Next
                 cmdInm(2).Enabled = True
                 .AddNew
@@ -2834,7 +2834,7 @@ Attribute rstInmueble.VB_VarHelpID = -1
                 'AdoInm.Refresh
                 FrmAdmin.objRst.Requery
                 Call RtnEstado(6, Toolbar1, rstInmueble(Inm).EOF Or rstInmueble(Inm).BOF)
-                For i = 0 To 3: fraInm(i).Enabled = False
+                For I = 0 To 3: fraInm(I).Enabled = False
                 Next
                 cmdInm(2).Enabled = False
                 MsgBox "Inmueble " & strAccion, vbInformation, App.ProductName
@@ -2847,7 +2847,7 @@ Attribute rstInmueble.VB_VarHelpID = -1
         '   -----------------
                 'mskInm(0).PromptInclude = False
                 .CancelUpdate
-                For i = 0 To 3: fraInm(i).Enabled = False
+                For I = 0 To 3: fraInm(I).Enabled = False
                 Next
                 cmdInm(2).Enabled = False
                 Call rtnBitacora("Inm:" & txtInm(0) & " cambios cancelados...")
@@ -2867,7 +2867,7 @@ Attribute rstInmueble.VB_VarHelpID = -1
                 
             Case "EDIT1"        'Editar
         '   -----------------
-                For i = 0 To 3: fraInm(i).Enabled = True
+                For I = 0 To 3: fraInm(I).Enabled = True
                 Next
                 cmdInm(2).Enabled = True
                 Call RtnEstado(5, Toolbar1, True)
@@ -2894,10 +2894,10 @@ Attribute rstInmueble.VB_VarHelpID = -1
         Case "Add"  'Agregar Linea
         '----------
             If Respuesta(LoadResString(524)) Then
-                For i = 0 To 2
-                    gridServicios(i).AddItem ("")
-                    gridServicios(i).Col = 0
-                    gridServicios(i).Row = gridServicios(i).Rows - 1
+                For I = 0 To 2
+                    gridServicios(I).AddItem ("")
+                    gridServicios(I).Col = 0
+                    gridServicios(I).Row = gridServicios(I).Rows - 1
                 Next
             End If
             '
@@ -2966,19 +2966,19 @@ Attribute rstInmueble.VB_VarHelpID = -1
     Private Sub rtnDomiciliar_Servicios()
     '
     On Error Resume Next
-    Dim strSql$, strInm$
+    Dim strSQL$, strInm$
     strInm = txtInm(0)
     cnnConexion.BeginTrans
     cnnConexion.Execute "DELETE FROM Servicios WHERE Inmueble='" & strInm & "'"
-    For i = 0 To 2
-        With gridServicios(i)
+    For I = 0 To 2
+        With gridServicios(I)
             If .Rows > 1 Then
                 For K = 1 To .Rows - 1
                     If Not .TextMatrix(K, 0) = "" Then
-                    strSql = "INSERT INTO SERVICIOS(IDCS,TipoServ,Inmueble,CodGasto) VALUES ('" _
-                    & .TextMatrix(K, 0) & "'," & i & ",'" & strInm & "','" & .TextMatrix(K, 1) _
+                    strSQL = "INSERT INTO SERVICIOS(IDCS,TipoServ,Inmueble,CodGasto) VALUES ('" _
+                    & .TextMatrix(K, 0) & "'," & I & ",'" & strInm & "','" & .TextMatrix(K, 1) _
                     & "')"
-                    cnnConexion.Execute strSql
+                    cnnConexion.Execute strSQL
                     End If
                 Next
             End If
@@ -3009,28 +3009,28 @@ Attribute rstInmueble.VB_VarHelpID = -1
     Dim rstServ(2) As New ADODB.Recordset
     Dim l%
     '
-    For i = 0 To 2
-        rstServ(i).Open "SELECT IDCS,CodGasto FROM Servicios WHERE Inmueble ='" & txtInm(0) & _
-        "' AND TipoServ=" & i, cnnConexion, adOpenStatic, adLockReadOnly
-        With gridServicios(i)
-            If Not rstServ(i).EOF Or Not rstServ(i).BOF Then
-                rstServ(i).MoveFirst
-                .Rows = rstServ(i).RecordCount + 1
+    For I = 0 To 2
+        rstServ(I).Open "SELECT IDCS,CodGasto FROM Servicios WHERE Inmueble ='" & txtInm(0) & _
+        "' AND TipoServ=" & I, cnnConexion, adOpenStatic, adLockReadOnly
+        With gridServicios(I)
+            If Not rstServ(I).EOF Or Not rstServ(I).BOF Then
+                rstServ(I).MoveFirst
+                .Rows = rstServ(I).RecordCount + 1
                 l = 1
                 Do
-                    .TextMatrix(l, 0) = IIf(IsNull(rstServ(i)("idcs")), "", rstServ(i)("idcs"))
-                    .TextMatrix(l, 1) = IIf(IsNull(rstServ(i)("CodGasto")), "", rstServ(i)("CodGasto"))
+                    .TextMatrix(l, 0) = IIf(IsNull(rstServ(I)("idcs")), "", rstServ(I)("idcs"))
+                    .TextMatrix(l, 1) = IIf(IsNull(rstServ(I)("CodGasto")), "", rstServ(I)("CodGasto"))
                     l = l + 1
-                    rstServ(i).MoveNext
-                Loop Until rstServ(i).EOF
+                    rstServ(I).MoveNext
+                Loop Until rstServ(I).EOF
             
             Else
-                gridServicios(i).Rows = 2
-                Call rtnLimpiar_Grid(gridServicios(i))
+                gridServicios(I).Rows = 2
+                Call rtnLimpiar_Grid(gridServicios(I))
             End If
             If .Rows > 1 Then .Row = 1
-            rstServ(i).Close
-            Set rstServ(i) = Nothing
+            rstServ(I).Close
+            Set rstServ(I) = Nothing
         End With
     Next
     'Junta de Condominio
@@ -3063,15 +3063,15 @@ Attribute rstInmueble.VB_VarHelpID = -1
         ftnUpdate = MsgBox("Falta Modalidad Cuenta: (POTE/PARTICULAR)", vbExclamation, _
         App.ProductName)
     End If
-    For i = 8 To 16
-        If txtInm(i) = "" Then
+    For I = 8 To 16
+        If txtInm(I) = "" Then
             ftnUpdate = MsgBox("Falta algún valor en los datos administrativos.", vbExclamation, _
             App.ProductName)
             Exit For
         End If
     Next
-    For i = 33 To 38
-        If txtInm(i) = "" Then
+    For I = 33 To 38
+        If txtInm(I) = "" Then
             ftnUpdate = MsgBox("Falta algún valor en los datos administrativos.", vbExclamation, _
             App.ProductName)
             Exit For
