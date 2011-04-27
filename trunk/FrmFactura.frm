@@ -2299,7 +2299,7 @@ Begin VB.Form FrmFactura
       BorderStyle     =   1
       Appearance      =   0
       ShowToday       =   0   'False
-      StartOfWeek     =   54984705
+      StartOfWeek     =   72155137
       TitleBackColor  =   -2147483646
       TitleForeColor  =   16744576
       TrailingForeColor=   12632256

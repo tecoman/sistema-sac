@@ -104,11 +104,28 @@ Attribute VB_Name = "ModGeneral"
     Global Const SYNCHRONIZE = &H100000
     Global Const INFINITE = &HFFFFFFFF
     
-    Declare Function OpenProcess Lib "kernel32" (ByVal dwDesiredAccess As Long, ByVal bInheritHandle As Long, _
-    ByVal dwProcessId As Long) As Long
+    Declare Function OpenProcess Lib "kernel32" (ByVal dwDesiredAccess As Long, ByVal bInheritHandle As Long, ByVal dwProcessId As Long) As Long
     Declare Function CloseHandle Lib "kernel32" (ByVal hObject As Long) As Long
     Declare Function WaitForSingleObject Lib "kernel32" (ByVal hHandle As Long, ByVal dwMilliseconds As Long) As Long
     
+    Private Declare Function GetVersion Lib "kernel32" () As Long
+    ' #
+    ' # variable que determina si es una demostración del sistema
+    ' #
+    Public Demo As Boolean
+
+    ' La versión simple
+Private Type OSVERSIONINFO
+    dwOSVersionInfoSize As Long
+    dwMajorVersion As Long
+    dwMinorVersion As Long
+    dwBuildNumber As Long
+    dwPlatformId As Long
+    szCSDVersion As String * 128
+End Type
+
+    Private Declare Function GetVersionEx Lib "kernel32" Alias "GetVersionExA" _
+    (lpVersionInformation As OSVERSIONINFO) As Long
     Rem-------------------------------------------------------------------------------------------
     
     Public Sub TimerProc(ByVal hWnd&, ByVal uMsg&, ByVal idEvent&, ByVal dwTime&, ipCaption$)
@@ -124,6 +141,15 @@ Attribute VB_Name = "ModGeneral"
     Call LockWindowUpdate(API_FALSE)
     '
     End Sub
+    Private Function LoWord(ByVal Numero As Long) As Long
+    ' Devuelve el LoWord del número pasado como parámetro
+    LoWord = Numero And &HFFFF&
+    End Function
+    
+    Private Function LoByte(ByVal Numero As Integer) As Integer
+    ' Devuelve el LoByte del número pasado como parámetro
+    LoByte = Numero And &HFF
+    End Function
 
         Sub WaitForTerm(ByVal PID As Long)
         On Error GoTo Gestion_Error
@@ -496,7 +522,7 @@ End Sub
     '   de abogado y la deuda total. Además verifica el estatus del propietario, demandado,
     '   convenio, etc.
     '---------------------------------------------------------------------------------------------
-    Public Sub RtnFlex(StrApto$, grid As Control, intMesMora%, intMora%, C%, txtmora As TextBox, _
+    Public Sub RtnFlex(StrApto$, Grid As Control, intMesMora%, intMora%, C%, txtmora As TextBox, _
     cnnApto As ADODB.Connection, Optional Inm As String, Optional BsF As Boolean)
     'variales locales
     Dim Rfacturas As ADODB.Recordset
@@ -519,7 +545,7 @@ End Sub
     End If
     Rfacturas.MoveFirst
     '
-    With grid
+    With Grid
     '   Configura la presentación del Grid(Titulos, Ancho de columna, N° de Filas)
         .Rows = Rfacturas.RecordCount + 1
         .Cols = C
@@ -535,7 +561,7 @@ End Sub
         cAbono = Rfacturas("PAGADO") * nFactor
         cSaldo = Rfacturas("SALDO") * nFactor
         
-        With grid
+        With Grid
     '
             .Col = 1
             .Row = I
@@ -561,9 +587,9 @@ End Sub
         End With
     '
     Loop    'Punto de control {fin hasta}
-    grid.Col = 0
-    grid.ColSel = grid.Cols - 1
-    If grid.Enabled And grid.Visible Then grid.SetFocus
+    Grid.Col = 0
+    Grid.ColSel = Grid.Cols - 1
+    If Grid.Enabled And Grid.Visible Then Grid.SetFocus
     'Busca Honorarios-----------------------------------------------------------------------------
     If Rfacturas.RecordCount > intMesMora Then
         txtmora = Format(Round(curDeuda * intMora / 100), "#,##0.00")
@@ -688,6 +714,11 @@ End Sub
     End Sub
     
     Sub Main()
+    ' #
+    ' # si no es un demo hay que comentar la línea siguiente
+    ' #
+    'Demo = True
+    
     
     'valida que no se este ejecutando una nueva instancia de la aplicacion
     If App.PrevInstance Then
@@ -697,10 +728,16 @@ End Sub
     'buscamos actualizacion del programa de actualización de la aplicacion
     'Call verificar_actualizador
     'ejecutamos la aplicacion de actualización
-    PID = Shell(App.Path & "\sacUpdate.exe", vbNormalFocus)
-    If PID <> 0 Then
-        'Esperar a que finalice
-        WaitForTerm PID
+    Dim Ret As Long, mayor As Long
+    
+    Ret = GetVersion
+    mayor = LoByte(LoWord(Ret))
+    If mayor < 6 Then
+        PID = Shell(App.Path & "\sacUpdate.exe", vbNormalFocus)
+        If PID <> 0 Then
+            'Esperar a que finalice
+            WaitForTerm PID
+        End If
     End If
     'rutina de inicio del programa
     On Error Resume Next
@@ -795,138 +832,17 @@ End Sub
 '    cnnConexion.Execute "delete from chequedetalle where idcheque = 50654 and Detalle='INST LAMINAS PROTECTORAS REMACHES CAJETINES EXTINT'", N
 '    Call rtnBitacora("Borrados (" & N & ") registros en cero de la tabla TDFCheques")
     Dim sql As String
-    gcMAC = "REMOTO"
-    gcUsuario = "SUPERVISOR"
+    'gcMAC = "REMOTO"
+    'gcUsuario = "SUPERVISOR"
 
-'    sql = "ALTER TABLE ChequeAnulado Add COLUMN Conciliado BIT"
-'
-'    cnnConexion.Execute sql, N
-'    Call rtnBitacora("Campo Agregado Tabla ChequeDetalle")
-'
-'    sql = "PARAMETERS [Cuenta] Text ( 20 ), [Conciliado] Bit; " & _
-'    "SELECT chequeanulado.IDCheque, 'ANULADO' as Beneficiario, chequeanulado.FechaCheque, chequeanulado.Monto, chequeanulado.Conciliado " & _
-'    "from ChequeAnulado " & _
-'    "Where ChequeAnulado.Cuenta = [Cuenta] And ChequeAnulado.Conciliado = [Conciliado] " & _
-'    "UNION ALL SELECT Cheque.IDCheque, Cheque.Beneficiario, Cheque.FechaCheque, Sum(ChequeDetalle.Monto) AS SumaDeMonto, Cheque.conciliado " & _
-'    "FROM Cheque INNER JOIN ChequeDetalle ON Cheque.Clave = ChequeDetalle.Clave " & _
-'    "GROUP BY Cheque.IDCheque, Cheque.Beneficiario, Cheque.Cuenta, Cheque.FechaCheque, Cheque.conciliado " & _
-'    "Having (((Cheque.Cuenta) = [Cuenta]) And ((Cheque.Conciliado) = [Conciliado])) " & _
-'    "ORDER BY ChequeAnulado.FechaCheque, IDCheque;"
-'
-'    rtnGenerator gcPath & "\sac.mdb", sql, "procChequeConciliacion"
-''
-'    Call rtnBitacora("Actualizado procedimiento procChequeConciliacion")
-
-'    sql = "PARAMETERS [FECHA] DateTime; " & _
-'        "SELECT Sum(procLibroBanco.Debe) - Sum(procLibroBanco.Haber) AS Saldo " & _
-'        "from procLibroBanco " & _
-'        "WHERE (((procLibroBanco.Fecha)<=[FECHA]));"
-'
-'    rtnGenerator gcPath & "\sac.mdb", sql, "procLibroBancoSaldoFecha"
-'
-'    Call rtnBitacora("Creado procedimiento procLibroBancoSaldoFecha")
-
+    'sql = "update Factura in '" & gcPath & "\2517\inm.mdb' set pagado = facturado, saldo = 0 where fact='0308517002'"
     
-    'aqui vamos a actualizar la tabla TDFCheques
-'    SELECT TOP 1 * from (SELECT TOP 1 *
-'from tdfcheques
-'WHERE (((tdfcheques.IDDeposito)<>'') AND ((tdfcheques.Fpago)='deposito' Or (tdfcheques.Fpago)='transferencia'))
-'ORDER BY FechaMov DESC) as p
+    'cnnConexion.Execute sql, n
 '
-'    sql = "PARAMETERS [RECIBO] Text ( 255 ); " & _
-'          "SELECT Fpago, Ndoc, Banco, FechaDoc, Monto " & _
-'          "from TDFCheques " & _
-'          "Where (((TDFCheques.IDRecibo) = [Recibo])) " & _
-'          "ORDER BY TDFCheques.Fpago;"
-'
-'    rtnGenerator gcPath & "\sac.mdb", sql, "procDetallePago"
-'    Call rtnBitacora("Creada Consulta procBuscaCaja")
-'-------validamos los cheques recibidos y procesados en caja
-'    Dim Monto As Double
-'    Dim rst As ADODB.Recordset
-'    Dim rsm As ADODB.Recordset
-'    Dim campo As String
-'    Dim boIgual As Boolean
-'    sql = "update propietarios in '" & gcPath & "\2530\inm.mdb' set cedula=9964627  where id=6"
 '    cnnConexion.Execute sql, N
-'    sql = "update propietarios in '" & gcPath & "\2523\inm.mdb' set cedula=15664484  where id=9"
-'    cnnConexion.Execute sql, N
-'    sql = "update tdfcheques set idrecibo='66B011180609401' where idrecibo='66B01118060901'"
-'    cnnConexion.Execute sql, N
-'    sql = "update movimientocaja set montomovimientocaja = montocheque ,TipoMovimientoCaja='INGRESO'" & _
-'        "where montomovimientocaja <= 0 and FormaPagoMovimientoCaja <> 'EFECTIVO' and " & _
-'        "montocheque > 0 and codgasto <> '900011'"
-'    cnnConexion.Execute (sql), N
+    'Call rtnBitacora("Actualizada Factura: 0308517002 2517/001B (" & n & ")")
 '
-'    sql = "select sum(montomovimientocaja) from movimientocaja group by InmuebleMovimientoCaja having InmuebleMovimientoCaja='2566'"
-'    Monto = cnnConexion.Execute(sql).Fields(0)
-'    Debug.Print "Monto cobrado en caja: " & Format(Monto, "#,##0.00")
-'    sql = "select sum(Monto) from tdfcheques group by CodInmueble having CodInmueble ='2566'"
-'    Monto = cnnConexion.Execute(sql).Fields(0)
-'    Debug.Print "Monto cheques registrados: " & Format(Monto, "#,##0.00")
-'
-'    sql = "select * from tdfcheques where codinmueble='2566'"
-'    Set rst = cnnConexion.Execute(sql)
-'    With rst
-'        Do
-'            sql = "select * from movimientocaja where inmueblemovimientocaja='2566' and idrecibo='" & _
-'            rst("idrecibo") & "'"
-'            Monto = cnnConexion.Execute(sql).Fields("montomovimientocaja")
-'            If Monto <> rst("monto") Then
-'                'Stop
-'                'si el monto movimiento caja es mayor al cheque registrado
-'                'revisamos cada documento recibido
-'                boIgual = False
-'                If Monto > rst("monto") Then
-'                    For I = 0 To 3
-'                        If I < 3 Then
-'                            campo = "MontoCheque" & I
-'                        Else
-'                            campo = "EfectivoMovimientoCaja"
-'                        End If
-'                        campo = Replace(campo, "0", "")
-'                        sql = "select " + campo + " from movimientocaja where " & _
-'                                "inmueblemovimientocaja='2566' and idrecibo='" & _
-'                                rst("idrecibo") & "'"
-'
-'                        Monto = cnnConexion.Execute(sql).Fields(0)
-'                        'buscamos cualquier otro abono que tenga este cheque
-'                        sql = "select montomovimientocaja from movimientocaja where inmueblemovimientocaja='2566' and idrecibo <>'" & rst("idrecibo") & "' and fechamovimientocaja=#" & Format(rst("fechamov"), "yyyy/mm/dd") & "# and numdocumentomovimientocaja ='" & rst("ndoc") & "'"
-'                        If Not (cnnConexion.Execute(sql).EOF And cnnConexion.Execute(sql).BOF) Then
-'                            Monto = Monto + cnnConexion.Execute(sql).Fields(0)
-'                        End If
-'                        If Monto = rst("monto") Or (Monto - rst("monto")) < 0.5 Then
-'                            boIgual = True
-'                            Exit For
-'                        End If
-'                    Next
-'
-'                Else
-'                    'buscamos en la caja el monto faltante del cheque
-'                    sql = "select * from movimientocaja where inmueblemovimientocaja='2566' " & _
-'                          "and FechaMovimientoCaja=#" & Format(rst("FechaMov"), "YYYY/MM/DD") & "# and " & _
-'                          " NumDocumentoMovimientoCaja = '" & _
-'                          rst("Ndoc") & "'"
-'                          'IDRecibo <> '" & rst("idrecibo") & "' and
-'                    Set rsm = cnnConexion.Execute(sql)
-'                    If Not (rsm.EOF And rsm.BOF) Then
-'                        Monto = 0
-'                        Do
-'                            Monto = Monto + rsm("montomovimientocaja") - rsm("efectivomovimientocaja") - rsm("montocheque1")
-'                            boIgual = Monto = rst("monto")
-'                            rsm.MoveNext
-'                        Loop Until rsm.EOF
-'                    End If
-'                    rsm.Close
-'                    Set rsm = Nothing
-'                End If
-'                If Not boIgual Then
-'                    Debug.Print "No cuadra recibo #" & rst("idrecibo")
-'                End If
-'            End If
-'            .MoveNext
-'        Loop Until .EOF
-'    End With
+
     
 '--------fin validacion
     
@@ -1482,12 +1398,12 @@ Ocurre_Error:
     '
     '   centra el encabezado de las celdas de un grid
     '---------------------------------------------------------------------------------------------
-    Public Sub centra_titulo(grid As Control, Optional ancho As Boolean)
+    Public Sub centra_titulo(Grid As Control, Optional ancho As Boolean)
     'variables locales
     Dim I%, Ncol() As Integer, n%, strTag$ 'variables locales
     
     '
-    With grid
+    With Grid
         '
         .Visible = False
         .FormatString = .FormatString
@@ -2867,9 +2783,9 @@ Salir: If Err <> 0 Then
 Public Sub addToolTip(Contacto As String, Gestion As String, Por As String)
 Dim INI&, lTop&
 Set frmTT = New frmToolTip
-frmTT.lbl(1) = Contacto
-frmTT.lbl(2) = Gestion
-frmTT.lbl(4) = Por
+frmTT.Lbl(1) = Contacto
+frmTT.Lbl(2) = Gestion
+frmTT.Lbl(4) = Por
 INI = Screen.Height
 frmTT.Top = INI
 frmTT.Show

@@ -1,11 +1,12 @@
 VERSION 5.00
 Object = "{F0D2F211-CCB0-11D0-A316-00AA00688B10}#1.0#0"; "MSDATLST.OCX"
+Object = "{C932BA88-4374-101B-A56C-00AA003668DC}#1.1#0"; "MSMASK32.OCX"
 Object = "{0ECD9B60-23AA-11D0-B351-00A0C9055D8E}#6.0#0"; "MSHFLXGD.OCX"
 Begin VB.Form frmchequecontrol 
    Caption         =   "Control Cheques Emitidos"
    ClientHeight    =   7695
    ClientLeft      =   60
-   ClientTop       =   750
+   ClientTop       =   450
    ClientWidth     =   12420
    ControlBox      =   0   'False
    LinkTopic       =   "Form1"
@@ -17,51 +18,51 @@ Begin VB.Form frmchequecontrol
       Height          =   1275
       Index           =   0
       Left            =   240
-      TabIndex        =   0
+      TabIndex        =   1
       Top             =   120
-      Width           =   11295
+      Width           =   11670
+      Begin VB.TextBox txt 
+         Alignment       =   1  'Right Justify
+         Height          =   315
+         Index           =   0
+         Left            =   9120
+         TabIndex        =   5
+         Text            =   "0,00"
+         Top             =   300
+         Width           =   2460
+      End
       Begin VB.Frame Frame1 
          Height          =   555
-         Left            =   6255
+         Left            =   8220
          TabIndex        =   2
          Top             =   630
-         Width           =   4800
+         Width           =   3360
          Begin VB.CommandButton cmd 
-            Caption         =   "Salir"
+            Caption         =   "Guardar"
             Height          =   375
-            Index           =   0
-            Left            =   3210
+            Index           =   1
+            Left            =   75
+            Picture         =   "frmchequecontrol.frx":0000
             TabIndex        =   4
             Top             =   135
             Width           =   1545
          End
          Begin VB.CommandButton cmd 
-            Caption         =   "Guardar"
+            Caption         =   "Salir"
             Height          =   375
-            Index           =   1
-            Left            =   1635
-            Picture         =   "frmchequecontrol.frx":0000
+            Index           =   0
+            Left            =   1650
             TabIndex        =   3
             Top             =   135
             Width           =   1545
          End
       End
-      Begin VB.TextBox txt 
-         Alignment       =   1  'Right Justify
-         Height          =   315
-         Index           =   0
-         Left            =   9465
-         TabIndex        =   1
-         Text            =   "0,00"
-         Top             =   300
-         Width           =   1560
-      End
       Begin MSDataListLib.DataCombo dtc 
          DataField       =   "CodInm"
          Height          =   315
          Index           =   0
-         Left            =   1515
-         TabIndex        =   5
+         Left            =   1020
+         TabIndex        =   6
          Top             =   300
          Width           =   1050
          _ExtentX        =   1852
@@ -75,8 +76,8 @@ Begin VB.Form frmchequecontrol
          DataField       =   "Nombre"
          Height          =   315
          Index           =   1
-         Left            =   2625
-         TabIndex        =   6
+         Left            =   2130
+         TabIndex        =   7
          Top             =   300
          Width           =   6825
          _ExtentX        =   12039
@@ -89,8 +90,8 @@ Begin VB.Form frmchequecontrol
       Begin MSDataListLib.DataCombo dtc 
          Height          =   315
          Index           =   2
-         Left            =   1515
-         TabIndex        =   7
+         Left            =   1020
+         TabIndex        =   8
          Top             =   795
          Width           =   2355
          _ExtentX        =   4154
@@ -104,8 +105,8 @@ Begin VB.Form frmchequecontrol
       Begin MSDataListLib.DataCombo dtc 
          Height          =   315
          Index           =   3
-         Left            =   3930
-         TabIndex        =   8
+         Left            =   3435
+         TabIndex        =   9
          Top             =   795
          Width           =   2220
          _ExtentX        =   3916
@@ -116,29 +117,56 @@ Begin VB.Form frmchequecontrol
          BoundColumn     =   "NombreBanco"
          Text            =   ""
       End
-      Begin VB.Label lbl 
-         Caption         =   "&Inmueble:"
-         Height          =   240
+      Begin MSMask.MaskEdBox MskFecha 
+         Bindings        =   "frmchequecontrol.frx":030A
+         DataField       =   "FRecep"
+         Height          =   315
          Index           =   0
-         Left            =   180
+         Left            =   6825
          TabIndex        =   10
-         Top             =   345
-         Width           =   1215
+         TabStop         =   0   'False
+         Top             =   810
+         Width           =   1260
+         _ExtentX        =   2223
+         _ExtentY        =   556
+         _Version        =   393216
+         MaxLength       =   12
+         Format          =   "dd/MM/yyyy"
+         Mask            =   "##/##/####"
+         PromptChar      =   "_"
+      End
+      Begin VB.Label lbl 
+         Caption         =   "&Fecha:"
+         Height          =   240
+         Index           =   2
+         Left            =   6075
+         TabIndex        =   13
+         Top             =   840
+         Width           =   855
       End
       Begin VB.Label lbl 
          Caption         =   "&Cuentas:"
          Height          =   240
          Index           =   1
          Left            =   180
-         TabIndex        =   9
+         TabIndex        =   12
          Top             =   825
+         Width           =   1215
+      End
+      Begin VB.Label lbl 
+         Caption         =   "&Inmueble:"
+         Height          =   240
+         Index           =   0
+         Left            =   180
+         TabIndex        =   11
+         Top             =   345
          Width           =   1215
       End
    End
    Begin MSHierarchicalFlexGridLib.MSHFlexGrid Grid 
       Height          =   4755
       Left            =   240
-      TabIndex        =   11
+      TabIndex        =   0
       Tag             =   "400|1000|1200|5000|1500|1200|600|400"
       Top             =   1560
       Width           =   11715
@@ -183,6 +211,7 @@ Begin VB.Form frmchequecontrol
    End
    Begin VB.Menu chequecontrol 
       Caption         =   "Cheque Control"
+      Visible         =   0   'False
       Begin VB.Menu cargado 
          Caption         =   "Detalle Cargado"
       End
@@ -201,7 +230,7 @@ Private Sub cargado_Click()
 Dim rst As ADODB.Recordset
 Dim sql As String, IDCheque As Integer
 
-IDCheque = Grid.TextMatrix(Grid.RowSel, 1)
+IDCheque = grid.TextMatrix(grid.RowSel, 1)
 
 MsgBox IDCheque, vbInformation, App.ProductName
 End Sub
@@ -225,7 +254,7 @@ If Area = 2 Then
         Case 0, 1 'codinm y nombre inm
             If Index = 0 Then dtc(1) = dtc(0).BoundText
             If Index = 1 Then dtc(1) = dtc(0).BoundText
-            Call rtnLimpiar_Grid(Grid)
+            Call rtnLimpiar_Grid(grid)
             Call Inf_Inmueble
             Call Listar
             
@@ -234,7 +263,7 @@ If Area = 2 Then
             If Index = 2 Then dtc(3) = dtc(2).BoundText
             If Index = 3 Then dtc(2) = dtc(3).BoundText
             'MousePointer = vbHourglass
-            Call rtnLimpiar_Grid(Grid)
+            Call rtnLimpiar_Grid(grid)
             Call Listar
             'MousePointer = vbDefault
     End Select
@@ -259,7 +288,7 @@ rstcontrol(1).Open sql, cnnConexion, adOpenStatic, adLockReadOnly, adCmdText
 
 Set dtc(0).RowSource = rstcontrol(0)
 Set dtc(1).RowSource = rstcontrol(1)
-Call centra_titulo(Grid, True)
+Call centra_titulo(grid, True)
 Call Listar
 End Sub
 
@@ -328,6 +357,7 @@ If dtc(0) <> "" Then
         strFiltro = " AND C.Cuenta='" & dtc(3) & "'"
     Else
         If Not (rstcontrol(2).BOF And rstcontrol(2).EOF) Then
+            rstcontrol(2).MoveFirst
             Do
                 If strFiltro <> "" Then strFiltro = strFiltro & " OR "
                 strFiltro = strFiltro & "C.Cuenta='" & rstcontrol(2)("NumCuenta") & "'"
@@ -338,7 +368,9 @@ If dtc(0) <> "" Then
         
     End If
 End If
-
+    If IsDate(MskFecha(0)) Then
+        strFiltro = strFiltro & " AND C.FechaCheque =#" & Format(MskFecha(0), "mm/dd/yy") & "#"
+    End If
 strSQL = "SELECT C.IDCheque, C.FechaCheque, C.Beneficiario, C.Banco," & _
          "C.Cuenta, Sum(CD.Monto) as Total, C.Firma1, C.Firma2 " & _
          "FROM Cheque as C INNER JOIN ChequeDetalle as CD " & _
@@ -353,30 +385,30 @@ rst.Open strSQL, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
 
 If Not (rst.EOF And rst.BOF) Then
     I = 1
-    Call rtnLimpiar_Grid(Grid)
-    Grid.Rows = rst.RecordCount + 1
+    Call rtnLimpiar_Grid(grid)
+    grid.Rows = rst.RecordCount + 1
     Do
-        Grid.TextMatrix(I, 0) = I
-        Grid.TextMatrix(I, 1) = Format(rst("IDCheque"), "000000")
-        Grid.Row = I
-        Grid.Col = 1
-        Grid.CellFontUnderline = True
-        Grid.CellForeColor = &HFF0000
+        grid.TextMatrix(I, 0) = I
+        grid.TextMatrix(I, 1) = Format(rst("IDCheque"), "000000")
+        grid.Row = I
+        grid.Col = 1
+        grid.CellFontUnderline = True
+        grid.CellForeColor = &HFF0000
 '        Grid.CellForeColor = &H80000012
 '        Grid.CellFontUnderline = False
-        Grid.TextMatrix(I, 2) = rst("FechaCheque")
-        Grid.TextMatrix(I, 3) = rst("Beneficiario")
-        Grid.TextMatrix(I, 4) = Format(rst("Total"), "#,##0.00")
-        Grid.TextMatrix(I, 7) = I
-        Grid.Col = 5
-        Grid.Row = I
-        Set Grid.CellPicture = img(IIf(rst("Firma1"), 1, 0))
-        Grid.CellPictureAlignment = flexAlignCenterCenter
-        Grid.Col = 6
-        Set Grid.CellPicture = img(IIf(rst("Firma2"), 1, 0))
-        Grid.CellPictureAlignment = flexAlignCenterCenter
+        grid.TextMatrix(I, 2) = rst("FechaCheque")
+        grid.TextMatrix(I, 3) = rst("Beneficiario")
+        grid.TextMatrix(I, 4) = Format(rst("Total"), "#,##0.00")
+        grid.TextMatrix(I, 7) = I
+        grid.Col = 5
+        grid.Row = I
+        Set grid.CellPicture = img(IIf(rst("Firma1"), 1, 0))
+        grid.CellPictureAlignment = flexAlignCenterCenter
+        grid.Col = 6
+        Set grid.CellPicture = img(IIf(rst("Firma2"), 1, 0))
+        grid.CellPictureAlignment = flexAlignCenterCenter
         rst.MoveNext
-        If I Mod 2 = 0 Then Marcar_Linea Grid, &H80000018
+        If I Mod 2 = 0 Then Marcar_Linea grid, &H80000018
         I = I + 1
         DoEvents
         
@@ -384,7 +416,7 @@ If Not (rst.EOF And rst.BOF) Then
             MsgBox "Demasiados registros, no se pueden mostrar todos", vbInformation, Me.Caption
             rst.Close
             Set rst = Nothing
-            Grid.Rows = 1001
+            grid.Rows = 1001
             Exit Sub
         End If
         
@@ -404,7 +436,7 @@ Set rstcontrol(2) = Nothing
 End Sub
 
 Private Sub grid_Click()
-With Grid
+With grid
     If .RowSel >= 1 Then
         If .ColSel = 5 Or .ColSel = 6 Then
             .Col = .ColSel
@@ -424,8 +456,8 @@ Dim acum As Long
 MousePointer = vbHourglass
 cmd(1).Enabled = False
 cmd(0).Enabled = False
-With Grid
-    For I = 1 To Grid.Rows - 1
+With grid
+    For I = 1 To grid.Rows - 1
         If (IsNumeric(.TextMatrix(I, 1))) Then
             .Col = 5
             .Row = I
@@ -458,5 +490,13 @@ End Sub
 Private Sub Grid_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Button = 2 Then
     PopupMenu chequecontrol
+End If
+End Sub
+
+
+Private Sub MskFecha_KeyPress(Index As Integer, KeyAscii As Integer)
+If KeyAscii = 13 Then
+    Call rtnLimpiar_Grid(grid)
+    Call Listar
 End If
 End Sub

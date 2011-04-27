@@ -2,11 +2,11 @@ VERSION 5.00
 Object = "{F0D2F211-CCB0-11D0-A316-00AA00688B10}#1.0#0"; "MSDATLST.OCX"
 Object = "{CDE57A40-8B86-11D0-B3C6-00A0C90AEA82}#1.0#0"; "MSDATGRD.OCX"
 Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
-Object = "{C932BA88-4374-101B-A56C-00AA003668DC}#1.1#0"; "msmask32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{67397AA1-7FB1-11D0-B148-00A0C922E820}#6.0#0"; "msadodc.ocx"
-Object = "{5E9E78A0-531B-11CF-91F6-C2863C385E30}#1.0#0"; "msflxgrd.ocx"
+Object = "{C932BA88-4374-101B-A56C-00AA003668DC}#1.1#0"; "MSMASK32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{67397AA1-7FB1-11D0-B148-00A0C922E820}#6.0#0"; "MSADODC.OCX"
+Object = "{5E9E78A0-531B-11CF-91F6-C2863C385E30}#1.0#0"; "MSFLXGRD.OCX"
 Begin VB.Form FrmCheqDevuelto 
    Caption         =   "Cheques Devueltos"
    ClientHeight    =   3135
@@ -146,9 +146,9 @@ Begin VB.Form FrmCheqDevuelto
       TabCaption(1)   =   "Lista"
       TabPicture(1)   =   "FrmCheqDevuelto.frx":001C
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "dtgCheques"
+      Tab(1).Control(0)=   "fraCDev(3)"
       Tab(1).Control(1)=   "fraCDev(2)"
-      Tab(1).Control(2)=   "fraCDev(3)"
+      Tab(1).Control(2)=   "dtgCheques"
       Tab(1).ControlCount=   3
       Begin MSComCtl2.MonthView mntFecha 
          Height          =   2310
@@ -166,7 +166,7 @@ Begin VB.Form FrmCheqDevuelto
          MousePointer    =   99
          MouseIcon       =   "FrmCheqDevuelto.frx":0038
          ShowToday       =   0   'False
-         StartOfWeek     =   54132738
+         StartOfWeek     =   72155138
          TitleBackColor  =   -2147483646
          TitleForeColor  =   -2147483639
          CurrentDate     =   37522
@@ -1284,7 +1284,7 @@ Attribute VB_Exposed = False
                     FlexCheques.TextArray(I + 6) = ""
                 Next
                 FlexCheques.Rows = 2
-                CHK.Value = vbUnchecked
+                chk.Value = vbUnchecked
                 txtCdev(4) = ""
                 Call RtnEstado(5, Toolbar1)
     '
@@ -1308,12 +1308,12 @@ Attribute VB_Exposed = False
                 !Usuario = gcUsuario
                 !Hora = Time()
                 !Freg = Date
-                If CHK.Value = vbUnchecked Then
+                If chk.Value = vbUnchecked Then
                 
                     If Respuesta("Este cheque devuelto no se le cobrará comisión." & _
                     vbCrLf & "¿Desea que se le cobre la comisión a este cliente?") Then
                     
-                    CHK.Value = vbChecked
+                    chk.Value = vbChecked
                 
                     End If
                 End If
@@ -1324,7 +1324,7 @@ Attribute VB_Exposed = False
                     cnnConexion.Execute "INSERT INTO ChequeDevuelto (CodInm,Apto,Banco,Numero," _
                     & "Fecha,Monto,Motivo,Comision,Usuario,Freg) SELECT " & gcCodInm & ",'" & !Codigo & _
                     "','" & !Banco & "'," & !NumCheque & ",'" & !fecha & "','" & CCur(!Monto) & _
-                    "','" & !Motivo & "'," & CHK.Value & ",'" & gcUsuario & "',DATE()"
+                    "','" & !Motivo & "'," & chk.Value & ",'" & gcUsuario & "',DATE()"
                     '----------------------------
                     'genera una factura pendiente en la deuda del propietario
                     curCdev = CCur(txtCdev(1))

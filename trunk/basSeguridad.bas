@@ -79,34 +79,37 @@ Attribute VB_Name = "basSeguridad"
                     rstSeg.Update "IP", strIP
                     rstSeg.Update "Maquina", gcMAC
                     Call rtnBitacora("Log In, Iniciando sesión SAC...")
-                    rstPerfil.Open "SELECT * FROM Perfiles WHERE Usuario ='" & strUID & "'", cnnSeg, _
-                    adOpenKeyset, adLockOptimistic, adCmdText
-                    If rstPerfil.EOF Or rstPerfil.BOF Then
-                        ftnSegur = MsgBox("Consulte al supervisor, No Tiene Ningún Acceso al Sistem" _
-                        & "a...", vbInformation, App.ProductName)
-                        rstPerfil.Close
-                        Set rstPerfil = Nothing
-                        cnnSeg.Close
-                        Set cnnSeg = Nothing
-                        Exit Function
-                    End If
-                    rstPerfil.MoveFirst
-                    On Error Resume Next
                     
-                    Do Until rstPerfil.EOF
-                        If rstPerfil!Acceso = "AC400(0)" Then booCajero = True
-                        intPA = InStr(rstPerfil!Acceso, "(")
-                        If Not intPA = 0 Then
-                            intPC = InStr(rstPerfil!Acceso, ")")
-                            intInd = Mid(rstPerfil!Acceso, intPA + 1, intPC - intPA - 1)
-                            FrmAdmin.Controls(Left(rstPerfil!Acceso, intPA - 1)).Item(intInd).Enabled = True
-                        Else
-                            FrmAdmin.Controls(rstPerfil!Acceso).Enabled = True
-                            
+                    If gcNivel > nuADSYS Then
+                        rstPerfil.Open "SELECT * FROM Perfiles WHERE Usuario ='" & strUID & "'", cnnSeg, _
+                        adOpenKeyset, adLockOptimistic, adCmdText
+                        If rstPerfil.EOF Or rstPerfil.BOF Then
+                            ftnSegur = MsgBox("Consulte al supervisor, No Tiene Ningún Acceso al Sistem" _
+                            & "a...", vbInformation, App.ProductName)
+                            rstPerfil.Close
+                            Set rstPerfil = Nothing
+                            cnnSeg.Close
+                            Set cnnSeg = Nothing
+                            Exit Function
                         End If
-                        rstPerfil.MoveNext
-                    Loop
-                    rstPerfil.Close ': Set rstPerfil = Nothing
+                        rstPerfil.MoveFirst
+                        On Error Resume Next
+                        
+                        Do Until rstPerfil.EOF
+                            If rstPerfil!Acceso = "AC400(0)" Then booCajero = True
+                            intPA = InStr(rstPerfil!Acceso, "(")
+                            If Not intPA = 0 Then
+                                intPC = InStr(rstPerfil!Acceso, ")")
+                                intInd = Mid(rstPerfil!Acceso, intPA + 1, intPC - intPA - 1)
+                                FrmAdmin.Controls(Left(rstPerfil!Acceso, intPA - 1)).Item(intInd).Enabled = True
+                            Else
+                                FrmAdmin.Controls(rstPerfil!Acceso).Enabled = True
+                                
+                            End If
+                            rstPerfil.MoveNext
+                        Loop
+                        rstPerfil.Close ': Set rstPerfil = Nothing
+                    End If
                     'coloca la hora de entrada al trabajo
                     If gcNivel > nuAdministrador Then    '   si no es el administrador del sistema ó
                                             '   no es administrador de la empresa
