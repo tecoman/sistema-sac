@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{F0D2F211-CCB0-11D0-A316-00AA00688B10}#1.0#0"; "MSDATLST.OCX"
 Object = "{CDE57A40-8B86-11D0-B3C6-00A0C90AEA82}#1.0#0"; "MSDATGRD.OCX"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{67397AA1-7FB1-11D0-B148-00A0C922E820}#6.0#0"; "MSADODC.OCX"
 Begin VB.Form FrmUsuarios 
    Caption         =   "Tablas del Sistema"
@@ -671,19 +671,19 @@ Attribute VB_Exposed = False
                     strBitacora = "Actualizar Reg.Usuarios: " & !NombreUsuario & "; " & dtcUsuario
                 End If
                 cnnTabla.Execute strSQL
-                If Nivel < 2 Then
-                    Dim ctlMenu As Control
-                    Dim strIndice As String
-                    For Each ctlMenu In FrmAdmin.Controls
-                        If TypeOf ctlMenu Is Menu Then
-                            strIndice = "(" & ctlMenu.Index & ")"
-                            If Err.Number = 343 Then strIndice = "": Err.Clear
-                            cnnTabla.Execute "INSERT INTO Perfiles (Usuario,Acceso) VALU" _
-                            & "ES('" & txtUsuario(0) & "','" & ctlMenu.Name & strIndice _
-                            & "');"
-                        End If
-                    Next
-                End If
+'                If Nivel < 2 Then
+'                    Dim ctlMenu As Control
+'                    Dim strIndice As String
+'                    For Each ctlMenu In FrmAdmin.Controls
+'                        If TypeOf ctlMenu Is Menu Then
+'                            strIndice = "(" & ctlMenu.Index & ")"
+'                            If Err.Number = 343 Then strIndice = "": Err.Clear
+'                            cnnTabla.Execute "INSERT INTO Perfiles (Usuario,Acceso) VALU" _
+'                            & "ES('" & txtUsuario(0) & "','" & ctlMenu.Name & strIndice _
+'                            & "');"
+'                        End If
+'                    Next
+'                End If
                 If Err.Number = 0 Then
                     Call rtnBitacora(strBitacora)
                     Call RtnEstado(Button.Index, Toolbar1)

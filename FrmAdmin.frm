@@ -1148,6 +1148,7 @@ Attribute VB_Exposed = False
 Attribute poSendMail.VB_VarHelpID = -1
     Private bSendFailed     As Boolean
     
+    
     '
     '------------------------------------------------------------
     Private Sub AC01_Click()    'Seleccionar Inmueble
@@ -3023,6 +3024,16 @@ End Sub
     If Not gcPath Like "\\*" Then FrmAdmin.AC707(2).Checked = True
     wsServidor.Listen
     Me.BackColor = RGB(0, 0, 102)
+    ' si es el administrador del sistema activa todos los menus
+    If gcNivel = nuADSYS Or nuAdministrador Then
+        Dim ctlMenu As Control
+        Dim strIndice As String
+        For Each ctlMenu In FrmAdmin.Controls
+            If TypeOf ctlMenu Is Menu Then
+                ctlMenu.Enabled = True
+            End If
+        Next
+    End If
     Call Muestra_Formulario(frmCalendario, "Inicia Calendario")
     '
     End Sub

@@ -10,7 +10,6 @@ Begin VB.Form frmCalendario
    ControlBox      =   0   'False
    LinkTopic       =   "Form1"
    MDIChild        =   -1  'True
-   Picture         =   "frmCalendario.frx":0000
    ScaleHeight     =   3090
    ScaleWidth      =   4680
    WindowState     =   2  'Maximized
@@ -29,6 +28,7 @@ Const REFORMATION_YEAR As Integer = 1582
 Dim MonthAr(WEEKS - 1, DAYS_INWEEK - 1) As Integer
 Private Declare Function GetTempFileName Lib "kernel32" Alias "GetTempFileNameA" (ByVal lpszPath As String, ByVal lpPrefixString As String, ByVal wUnique As Long, ByVal lpTempFileName As String) As Long
 Dim Path As String
+
 
 Private Function Archivo_Temporal() As String
     Dim sSave As String, hOrgFile As Long, hNewFile As Long, bBytes() As Byte
@@ -68,11 +68,13 @@ Private Sub Form_Load()
 Dim anchoPantalla As Integer
 anchoPantalla = Screen.Width / Screen.TwipsPerPixelX
 
+
 If (anchoPantalla >= 1280 And anchoPantalla < 1360) Then
-    Me.Picture = LoadPicture(Cargar(106))
+    Me.Picture = LoadPicture(Cargar(IIf(Demo, 108, 106)))
 ElseIf (anchoPantalla >= 1360) Then
-    Me.Picture = LoadPicture(Cargar(107))
+    Me.Picture = LoadPicture(Cargar(IIf(Demo, 107, 107)))
 End If
+
 Me.BackColor = RGB(5, 68, 106)
 Call CalendarioActual
 End Sub
@@ -222,7 +224,7 @@ Private Sub FillGrid(MaxDays As Integer)
  Dim strText As String
  Dim strHeader As String
  Dim blnFlag As Boolean
- Dim N As Integer
+ Dim n As Integer
  Dim tempY As Integer
 
    On Error Resume Next

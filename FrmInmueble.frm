@@ -417,17 +417,17 @@ Begin VB.Form FrmInmueble
       TabCaption(3)   =   "Junta de Condominio"
       TabPicture(3)   =   "FrmInmueble.frx":04E6
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "FraJunta"
-      Tab(3).Control(1)=   "fraInm(2)"
+      Tab(3).Control(0)=   "fraInm(2)"
+      Tab(3).Control(1)=   "FraJunta"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "Lista"
       TabPicture(4)   =   "FrmInmueble.frx":0502
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "dtgInm"
-      Tab(4).Control(1)=   "fraInm(5)"
+      Tab(4).Control(0)=   "AdoInm"
+      Tab(4).Control(1)=   "fraInm(7)"
       Tab(4).Control(2)=   "fraInm(4)"
-      Tab(4).Control(3)=   "fraInm(7)"
-      Tab(4).Control(4)=   "AdoInm"
+      Tab(4).Control(3)=   "fraInm(5)"
+      Tab(4).Control(4)=   "dtgInm"
       Tab(4).ControlCount=   5
       Begin VB.Frame fraInm 
          Height          =   165
@@ -1362,6 +1362,7 @@ Begin VB.Form FrmInmueble
             _ExtentX        =   2593
             _ExtentY        =   556
             _Version        =   393216
+            IntegralHeight  =   0   'False
             BackColor       =   -2147483643
             ListField       =   "TipoCta"
             BoundColumn     =   "Nombre"
@@ -2735,8 +2736,6 @@ Attribute rstInmueble.VB_VarHelpID = -1
     Call rtnServicios
     Call RtnEstado(6, Toolbar1, rstInmueble(Inm).EOF Or rstInmueble(Inm).BOF)
     '
-    Set dtgJC.DataSource = adoJC
-    '
     End Sub
 
     '---------------------------------------------------------------------------------------------
@@ -3033,11 +3032,13 @@ Attribute rstInmueble.VB_VarHelpID = -1
             Set rstServ(I) = Nothing
         End With
     Next
-    'Junta de Condominio
-    adoJC.ConnectionString = cnnOLEDB & gcPath & "\" & rstInmueble(Inm).Fields("COdInm") _
-    & "\inm.mdb"
-    adoJC.Refresh
-    adoJC.Recordset.Filter = "CarJunta<>''"
+    If Not (rstInmueble(Inm).EOF And rstInmueble(Inm).BOF) Then
+        'Junta de Condominio
+        adoJC.ConnectionString = cnnOLEDB & gcPath & "\" & rstInmueble(Inm).Fields("COdInm") _
+        & "\inm.mdb"
+        adoJC.Refresh
+        adoJC.Recordset.Filter = "CarJunta<>''"
+    End If
     End Sub
 
 
