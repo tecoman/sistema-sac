@@ -73,6 +73,8 @@ If (anchoPantalla >= 1280 And anchoPantalla < 1360) Then
     Me.Picture = LoadPicture(Cargar(IIf(Demo, 108, 106)))
 ElseIf (anchoPantalla >= 1360) Then
     Me.Picture = LoadPicture(Cargar(IIf(Demo, 107, 107)))
+Else
+     Me.Picture = LoadPicture(Cargar(IIf(Demo, 107, 107)))
 End If
 
 Me.BackColor = RGB(5, 68, 106)
