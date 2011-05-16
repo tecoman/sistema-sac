@@ -522,7 +522,7 @@ End Sub
     '   de abogado y la deuda total. Además verifica el estatus del propietario, demandado,
     '   convenio, etc.
     '---------------------------------------------------------------------------------------------
-    Public Sub RtnFlex(StrApto$, Grid As Control, intMesMora%, intMora%, C%, txtmora As TextBox, _
+    Public Sub RtnFlex(StrApto$, grid As Control, intMesMora%, intMora%, C%, txtmora As TextBox, _
     cnnApto As ADODB.Connection, Optional Inm As String, Optional BsF As Boolean)
     'variales locales
     Dim Rfacturas As ADODB.Recordset
@@ -545,7 +545,7 @@ End Sub
     End If
     Rfacturas.MoveFirst
     '
-    With Grid
+    With grid
     '   Configura la presentación del Grid(Titulos, Ancho de columna, N° de Filas)
         .Rows = Rfacturas.RecordCount + 1
         .Cols = C
@@ -561,7 +561,7 @@ End Sub
         cAbono = Rfacturas("PAGADO") * nFactor
         cSaldo = Rfacturas("SALDO") * nFactor
         
-        With Grid
+        With grid
     '
             .Col = 1
             .Row = I
@@ -587,9 +587,9 @@ End Sub
         End With
     '
     Loop    'Punto de control {fin hasta}
-    Grid.Col = 0
-    Grid.ColSel = Grid.Cols - 1
-    If Grid.Enabled And Grid.Visible Then Grid.SetFocus
+    grid.Col = 0
+    grid.ColSel = grid.Cols - 1
+    If grid.Enabled And grid.Visible Then grid.SetFocus
     'Busca Honorarios-----------------------------------------------------------------------------
     If Rfacturas.RecordCount > intMesMora Then
         txtmora = Format(Round(curDeuda * intMora / 100), "#,##0.00")
@@ -832,12 +832,19 @@ End Sub
 '    cnnConexion.Execute "delete from chequedetalle where idcheque = 50654 and Detalle='INST LAMINAS PROTECTORAS REMACHES CAJETINES EXTINT'", N
 '    Call rtnBitacora("Borrados (" & N & ") registros en cero de la tabla TDFCheques")
     Dim sql As String
-    'gcMAC = "REMOTO"
-    'gcUsuario = "SUPERVISOR"
-
-    'sql = "update Factura in '" & gcPath & "\2517\inm.mdb' set pagado = facturado, saldo = 0 where fact='0308517002'"
-    
-    'cnnConexion.Execute sql, n
+'    gcMAC = "REMOTO"
+'    gcUsuario = "SUPERVISOR"
+'
+'    sql = "update cheque set conciliado = 0"
+'    cnnConexion.Execute sql, n
+'    sql = "update chequeAnulado set conciliado = 0"
+'    cnnConexion.Execute sql, n
+'
+'    sql = "update cheque set conciliado = -1 where fechacheque < #01/01/2009#"
+'    cnnConexion.Execute sql, n
+'
+'    sql = "update cheque set conciliado = -1 where fechacheque < #01/01/2009#"
+'    cnnConexion.Execute sql, n
 '
 '    cnnConexion.Execute sql, N
     'Call rtnBitacora("Actualizada Factura: 0308517002 2517/001B (" & n & ")")
@@ -1398,12 +1405,12 @@ Ocurre_Error:
     '
     '   centra el encabezado de las celdas de un grid
     '---------------------------------------------------------------------------------------------
-    Public Sub centra_titulo(Grid As Control, Optional ancho As Boolean)
+    Public Sub centra_titulo(grid As Control, Optional ancho As Boolean)
     'variables locales
     Dim I%, Ncol() As Integer, n%, strTag$ 'variables locales
     
     '
-    With Grid
+    With grid
         '
         .Visible = False
         .FormatString = .FormatString
@@ -2783,9 +2790,9 @@ Salir: If Err <> 0 Then
 Public Sub addToolTip(Contacto As String, Gestion As String, Por As String)
 Dim INI&, lTop&
 Set frmTT = New frmToolTip
-frmTT.Lbl(1) = Contacto
-frmTT.Lbl(2) = Gestion
-frmTT.Lbl(4) = Por
+frmTT.lbl(1) = Contacto
+frmTT.lbl(2) = Gestion
+frmTT.lbl(4) = Por
 INI = Screen.Height
 frmTT.Top = INI
 frmTT.Show

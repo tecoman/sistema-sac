@@ -417,17 +417,17 @@ Begin VB.Form FrmInmueble
       TabCaption(3)   =   "Junta de Condominio"
       TabPicture(3)   =   "FrmInmueble.frx":04E6
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraInm(2)"
-      Tab(3).Control(1)=   "FraJunta"
+      Tab(3).Control(0)=   "FraJunta"
+      Tab(3).Control(1)=   "fraInm(2)"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "Lista"
       TabPicture(4)   =   "FrmInmueble.frx":0502
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "AdoInm"
-      Tab(4).Control(1)=   "fraInm(7)"
+      Tab(4).Control(0)=   "dtgInm"
+      Tab(4).Control(1)=   "fraInm(5)"
       Tab(4).Control(2)=   "fraInm(4)"
-      Tab(4).Control(3)=   "fraInm(5)"
-      Tab(4).Control(4)=   "dtgInm"
+      Tab(4).Control(3)=   "fraInm(7)"
+      Tab(4).Control(4)=   "AdoInm"
       Tab(4).ControlCount=   5
       Begin VB.Frame fraInm 
          Height          =   165
@@ -2656,7 +2656,7 @@ Attribute rstInmueble.VB_VarHelpID = -1
     Private Sub SSTab1_Click(PreviousTab As Integer)    '
     '---------------------------------------------------------------------------------------------
     '
-    Select Case SSTab1.tab
+    Select Case SSTab1.Tab
         'Datos Generales,Administrativos,Servicios,Adicionales
         Case 0, 1, 2, 3: fraInm(0).Visible = True
         '   ---------------------
@@ -2715,7 +2715,7 @@ Attribute rstInmueble.VB_VarHelpID = -1
     cnnConexion, adOpenStatic, adLockReadOnly, adCmdText
     Set cmbInm(3).RowSource = rstInmueble(tipoCta)
     '
-    SSTab1.tab = 0
+    SSTab1.Tab = 0
     For H = 0 To 2
         Set gridServicios(H).FontFixed = LetraTitulo(LoadResString(527), 7, , True)
         gridServicios(H).ColWidth(0) = 1790
@@ -2856,13 +2856,9 @@ Attribute rstInmueble.VB_VarHelpID = -1
                 
             Case "DELETE"       'Eliminar Registro
         '   -----------------
-                If gcNivel > nuAdministrador Then
-                    MsgBox "Coño " & gcUsuario & " tú si eres entrepito(a). ¿Quien te dijo pre" _
-                    & "sionara este botón?", vbInformation, App.ProductName
-                Else
-                    MsgBox "Opción no esta disponible,....por ahora....", vbInformation, _
-                    App.ProductName
-                End If
+              
+                MsgBox "Opción no esta disponible,....por ahora....", vbInformation, _
+                App.ProductName
                 
             Case "EDIT1"        'Editar
         '   -----------------
