@@ -400,7 +400,7 @@ Begin VB.Form frmGestion
       NewRow4         =   0   'False
       Caption5        =   "Propietarios:"
       Child5          =   "ImageCombo1"
-      MinHeight5      =   390
+      MinHeight5      =   330
       Width5          =   1230
       NewRow5         =   -1  'True
       Begin VB.ComboBox Combo1 
@@ -418,7 +418,7 @@ Begin VB.Form frmGestion
          Height          =   315
          Index           =   0
          ItemData        =   "FrmEmpleado.frx":2156
-         Left            =   8580
+         Left            =   8610
          List            =   "FrmEmpleado.frx":2184
          Style           =   2  'Dropdown List
          TabIndex        =   31
@@ -426,13 +426,13 @@ Begin VB.Form frmGestion
          Width           =   1395
       End
       Begin MSComctlLib.ImageCombo ImageCombo1 
-         Height          =   390
-         Left            =   1365
+         Height          =   330
+         Left            =   1215
          TabIndex        =   29
-         Top             =   450
-         Width           =   10500
-         _ExtentX        =   18521
-         _ExtentY        =   688
+         Top             =   480
+         Width           =   10650
+         _ExtentX        =   18785
+         _ExtentY        =   582
          _Version        =   393216
          ForeColor       =   -2147483640
          BackColor       =   -2147483643
@@ -449,20 +449,20 @@ Begin VB.Form frmGestion
       End
       Begin VB.TextBox Text1 
          Height          =   390
-         Left            =   7470
+         Left            =   7545
          TabIndex        =   8
          Text            =   "5"
          Top             =   30
          Width           =   405
       End
       Begin MSComctlLib.Toolbar Toolbar1 
-         Height          =   390
+         Height          =   570
          Left            =   165
          TabIndex        =   7
          Top             =   30
-         Width           =   6000
-         _ExtentX        =   10583
-         _ExtentY        =   688
+         Width           =   6225
+         _ExtentX        =   10980
+         _ExtentY        =   1005
          ButtonWidth     =   714
          ButtonHeight    =   688
          Style           =   1
@@ -550,8 +550,8 @@ If Combo1(0) <> "" And Combo1(1) <> "" Then Call Vista
 End Sub
 
 Private Sub Form_Load()
-For I = 0 To 2
-    Combo1(1).AddItem Year(Date) - I, I
+For i = 0 To 2
+    Combo1(1).AddItem Year(Date) - i, i
 Next
 Combo1(1) = Combo1(1).List(0)
 Combo1(0) = Combo1(0).List(Month(Date) - 1)
@@ -559,7 +559,7 @@ Combo1(0) = Combo1(0).List(Month(Date) - 1)
 Call Listar
 With clbGestion
 '
-    For I = 1 To .Bands.Count - 1: .Bands(I).MinHeight = 315
+    For i = 1 To .Bands.Count - 1: .Bands(i).MinHeight = 315
     Next
 End With
 '
@@ -725,7 +725,7 @@ End Sub
     Dim Elemento As ComboItem
     Dim rstPropietario As New ADODB.Recordset
     Dim cnnPropietario As New ADODB.Connection
-    Dim I As Integer
+    Dim i As Integer
     '
     If Text1 = "" Or IsNull(Text1) Then Exit Sub
     cnnPropietario.Open cnnOLEDB & mcDatos
@@ -735,24 +735,24 @@ End Sub
     With rstPropietario
         If Not .EOF Or Not .BOF Then
             ReDim Dpropietario(.RecordCount, 7)
-            .MoveFirst: I = 0
+            .MoveFirst: i = 0
             ImageCombo1.ComboItems.Clear
             Set Elemento = ImageCombo1.ComboItems.Add(, , gcCodInm & " " & gcNomInm, 9, 9, 0)
             Do
                 'Llena una matriz con la información de c/propietario
-                Dpropietario(I, 0) = IIf(IsNull(!Codigo), "", !Codigo)
-                Dpropietario(I, 1) = IIf(IsNull(!telefonos), "", !telefonos)
-                Dpropietario(I, 2) = IIf(IsNull(!ExtOfc), "", !ExtOfc)
-                Dpropietario(I, 3) = IIf(IsNull(!TelfHab), "", !TelfHab)
-                Dpropietario(I, 4) = IIf(IsNull(!Celular), "", !Celular)
-                Dpropietario(I, 5) = IIf(IsNull(!Fax), "", !Fax)
-                Dpropietario(I, 6) = IIf(IsNull(!email), "", !email)
-                Dpropietario(I, 7) = IIf(IsNull(!Notas), "", !Notas)
+                Dpropietario(i, 0) = IIf(IsNull(!Codigo), "", !Codigo)
+                Dpropietario(i, 1) = IIf(IsNull(!telefonos), "", !telefonos)
+                Dpropietario(i, 2) = IIf(IsNull(!ExtOfc), "", !ExtOfc)
+                Dpropietario(i, 3) = IIf(IsNull(!TelfHab), "", !TelfHab)
+                Dpropietario(i, 4) = IIf(IsNull(!Celular), "", !Celular)
+                Dpropietario(i, 5) = IIf(IsNull(!Fax), "", !Fax)
+                Dpropietario(i, 6) = IIf(IsNull(!email), "", !email)
+                Dpropietario(i, 7) = IIf(IsNull(!Notas), "", !Notas)
                 strSQL = !Codigo & " " & !Nombre & " Rec.Pen.:(" & !Recibos & ")" 'Deuda: " & _
                 Format(!Deuda, "#,##0.00")
                 
                 Set Elemento = ImageCombo1.ComboItems.Add(, , strSQL, 10, 11, 1)
-                .MoveNext: I = I + 1
+                .MoveNext: i = i + 1
             Loop Until .EOF
             ImageCombo1.SelectedItem = ImageCombo1.ComboItems(1)
            .Close
@@ -909,16 +909,16 @@ Call rtnLimpiar_Grid(gridGestion)
 With objRst
     If Not .EOF Or Not .BOF Then
         strQDF = strSQL
-        .MoveFirst: I = 0
+        .MoveFirst: i = 0
         gridGestion.Rows = .RecordCount + 1
         Do
-            I = I + 1
-            gridGestion.TextMatrix(I, 0) = !fecha
-            gridGestion.TextMatrix(I, 1) = Format(!Hora, "hh:mm:ss ampm")
-            gridGestion.TextMatrix(I, 2) = !apto
-            gridGestion.TextMatrix(I, 3) = !Telf
-            gridGestion.TextMatrix(I, 4) = !Contacto
-            gridGestion.TextMatrix(I, 5) = !Resultado
+            i = i + 1
+            gridGestion.TextMatrix(i, 0) = !fecha
+            gridGestion.TextMatrix(i, 1) = Format(!Hora, "hh:mm:ss ampm")
+            gridGestion.TextMatrix(i, 2) = !apto
+            gridGestion.TextMatrix(i, 3) = !Telf
+            gridGestion.TextMatrix(i, 4) = !Contacto
+            gridGestion.TextMatrix(i, 5) = !Resultado
             .MoveNext
         Loop Until .EOF
         gridGestion.Col = 3
@@ -939,7 +939,7 @@ With gridGestion
     .ColWidth(2) = 700
     .ColWidth(3) = 1400
     .ColWidth(4) = 2300
-    For I = 0 To 4: ancho = ancho + .ColWidth(I)
+    For i = 0 To 4: ancho = ancho + .ColWidth(i)
     Next
     .ColWidth(5) = .Width - ancho - 200
     .ColAlignmentFixed = flexAlignCenterCenter

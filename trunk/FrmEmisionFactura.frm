@@ -48,17 +48,17 @@ Begin VB.Form FrmEmisionFactura
          TabCaption(1)   =   "Gastos &No Comunes"
          TabPicture(1)   =   "FrmEmisionFactura.frx":001C
          Tab(1).ControlEnabled=   0   'False
-         Tab(1).Control(0)=   "flexFactura(1)"
-         Tab(1).Control(1)=   "lblFact(10)"
-         Tab(1).Control(2)=   "lblFact(9)"
-         Tab(1).Control(3)=   "lblFact(8)"
-         Tab(1).Control(4)=   "lblFact(7)"
+         Tab(1).Control(0)=   "lblFact(1)"
+         Tab(1).Control(1)=   "lblFact(2)"
+         Tab(1).Control(2)=   "lblFact(3)"
+         Tab(1).Control(3)=   "lblFact(4)"
+         Tab(1).Control(4)=   "lblFact(5)"
          Tab(1).Control(5)=   "lblFact(6)"
-         Tab(1).Control(6)=   "lblFact(5)"
-         Tab(1).Control(7)=   "lblFact(4)"
-         Tab(1).Control(8)=   "lblFact(3)"
-         Tab(1).Control(9)=   "lblFact(2)"
-         Tab(1).Control(10)=   "lblFact(1)"
+         Tab(1).Control(6)=   "lblFact(7)"
+         Tab(1).Control(7)=   "lblFact(8)"
+         Tab(1).Control(8)=   "lblFact(9)"
+         Tab(1).Control(9)=   "lblFact(10)"
+         Tab(1).Control(10)=   "flexFactura(1)"
          Tab(1).ControlCount=   11
          Begin VB.TextBox txtFact 
             Alignment       =   1  'Right Justify
@@ -495,11 +495,11 @@ Attribute VB_Exposed = False
     '---------------------------------------------------------------------------------------------
 
     '---------------------------------------------------------------------------------------------
-    Private Sub CmbPeriodo_KeyPress(Index As Integer, KeyAscii As Integer)  '
+    Private Sub CmbPeriodo_KeyPress(index As Integer, KeyAscii As Integer)  '
     '---------------------------------------------------------------------------------------------
     '
     If KeyAscii = 13 Then
-        Select Case Index
+        Select Case index
             'Meses del año
             Case 0: CmbPeriodo(1).SetFocus
             '------------------------
@@ -512,10 +512,10 @@ Attribute VB_Exposed = False
     End Sub
 
     '29/08/2002--Rutina que controla los sucecos que ocurren al presionar un elemento de la matriz
-    Private Sub cmdFactura_Click(Index As Integer)  'de botones de comando------------------------
+    Private Sub cmdFactura_Click(index As Integer)  'de botones de comando------------------------
     '---------------------------------------------------------------------------------------------
     '
-    Select Case Index
+    Select Case index
         Case 0  'Botón asignar gastos
     '   -------------------------------
             Call rtnAsignacion
@@ -567,8 +567,14 @@ Attribute VB_Exposed = False
     Set cnn = New ADODB.Connection
     '
     'Conexión al inmueble seleccionado
-    If Not gcUbica Like "\25*" Then
-        MsgBox "Debe seleccionar un inmueble", vbCritical, App.ProductName
+    If (gcCodInm = "") Then
+        MsgBox "Debe seleccionar un inmueble para poder llevar a cabo esta operación", vbCritical, App.ProductName
+        Exit Sub
+    End If
+    If Dir(mcDatos, vbArchive) = "" Then
+        MsgBox "No consigo la información del inmueble, " & _
+        "si el problema persiste contacte al administrador del sistema.", vbCritical, App.ProductName
+        Exit Sub
     End If
     cnn.CursorLocation = adUseClient
     cnn.Open cnnOLEDB & mcDatos
@@ -1137,13 +1143,7 @@ Attribute VB_Exposed = False
             & "<#" & datPeriodo & "#) AND ((Factura.codprop) In (SELECT Codigo FROM Propietario" _
             & "s WHERE Recibos >= " & intMesMora & "))) GROUP BY Factura.codprop, InteGest.IntG" _
             & "es, InteGest.IntGes;"
-'        cnn.Execute "INSERT INTO GastoNoComun(PF,  CodApto, CodGasto, Concepto, Monto, Periodo," _
-        & "Fecha, Hora, Usuario) SELECT True as P, CodProp,'" & strGestion(0) & "','" & _
-        strGestion(1) & "', CLng(Sum(clng(Saldo)) *  '" & intGestion & "' / 100) as Hono ,#" & _
-        datPeriodo & "#,'" & Date & "' as Fec,'" & datHora & "' as Hor,'" & gcUsuario & _
-        "' FROM Factura WHERE Factura.Saldo<>0 AND Factura.Periodo<#" & datPeriodo & "# AND Cod" _
-        & "Prop IN (SELECT Codigo FROM Propietarios WHERE Recibos >= " & intMesMora & ") GROUP " _
-        & "BY Factura.codprop;"
+
     '
     End If
     '
@@ -1188,10 +1188,6 @@ Attribute VB_Exposed = False
         'Elimina la información de cheques devueltos
         cnn.Execute "DELETE * FROM ChequeDevuelto IN '" & gcPath & "\sac.mdb' WHERE CodInm='" & _
         gcCodInm & "' AND Numero IN (SELECT NumCheque FROM ChequeDevuelto WHERE Recuperado=False)"
-        '
-'        cnn.Execute "UPDATE ChequeDevuelto SET Recuperado=True,Freg=Date(),Usuario='" & _
-'        gcUsuario & "' WHERE recuperado=False;"
-'        cnn.Execute "DELETE * FROM Factura WHERE Fact LIKE 'CHD%';"
         '
     End If
     '
@@ -1317,11 +1313,22 @@ Attribute VB_Exposed = False
         '
     End With
     Set rstGNC = Nothing
-    cmdFactura(1).Enabled = True
     MousePointer = vbDefault
     'Call rtnver
     For I = 0 To 1: lblFactura(I).Visible = Not lblFactura(I).Visible
     Next
+    If gnCta = CUENTA_POTE Then
+        If sysCodPro = 0 Or sysCodPro = "" Then
+            MsgBox "Este inmueble es administrado bajo la modalidad 'Cuenta Pote', " & vbCrLf & _
+            "debe registrar a " & sysEmpresa & " como proveedor. " & vbCrLf & "Luego entre al menú " & _
+            "Utilidades -> Datos de la empresa, y registre el código de proveedor de " & sysEmpresa & _
+            "." & vbCrLf & "Si el problema persiste, contacte al administrador del sistema.", vbInformation, App.ProductName
+            Exit Sub
+        End If
+    End If
+    cmdFactura(1).Enabled = True
+    
+    
     '
     End Sub
     

@@ -122,7 +122,7 @@ Begin VB.Form frmAC
       NoFolders       =   0   'False
       Transparent     =   0   'False
       ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
-      Location        =   ""
+      Location        =   "http:///"
    End
 End
 Attribute VB_Name = "frmAC"
@@ -185,16 +185,16 @@ Select Case Index
 '                'retardo
 '            Next
             Set m_report = Nothing
-            Dim Dir1$, Dir2$, subject$
+            Dim Dir1$, Dir2$, Subject$
             If InStr(strEmail, ";") Then
                 Dir1 = Left(strEmail, InStr(strEmail, ";") - 1)
                 Dir2 = Mid(strEmail, InStr(strEmail, ";") + 1, Len(strEmail))
             Else
                 Dir1 = strEmail
             End If
-            subject = "Estimado cliente, adjunto le estamos enviando su aviso de cobro, correpondiente al " & Me.Caption
+            Subject = "Estimado cliente, adjunto le estamos enviando su aviso de cobro, correpondiente al " & Me.Caption
             If ModGeneral.enviar_email(Dir1, "pagoscondominio@administradorasac.com", "Aviso de Cobro " & Me.Caption, _
-            True, subject, strArchivo) Then
+            True, Subject, strArchivo) Then
                 MsgBox "Mensaje enviado con éxito", vbInformation, strEmail
             Else
                 MsgBox "Error al enviar mensaje." & vbCrLf & Err.Description, vbCritical, strEmail
@@ -276,9 +276,9 @@ wb.Top = crView.Top
 wb.Left = crView.Left
 wb.Height = crView.Height
 wb.Width = crView.Width
-For I = 0 To 2
-    cmd(I).Left = Me.ScaleWidth - (cmd(I).Width * (I + 1)) - 200
-    cmd(I).Top = crView.Height + crView.Top + 100
+For i = 0 To 2
+    cmd(i).Left = Me.ScaleWidth - (cmd(i).Width * (i + 1)) - 200
+    cmd(i).Top = crView.Height + crView.Top + 100
 Next
 
 End Sub
