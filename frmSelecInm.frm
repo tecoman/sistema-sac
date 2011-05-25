@@ -200,7 +200,7 @@ End Sub
 Private Sub Form_Load()
 Dim rstlocal As New ADODB.Recordset
 CenterForm Me
-For I = 0 To Year(Date) - 2003: cmbRfact(1).AddItem (2003 + I)
+For i = 0 To Year(Date) - 2003: cmbRfact(1).AddItem (2003 + i)
 Next
 'Presenta el periodo al mes actual
 cmbRfact(0).Text = cmbRfact(0).List(Month(Date) - 1)
@@ -252,8 +252,8 @@ If Respuesta(Mensaje) Then
             Temporal(5) = gnCta
             rstlocal.CursorLocation = adUseClient
             rstlocal.Open "Inmueble", cnnConexion, adOpenKeyset, adLockOptimistic, adCmdTable
-            For I = 0 To (.ListCount - 1)
-                rstlocal.Filter = "Codinm = '" & .List(I) & "'"
+            For i = 0 To (.ListCount - 1)
+                rstlocal.Filter = "Codinm = '" & .List(i) & "'"
                 If Not (rstlocal.EOF And rstlocal.BOF) Then
                     nEnviados = 0
                     gcCodInm = rstlocal("CodInm")

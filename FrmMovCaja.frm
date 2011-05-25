@@ -19,18 +19,18 @@ Begin VB.Form FrmMovCaja
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MDIChild        =   -1  'True
-   ScaleHeight     =   11460
-   ScaleWidth      =   18960
+   ScaleHeight     =   45
+   ScaleWidth      =   2475
    WindowState     =   2  'Maximized
    Begin ComctlLib.Toolbar Toolbar1 
       Align           =   1  'Align Top
-      Height          =   480
+      Height          =   870
       Left            =   0
       TabIndex        =   97
       Top             =   0
-      Width           =   18960
-      _ExtentX        =   33443
-      _ExtentY        =   847
+      Width           =   2475
+      _ExtentX        =   4366
+      _ExtentY        =   1535
       ButtonWidth     =   714
       ButtonHeight    =   688
       AllowCustomize  =   0   'False
@@ -174,7 +174,7 @@ Begin VB.Form FrmMovCaja
          Strikethrough   =   0   'False
       EndProperty
       ShowToday       =   0   'False
-      StartOfWeek     =   84803585
+      StartOfWeek     =   64946177
       TitleBackColor  =   -2147483646
       TitleForeColor  =   16777215
       CurrentDate     =   37319
@@ -290,20 +290,20 @@ Begin VB.Form FrmMovCaja
          BorderStyle     =   0  'None
          Enabled         =   0   'False
          ForeColor       =   &H00400000&
-         Height          =   3495
+         Height          =   3015
          Left            =   180
          TabIndex        =   49
          Top             =   1950
          Width           =   7890
          Begin MSFlexGridLib.MSFlexGrid FlexFacturas 
-            Height          =   3330
+            Height          =   3375
             Left            =   15
             TabIndex        =   50
             Tag             =   "Caja"
-            Top             =   120
+            Top             =   105
             Width           =   7860
             _ExtentX        =   13864
-            _ExtentY        =   5874
+            _ExtentY        =   5953
             _Version        =   393216
             Cols            =   9
             FixedCols       =   0
@@ -1121,7 +1121,7 @@ Begin VB.Form FrmMovCaja
                _Version        =   393216
                CalendarTitleBackColor=   -2147483646
                CalendarTitleForeColor=   -2147483643
-               Format          =   84803585
+               Format          =   64946177
                CurrentDate     =   37417
             End
             Begin MSDataListLib.DataCombo Dat 
@@ -1839,7 +1839,7 @@ Begin VB.Form FrmMovCaja
          Height          =   5970
          Left            =   75
          TabIndex        =   62
-         Top             =   360
+         Top             =   390
          Width           =   10815
          Begin VB.CheckBox chkBs 
             BackColor       =   &H000000FF&
@@ -3590,7 +3590,7 @@ Attribute VB_Exposed = False
     Dim booIV As Boolean, booEV As Boolean, booHA As Boolean
     Dim curHono@, curSaldo@, curMD@, CurTotalCheque@, IntMonto@, curPagoHono@
     Dim mlEdit As Boolean, booPC As Boolean, booCon As Boolean
-    Dim intRow%, B%, IntMesesMora%, I%, K%, IntHonoMorosidad%
+    Dim intRow%, B%, IntMesesMora%, i%, K%, IntHonoMorosidad%
     Dim rstlocal(1) As New ADODB.Recordset
     '---------------------------------------------------------------------------------------------
     Private Enum Indice
@@ -3600,7 +3600,7 @@ Attribute VB_Exposed = False
         FechaDoc
         Monto
         IDRecibo
-        Inmueble
+        INMUEBLE
     End Enum
     '---------------------------------------------------------------------------------------------
     
@@ -3642,14 +3642,14 @@ Attribute VB_Exposed = False
                     vbCritical: Exit Sub
     '
     '---------------------------------------------------------------------------------------------
-                If LblHono = "" Then LblHono = 0    'Si tiene honorarios
+                If lblHono = "" Then lblHono = 0    'Si tiene honorarios
     '
-                    If Cmb(1) = "INGRESO" And LblHono > 0 Then
-                        curHono = CCur(LblHono)
+                    If Cmb(1) = "INGRESO" And lblHono > 0 Then
+                        curHono = CCur(lblHono)
                         'booHA = True
-                        Mensaje = "Propietario tiene honorarios por " & Format(LblHono, "#,##0") _
+                        Mensaje = "Propietario tiene honorarios por " & Format(lblHono, "#,##0") _
                             & (Chr(13)) & "Monto total: Bs " _
-                            & Format(CCur(Txt(5)) + CCur(LblHono), "#,##0.00") _
+                            & Format(CCur(Txt(5)) + CCur(lblHono), "#,##0.00") _
                             & (Chr(13)) & "¿Desea Aplicar Honorarios? "
                             
                        If Respuesta(Mensaje) = False Then 'MUESTRA LA FICHA DEDUCCIONES
@@ -3668,14 +3668,14 @@ Attribute VB_Exposed = False
                                 .Rows = 2
                                 .TextMatrix(1, 0) = strCodRebHA
                                 .TextMatrix(1, 1) = "REBAJA DE HONORARIOS DE ABOGADO"
-                                .TextMatrix(1, 2) = Format(CCur(LblHono), "#,##0.00")
-                                .TextMatrix(1, 3) = CCur(LblHono)
+                                .TextMatrix(1, 2) = Format(CCur(lblHono), "#,##0.00")
+                                .TextMatrix(1, 3) = CCur(lblHono)
                                 .Col = 2
                             End With
                             Exit Sub
                        Else
-                            Txt(5) = Format(CCur(Txt(5)) + CCur(LblHono), "#,##0.00")
-                            LblHono = "0,00"
+                            Txt(5) = Format(CCur(Txt(5)) + CCur(lblHono), "#,##0.00")
+                            lblHono = "0,00"
                             curPagoHono = curHono
                        End If
                        '
@@ -3770,7 +3770,7 @@ Attribute VB_Exposed = False
                 
             Loop
             Txt(10) = Format(CCur(Txt(10)) + CCur(Txt(5)), "#,##0.00")
-            Txt(11) = Format(CCur(Txt(10)) + CCur(LblHono), "#,##0.00")
+            Txt(11) = Format(CCur(Txt(10)) + CCur(lblHono), "#,##0.00")
             Command1(1).Caption = "&Distribuir": Frame1.Enabled = False
             Command1(0).Enabled = True: Txt(5) = 0: Txt(9) = ""
         Else
@@ -3794,39 +3794,39 @@ Attribute VB_Exposed = False
                 Exit Sub
             End If
             IntMonto = CCur(Txt(5))
-            I = 1
+            i = 1
             Command1(0).Enabled = False
         '
-            Do While IntMonto > 0 And I <= FlexFacturas.Rows - 1
+            Do While IntMonto > 0 And i <= FlexFacturas.Rows - 1
                 For j = 0 To 2
-                    vecFPS(I, j) = FlexFacturas.TextMatrix(I, j + 2)
+                    vecFPS(i, j) = FlexFacturas.TextMatrix(i, j + 2)
                 Next
         '
-                If IntMonto - FlexFacturas.TextMatrix(I, 4) >= 0 Then
+                If IntMonto - FlexFacturas.TextMatrix(i, 4) >= 0 Then
         '
-                        IntMonto = IntMonto - CCur(FlexFacturas.TextMatrix(I, 4))
-                        FlexFacturas.TextMatrix(I, 3) = Format(CDbl(FlexFacturas.TextMatrix(I, 4)) + _
-                        CDbl(FlexFacturas.TextMatrix(I, 3)), "#,##0.00")
-                        FlexFacturas.TextMatrix(I, 4) = 0
-                        FlexFacturas.TextMatrix(I, 6) = "SI"
-                        Txt(9) = IIf(Txt(9) = "", "", Txt(9) + " / ") + FlexFacturas.TextMatrix(I, 1)
+                        IntMonto = IntMonto - CCur(FlexFacturas.TextMatrix(i, 4))
+                        FlexFacturas.TextMatrix(i, 3) = Format(CDbl(FlexFacturas.TextMatrix(i, 4)) + _
+                        CDbl(FlexFacturas.TextMatrix(i, 3)), "#,##0.00")
+                        FlexFacturas.TextMatrix(i, 4) = 0
+                        FlexFacturas.TextMatrix(i, 6) = "SI"
+                        Txt(9) = IIf(Txt(9) = "", "", Txt(9) + " / ") + FlexFacturas.TextMatrix(i, 1)
                     Else
             '
-                        FlexFacturas.TextMatrix(I, 3) = Format(IntMonto + vecFPS(I, 1), "#,##0.00")
-                        FlexFacturas.TextMatrix(I, 4) = Format(FlexFacturas.TextMatrix(I, 2) - _
-                        FlexFacturas.TextMatrix(I, 3), "#,##0.00")
-                        FlexFacturas.TextMatrix(I, 6) = "SI"
-                        Txt(9) = IIf(Txt(9) = "", FlexFacturas.TextMatrix(I, 1), Txt(9) + _
-                        " / " + "Abono a Cuenta " + FlexFacturas.TextMatrix(I, 1))
+                        FlexFacturas.TextMatrix(i, 3) = Format(IntMonto + vecFPS(i, 1), "#,##0.00")
+                        FlexFacturas.TextMatrix(i, 4) = Format(FlexFacturas.TextMatrix(i, 2) - _
+                        FlexFacturas.TextMatrix(i, 3), "#,##0.00")
+                        FlexFacturas.TextMatrix(i, 6) = "SI"
+                        Txt(9) = IIf(Txt(9) = "", FlexFacturas.TextMatrix(i, 1), Txt(9) + _
+                        " / " + "Abono a Cuenta " + FlexFacturas.TextMatrix(i, 1))
                         IntMonto = 0
                     
                     End If
                 
-                FlexFacturas.Row = I
+                FlexFacturas.Row = i
                 FlexFacturas.Col = 6
                 FlexFacturas.CellPictureAlignment = flexAlignRightTop
                 Set FlexFacturas.CellPicture = ImgAceptar(0).Picture
-                I = I + 1
+                i = i + 1
             Loop
             If IntMonto > 0 Then
                 Txt(9) = IIf(Txt(9) = "", "Abono a Prox.Facturación", Txt(9) + _
@@ -3835,7 +3835,7 @@ Attribute VB_Exposed = False
                 IntMonto = 0
             End If
             Txt(10) = Format(CCur(Txt(10)) - CCur(Txt(5)), "#,##0.00")
-            Txt(11) = Format(CCur(LblHono) + CCur(Txt(10)), "#,##0.00")
+            Txt(11) = Format(CCur(lblHono) + CCur(Txt(10)), "#,##0.00")
             Command1(1).Caption = "&Deshacer": Frame1.Enabled = True: Cmb(0).Enabled = True
             Cmb(0).SetFocus
         End If
@@ -3993,13 +3993,13 @@ Attribute VB_Exposed = False
             '
             With GridCheques(1)
                 
-                For I = 1 To .Rows - 1
+                For i = 1 To .Rows - 1
                 
-                    If .TextMatrix(I, 0) <> "" And Trim(.TextMatrix(I, 0)) <> "TOTAL:" Then
+                    If .TextMatrix(i, 0) <> "" And Trim(.TextMatrix(i, 0)) <> "TOTAL:" Then
                     
-                        If .TextMatrix(I, 3) = "" Then
+                        If .TextMatrix(i, 3) = "" Then
                         
-                            If .TextMatrix(I, 1) <> "PROVINCIAL" Then
+                            If .TextMatrix(i, 1) <> "PROVINCIAL" Then
                                 MsgBox "Ingrese el código de cuenta correspondiente a cada cheq" _
                                 & "ue", vbCritical, App.ProductName
                                 Exit Sub
@@ -4179,9 +4179,9 @@ finalizar:
                 & "CTIVO' Or Fpago='CHEQUE') AND (IDDeposito='' or Isnull(IDDeposito))) ORDER B" _
                 & "Y codigocaja;", cnnConexion, adOpenStatic, adLockReadOnly, adCmdText
                 '
-                For I = 7 To 10
-                    Dat(I) = ""
-                    If I = 7 Or I = 8 Then Set Dat(I).RowSource = objRst: Dat(I).Refresh
+                For i = 7 To 10
+                    Dat(i) = ""
+                    If i = 7 Or i = 8 Then Set Dat(i).RowSource = objRst: Dat(i).Refresh
                 Next
                 '
             End If
@@ -4234,9 +4234,9 @@ finalizar:
                         GridCheques(1).Rows = .RecordCount + 3
                         For j = 1 To .RecordCount
                            If !FPago = "CHEQUE" Then
-                                For I = 0 To 2
-                                    GridCheques(1).TextMatrix(j, I) = _
-                                    IIf(I = 2, Format(.Fields(I), "#,##0.00"), .Fields(I))
+                                For i = 0 To 2
+                                    GridCheques(1).TextMatrix(j, i) = _
+                                    IIf(i = 2, Format(.Fields(i), "#,##0.00"), .Fields(i))
                                 Next
                                 curCheque = !Monto + curCheque
                             ElseIf !FPago = "EFECTIVO" Then
@@ -4397,11 +4397,11 @@ finalizar:
                     .ListIndex = 1
                 End With
                 Cmb(0) = ""
-                For I = 1 To 3: Txt(I) = ""
+                For i = 1 To 3: Txt(i) = ""
                 Next
                 Call RtnFlex(Dat(2), FlexFacturas, IntMesesMora, IntHonoMorosidad, _
                     FlexFacturas.Cols, Txt(11), cnnPropietario)
-                LblHono = Txt(11)
+                lblHono = Txt(11)
                 'campo deuda y deuda + honorarios
                 If IsNumeric(Txt(11)) And IsNumeric(Txt(10)) Then
                     Txt(11) = Format(CCur(Txt(11)) + CCur(Txt(10)), "#,##0.00")
@@ -4446,9 +4446,9 @@ finalizar:
                     Dat(5) = strCodIV   'COD.INM='9999' ASIGNA COD.DE INGRESOS VARIOS
                     
                 Else
-                    For I = 1 To FlexFacturas.Rows - 1
-                        If FlexFacturas.TextMatrix(I, 6) = "SI" Then
-                            If CCur(FlexFacturas.TextMatrix(I, 4)) = 0 Then
+                    For i = 1 To FlexFacturas.Rows - 1
+                        If FlexFacturas.TextMatrix(i, 6) = "SI" Then
+                            If CCur(FlexFacturas.TextMatrix(i, 4)) = 0 Then
                                 Dat(5) = strCodPC
                                 If UCase(Txt(9)) Like "ABONO*" Then Dat(5) = strCodAbonoCta
                                 If UCase(Txt(9)) Like "CH*" Then Dat(5) = strCodRCheq
@@ -4458,7 +4458,7 @@ finalizar:
                             End If
                         End If
                     Next
-                    If Dat(5) = "" Then Dat(5) = IIf(I = 2 And FlexFacturas.TextArray(10) = "", _
+                    If Dat(5) = "" Then Dat(5) = IIf(i = 2 And FlexFacturas.TextArray(10) = "", _
                     IIf(Left(Dat(2), 1) = "U", strCodIV, strCodAbonoFut), strCodIV)
                 End If
                 Dat(6).Enabled = True
@@ -4502,7 +4502,7 @@ finalizar:
                         Cmb(1).Enabled = True: Cmb(1).SetFocus: Cmb(1).ListIndex = 1
                         Call RtnFlex(Dat(2), FlexFacturas, IntMesesMora, IntHonoMorosidad, _
                             FlexFacturas.Cols, Txt(11), cnnPropietario, Dat(0))
-                            LblHono = IIf(Txt(11) > 0, Txt(11), "0,00")
+                            lblHono = IIf(Txt(11) > 0, Txt(11), "0,00")
                             If Txt(10) = "" Then Txt(10) = 0
                             If Txt(11) = "" Then Txt(11) = 0
                             If Txt(11) > 0 Then
@@ -4584,7 +4584,7 @@ finalizar:
         Cmb(1).ListIndex = 1
         Call RtnFlex(Dat(2), FlexFacturas, IntMesesMora, IntHonoMorosidad, _
             FlexFacturas.Cols, Txt(11), cnnPropietario)
-        LblHono = Txt(11)
+        lblHono = Txt(11)
         Txt(11) = Format(CCur(Txt(11)) + CCur(Txt(10)), "#,##0.00")
         curAbono = IIf(FlexFacturas.TextArray(12) <> "", FlexFacturas.TextArray(12), 0)
     End If
@@ -4612,7 +4612,7 @@ finalizar:
         Cmb(1).Enabled = True: Cmb(1).SetFocus: Cmb(1).ListIndex = 1
         Call RtnFlex(Dat(2), FlexFacturas, IntMesesMora, IntHonoMorosidad, _
             FlexFacturas.Cols, Txt(11), cnnPropietario)
-        LblHono = Txt(11)
+        lblHono = Txt(11)
         Txt(11) = Format(CCur(Txt(11)) + CCur(Txt(10)), "#,##0.00")
         curAbono = IIf(FlexFacturas.TextArray(12) <> "", FlexFacturas.TextArray(12), 0)
         End If
@@ -4682,16 +4682,16 @@ With FlexDeducciones
             '
             If .Row = 0 Then .Row = 1
             If .Text = "" Then .Text = 0
-            For I = 1 To .Rows - 1
+            For i = 1 To .Rows - 1
             
-                If IsNumeric(.TextMatrix(I, 2)) Then
+                If IsNumeric(.TextMatrix(i, 2)) Then
                 
                     If Label16(0).Tag = "" Then Label16(0).Tag = 0
-                    Label16(0).Tag = CCur(.TextMatrix(I, 2)) + CCur(Label16(0).Tag)
+                    Label16(0).Tag = CCur(.TextMatrix(i, 2)) + CCur(Label16(0).Tag)
                     
                 End If
                 
-            Next I
+            Next i
             '
             If CCur(.Text) > CCur(.TextMatrix(1, 3)) Then
                 MsgBox "No puede deducir un monto superior al monto abonado a la factura", vbCritical, _
@@ -4742,14 +4742,14 @@ End Sub
 
     Private Sub FlexDeducciones_RowColChange()
     'MsgBox "cambio"
-    Dim I%, Total@
+    Dim i%, Total@
     With FlexDeducciones
-        For I = 1 To .Rows - 1
-            If IsNumeric(.TextMatrix(I, 2)) Then
-                Total = Total + CCur(.TextMatrix(I, 2))
+        For i = 1 To .Rows - 1
+            If IsNumeric(.TextMatrix(i, 2)) Then
+                Total = Total + CCur(.TextMatrix(i, 2))
                 Label16(0) = Format(Total, "#,##0.00 ")
             End If
-        Next I
+        Next i
         
     End With
     End Sub
@@ -4774,7 +4774,7 @@ End Sub
                 If Txt(5) = "" Then Txt(5) = 0
                     Txt(5) = Format(CCur(Txt(5)) - (CCur(.TextMatrix(.Row, 3) - vecFPS(.RowSel, 1))), "##,##0.00")
                     Txt(10) = Format(CCur(Txt(10) + CCur(.TextMatrix(.Row, 3)) - vecFPS(.RowSel, 1)), "#,##0.00")
-                    Txt(11) = Format(CCur(Txt(10) + CCur(LblHono)), "#,##0.00")
+                    Txt(11) = Format(CCur(Txt(10) + CCur(lblHono)), "#,##0.00")
                     .TextMatrix(.RowSel, 3) = Format(vecFPS(.RowSel, 1), "#,##0.00")
                     .TextMatrix(.RowSel, 4) = Format(vecFPS(.RowSel, 2), "#,##0.00")
                     .TextMatrix(.RowSel, 4) = Format(.TextMatrix(.RowSel, 4), "#,##0.00")
@@ -4987,8 +4987,8 @@ End Sub
         F = F + 15
         DoEvents
         Call RtnProUtility("Cargando Lista de Bancos....", F)
-        For I = 2 To 4
-            Cmb(I).AddItem (objRst.Fields("NombreBanco"))
+        For i = 2 To 4
+            Cmb(i).AddItem (objRst.Fields("NombreBanco"))
         Next
         objRst.MoveNext
     Loop
@@ -5164,25 +5164,25 @@ Select Case Index
             MsgBox "Imposible agregar más Cheques a este depósito", vbCritical, App.ProductName
             Exit Sub
         End If
-        I = 1
+        i = 1
         Label16(27) = CLng(Label16(27) - 1)
         With GridCheques(1)
         
-1000        If .TextMatrix(I, 0) = "TOTAL: " Or .TextMatrix(I, 0) = "" Then
+1000        If .TextMatrix(i, 0) = "TOTAL: " Or .TextMatrix(i, 0) = "" Then
                 .AddItem ("")
                 For j = 0 To 2
-                    .TextMatrix(I, j) = GridCheques(0).TextMatrix(GridCheques(0).RowSel, j)
+                    .TextMatrix(i, j) = GridCheques(0).TextMatrix(GridCheques(0).RowSel, j)
                 Next
-                .Row = I
+                .Row = i
                 .Col = 1
                 .CellAlignment = flexAlignLeftCenter
-                .MergeRow(I + 1) = True
+                .MergeRow(i + 1) = True
                 For j = 0 To 1
                     .Col = j
-                    .TextMatrix(I + 1, j) = "TOTAL: "
-                    .Row = I + 1: .CellAlignment = flexAlignRightCenter
+                    .TextMatrix(i + 1, j) = "TOTAL: "
+                    .Row = i + 1: .CellAlignment = flexAlignRightCenter
                 Next
-                    CurTotalCheque = CurTotalCheque + CCur(.TextMatrix(I, 2))
+                    CurTotalCheque = CurTotalCheque + CCur(.TextMatrix(i, 2))
                 With GridCheques(0)
                     If .Rows > 3 Then
                         .RemoveItem (.RowSel)
@@ -5190,12 +5190,12 @@ Select Case Index
                         Call rtnLimpiar_Grid(GridCheques(0))
                     End If
                 End With
-                .TextMatrix(I + 1, 2) = _
+                .TextMatrix(i + 1, 2) = _
                 Format(CurTotalCheque, "#,##0.00 ")
                 Label16(31) = Format(CurTotalCheque + Label16(30), "#,##0.00 ")
-                .Row = I + 1: .Col = 2
+                .Row = i + 1: .Col = 2
             Else
-                I = I + 1: GoTo 1000
+                i = i + 1: GoTo 1000
             End If
         End With
         
@@ -5205,16 +5205,16 @@ Select Case Index
                 
     Else
     If GridCheques(1).Text = "" Then Exit Sub
-    I = 1
+    i = 1
     Label16(27) = CLng(Label16(27) + 1)
         With GridCheques(0)
 
-2000        If .TextMatrix(I, 0) = "" Then
+2000        If .TextMatrix(i, 0) = "" Then
                 
                 For j = 0 To 2
-                    .TextMatrix(I, j) = GridCheques(1).TextMatrix(GridCheques(1).RowSel, j)
+                    .TextMatrix(i, j) = GridCheques(1).TextMatrix(GridCheques(1).RowSel, j)
                 Next
-                CurTotalCheque = CurTotalCheque - CCur(.TextMatrix(I, 2))
+                CurTotalCheque = CurTotalCheque - CCur(.TextMatrix(i, 2))
                 .AddItem ("")
                 With GridCheques(1)
                     If .Rows > 4 Then
@@ -5229,7 +5229,7 @@ Select Case Index
                     End If
                 End With
             Else
-                I = I + 1: GoTo 2000
+                i = i + 1: GoTo 2000
             End If
         End With
         End If
@@ -5283,7 +5283,7 @@ End Sub
                 cnnPropietario.Close
                 Set cnnPropietario = Nothing
                 TimDemonio.Interval = 0
-                frame3(3).Visible = False
+                Frame3(3).Visible = False
                 Command3(0).Enabled = True
                 Call rtnTab(0)
                 'Elimina la marca de la factura
@@ -5551,25 +5551,25 @@ End Sub
             
             If .Fields("CodGasto") = strCodRebHA Then
                 'If curPagoHono = 0 Then booHA = False
-                LblHono = Format(0, "#,##0.00")
+                lblHono = Format(0, "#,##0.00")
                 Txt(5) = Format(CCur(Txt(5) + CCur(curPagoHono)), "#,##.000")
-                Txt(11) = Format(CCur(Txt(10) - CCur(LblHono)), "#,##0.00")
+                Txt(11) = Format(CCur(Txt(10) - CCur(lblHono)), "#,##0.00")
             Else
                 Txt(5) = Format(CCur(Txt(5)) - CCur(Label16(0)), "#,##0.00")
             End If
             '
             With FlexFacturas
             
-                For I = 1 To .Rows - 1
-                   If .TextMatrix(I, 0) = Trim(Label16(12)) Then _
-                   .TextMatrix(I, 8) = Trim(Label16(0))
-                Next I
+                For i = 1 To .Rows - 1
+                   If .TextMatrix(i, 0) = Trim(Label16(12)) Then _
+                   .TextMatrix(i, 8) = Trim(Label16(0))
+                Next i
                 
             End With
             '
             Label16(17) = Format(CCur(Label16(17)) + CCur(Label16(0)), "#,##0.00")
             TimDemonio.Interval = 0
-            frame3(3).Visible = False
+            Frame3(3).Visible = False
             Call rtnTab(0)
             On Error Resume Next
             If Cmb(0).Enabled Then Cmb(0).SetFocus
@@ -5675,12 +5675,12 @@ End Sub
                 chkBs.Value = vbUnchecked
                 MntCalendar.Tag = 0
                 Call RtnEstado(5, Toolbar1, True)
-                CHK.Value = vbUnchecked
+                chk.Value = vbUnchecked
                 If Dir(App.Path & Archivo_Temp) <> "" Then Call Imprimir_Recibos
                 Frame6.Enabled = True
                 cnnConexion.BeginTrans  'comienza el proceso por lotes
                 Call RtnVisible("FALSE")
-                For I = 5 To 6: Dat(I).Enabled = False
+                For i = 5 To 6: Dat(i).Enabled = False
                 Next
                 Dat(2).Enabled = True
                 FmeCuentas.Enabled = True
@@ -5698,7 +5698,7 @@ End Sub
                 Dat(4) = ""
                 Dat(3) = ""
                 Dat(5) = ""
-                LblHono = ""
+                lblHono = ""
                 DatProp = ""
                 Txt(10) = ""
                 Txt(11) = ""
@@ -5730,7 +5730,7 @@ End Sub
             
             Call RtnEstado(6, Toolbar1, .EOF Or .BOF)
             
-            For I = 0 To 3: MskFecha(I).PromptInclude = True
+            For i = 0 To 3: MskFecha(i).PromptInclude = True
             Next
             'valida los datos mínimos necesarios para procesar una transacción
             '
@@ -5743,27 +5743,27 @@ End Sub
                     Call Actualiza_FormaPago(strRecibo)
                     Call Guardar_FPago
                     '-
-                    For I = 1 To 3
-                        j = I - 1
-                        If Txt(I) = "" Or IsNull(Txt(I)) Then Txt(I) = 0
-                        .Fields("FPago" & IIf(I = 1, "", j)) = Cmb(4 + I)
-                        .Fields("NumDocumentoMovimientoCaja" & IIf(I = 1, "", j)) = _
-                        Txt(5 + I)
-                        .Fields("BancoDocumentoMovimientoCaja" & IIf(I = 1, "", j)) _
-                        = Cmb(1 + I)
-                        If IsDate(MskFecha(I)) Then
-                            .Fields("FechaChequeMovimientoCaja" & IIf(I = 1, "", j)) = _
-                            MskFecha(I)
+                    For i = 1 To 3
+                        j = i - 1
+                        If Txt(i) = "" Or IsNull(Txt(i)) Then Txt(i) = 0
+                        .Fields("FPago" & IIf(i = 1, "", j)) = Cmb(4 + i)
+                        .Fields("NumDocumentoMovimientoCaja" & IIf(i = 1, "", j)) = _
+                        Txt(5 + i)
+                        .Fields("BancoDocumentoMovimientoCaja" & IIf(i = 1, "", j)) _
+                        = Cmb(1 + i)
+                        If IsDate(MskFecha(i)) Then
+                            .Fields("FechaChequeMovimientoCaja" & IIf(i = 1, "", j)) = _
+                            MskFecha(i)
                         Else
-                            .Fields("FechaChequeMovimientoCaja" & IIf(I = 1, "", j)) = Null
-                            MskFecha(I).PromptInclude = False
+                            .Fields("FechaChequeMovimientoCaja" & IIf(i = 1, "", j)) = Null
+                            MskFecha(i).PromptInclude = False
                         End If
-                       .Fields("MontoCheque" & IIf(I = 1, "", j)) = CCur(Txt(I))
-                    Next I
+                       .Fields("MontoCheque" & IIf(i = 1, "", j)) = CCur(Txt(i))
+                    Next i
                     '
                     Call rtnBitacora("Actualizar Transaccion #" & strRecibo)
                     .Update
-                    For I = 1 To 3: MskFecha(I).PromptInclude = True
+                    For i = 1 To 3: MskFecha(i).PromptInclude = True
                     Next
                     Call rtnEditar(False)
                     MsgBox "Cambios Actualizados", vbInformation, App.ProductName
@@ -5848,37 +5848,37 @@ End Sub
                 CurFs = 0
                 CurRecibo = 0
         '
-                For I = 1 To FlexFacturas.Rows - 1
-                    If FlexFacturas.TextMatrix(I, 6) = "SI" Then
+                For i = 1 To FlexFacturas.Rows - 1
+                    If FlexFacturas.TextMatrix(i, 6) = "SI" Then
         '               Asigna valores a variables------------------------------------------------
-                        strCodigo = IIf(FlexFacturas.TextMatrix(I, 4) = 0, _
-                            IIf(FlexFacturas.TextMatrix(I, 0) Like "CH*", _
+                        strCodigo = IIf(FlexFacturas.TextMatrix(i, 4) = 0, _
+                            IIf(FlexFacturas.TextMatrix(i, 0) Like "CH*", _
                             strCodRCheq, strCodPC), strCodAbonoCta)
                         
                         
                         StrDetalle = IIf(strCodigo = strCodPC, "PAGO CONDOMINIO", IIf(strCodigo _
                         = strCodAbonoCta, "ABONO A CUENTA", "REP. CHEQUE DEV."))
-                        CurFac = IIf(FlexFacturas.TextMatrix(I, 4) <> 0, _
-                            CCur(FlexFacturas.TextMatrix(I, 3)) _
-                            - CCur(vecFPS(I, 1)), vecFPS(I, 2))
-                        strPeriodo = strRecibo & Left(FlexFacturas.TextMatrix(I, 1), 2) & Right(FlexFacturas.TextMatrix(I, 1), 2)
+                        CurFac = IIf(FlexFacturas.TextMatrix(i, 4) <> 0, _
+                            CCur(FlexFacturas.TextMatrix(i, 3)) _
+                            - CCur(vecFPS(i, 1)), vecFPS(i, 2))
+                        strPeriodo = strRecibo & Left(FlexFacturas.TextMatrix(i, 1), 2) & Right(FlexFacturas.TextMatrix(i, 1), 2)
                         
-                        If strCodigo = strCodPC And IsNumeric(FlexFacturas.TextMatrix(I, 0)) Then
+                        If strCodigo = strCodPC And IsNumeric(FlexFacturas.TextMatrix(i, 0)) Then
                             '
                             booPC = True
-                            If IsNumeric(FlexFacturas.TextMatrix(I, 8)) Then
-                                curDed = CCur(FlexFacturas.TextMatrix(I, 8))
+                            If IsNumeric(FlexFacturas.TextMatrix(i, 8)) Then
+                                curDed = CCur(FlexFacturas.TextMatrix(i, 8))
                             Else
                                 curDed = 0
                             End If
-                            Call Guardar_NumFact(FlexFacturas.TextMatrix(I, 0), CurFac - curDed)
+                            Call Guardar_NumFact(FlexFacturas.TextMatrix(i, 0), CurFac - curDed)
                             '-------
                             
-                        ElseIf strCodigo = strCodAbonoCta And IsNumeric(FlexFacturas.TextMatrix(I, 0)) Then
+                        ElseIf strCodigo = strCodAbonoCta And IsNumeric(FlexFacturas.TextMatrix(i, 0)) Then
                             
-                            Fact = FlexFacturas.TextMatrix(I, 0)
+                            Fact = FlexFacturas.TextMatrix(i, 0)
                             apto = Dat(2).Text
-                            Mes = "01-" & FlexFacturas.TextMatrix(I, 1)
+                            Mes = "01-" & FlexFacturas.TextMatrix(i, 1)
                             cnnConexion.Execute "INSERT INTO DetFact(Fact,Detalle,Codigo,CodGas" _
                             & "to,Periodo,Monto,Fecha,Hora,Usuario) IN '" & StrRutaInmueble & _
                             "' VALUES('" & Fact & "','" & StrDetalle & "','" & apto & "','" & _
@@ -5889,7 +5889,7 @@ End Sub
                         
         '               Si es Rep. Cheq. Dev. Actualiza la tabla Cheque Devuelto
                         If strCodigo = strCodRCheq Then
-                            Fact = FlexFacturas.TextMatrix(I, 0)
+                            Fact = FlexFacturas.TextMatrix(i, 0)
                             cnnConexion.Execute "UPDATE ChequeDevuelto IN '" & gcPath & "\" & _
                             Dat(0) & "\" & "inm.mdb' SET Recuperado=True WHERE Codigo='" & _
                             Dat(2) & "' AND NumCheque = '" & _
@@ -5909,23 +5909,23 @@ End Sub
                            
                         End If
         '              Inserta registros Tabla "periodos"----------------------------------------
-                        Fact = strRecibo & Left(FlexFacturas.TextMatrix(I, 1), 2) & _
-                                Right(FlexFacturas.TextMatrix(I, 1), 2)
+                        Fact = strRecibo & Left(FlexFacturas.TextMatrix(i, 1), 2) & _
+                                Right(FlexFacturas.TextMatrix(i, 1), 2)
                                 
                         cnnConexion.Execute "INSERT INTO Periodos (IDRecibo, IDPeriodos,Periodo" _
                         & ",CodGasto,Descripcion,Monto,Facturado) VALUES ('" & strRecibo & "','" _
-                        & Fact & "','" & FlexFacturas.TextMatrix(I, 1) & "','" & strCodigo & _
-                        "','" & StrDetalle & "','" & CurFac & "','" & vecFPS(I, 0) & "')"
+                        & Fact & "','" & FlexFacturas.TextMatrix(i, 1) & "','" & strCodigo & _
+                        "','" & StrDetalle & "','" & CurFac & "','" & vecFPS(i, 0) & "')"
                         
-                        If FlexFacturas.TextMatrix(I, 0) <> "" Then Fact = FlexFacturas.TextMatrix(I, 0)
+                        If FlexFacturas.TextMatrix(i, 0) <> "" Then Fact = FlexFacturas.TextMatrix(i, 0)
                         
                         '
         '            Busca las deducciones por periodo
                     Call RtnDeducciones(Fact)
         '            Actualiza la deuda del propietario en Tabla "Facturas"---------------------
-                        If FlexFacturas.TextMatrix(I, 6) = "SI" And strCodigo <> strCodRCheq Then
+                        If FlexFacturas.TextMatrix(i, 6) = "SI" And strCodigo <> strCodRCheq Then
         '
-                            fecha = Format(1 & "-" & FlexFacturas.TextMatrix(I, 1), "mm/dd/yy")
+                            fecha = Format(1 & "-" & FlexFacturas.TextMatrix(i, 1), "mm/dd/yy")
                             cnnConexion.Execute "UPDATE Factura IN '" & StrRutaInmueble & "' SE" _
                             & "T " & "Pagado = Pagado + '" & CurFac & "',Saldo = Saldo - '" & _
                             CurFac & "', freg=Date(), usuario='" & gcUsuario & "', fecha=Format(Time(),'hh:mm:ss')" _
@@ -5943,8 +5943,8 @@ End Sub
                 
                 If IntMonto > 0 Then
                     Dim strParam$
-                    strParam = Format(Left(FlexFacturas.TextMatrix((I - 1), 1), 2) + 1, "00") _
-                    & "-" & Right(FlexFacturas.TextMatrix((I - 1), 1), 2)
+                    strParam = Format(Left(FlexFacturas.TextMatrix((i - 1), 1), 2) + 1, "00") _
+                    & "-" & Right(FlexFacturas.TextMatrix((i - 1), 1), 2)
                     If Left(strParam, 2) = 13 Then
                         strParam = "01-" & Format(Right(strParam, 2) + 1, "00")
                         End If
@@ -6109,7 +6109,7 @@ rtnReversa:
             & "E Taquilla =" & IntTaquilla
         '   --------------------------------------------------------------------------------------
             
-            For I = 0 To 3: MskFecha(I).PromptInclude = False
+            For i = 0 To 3: MskFecha(i).PromptInclude = False
             Next
             '
             'If Not ADOcontrol(0).Recordset.EOF And Not ADOcontrol(0).Recordset.BOF Then _
@@ -6163,7 +6163,7 @@ rtnReversa:
         '
                 If Command1(1).Caption = "&Deshacer" Then MsgBox "Debe Deshacer Distribuir Para" _
                 & " Canelar", vbInformation, App.ProductName: Command1(1).SetFocus: Exit Sub
-                For I = 0 To 3: MskFecha(I).PromptInclude = True
+                For i = 0 To 3: MskFecha(i).PromptInclude = True
                 Next
                 .CancelUpdate
                 Call mostrar_area(3)
@@ -6176,7 +6176,7 @@ rtnReversa:
 
                 If Not .EOF Then .MoveFirst
                 Call RtnVisible("FALSE")
-                For I = 0 To 3: MskFecha(I).PromptInclude = False
+                For i = 0 To 3: MskFecha(i).PromptInclude = False
                 Next
                 Call rtnLimpiar_Grid(FlexFacturas)
                 Call Desmarca
@@ -6196,7 +6196,7 @@ rtnReversa:
                         Dat(3) = ""
                         Dat(4) = ""
                         MskFecha(Index) = "__/__/____"
-                        LblHono = "0,00"
+                        lblHono = "0,00"
                         Label16(17) = "0,00"
                         SSTab1.TabEnabled(3) = Toolbar1.Buttons("New").Enabled
                         Exit Sub
@@ -6359,7 +6359,7 @@ rtnReversa:
             DatProp = .Fields("Nombre")
             Txt(13) = IIf(IsNull(.Fields("Notas")) Or .Fields("Notas") = "", "", .Fields("Notas"))
             Txt(10) = Format(.Fields("deuda"), "#,##0.00")
-            LblHono = Format(0, "#,##0.00")
+            lblHono = Format(0, "#,##0.00")
             Txt(11) = Txt(10)
             'numero de recibo ó operación
             strRecibo = Right(Dat(0), 2) & Dat(2) & Format(Date, "ddmmyy") & Format(Txt(0), "00")
@@ -6531,10 +6531,10 @@ rtnReversa:
             End If
             
     '
-            For I = 1 To 3  'SUMA EL CONTENIDO DE LOS TRES EN LA VARIABLE SUMA
-                Txt(I) = IIf(Txt(I) = "", 0, Txt(I))
-                suma = suma + CCur(Txt(I))
-                Txt(I) = Format(CCur(Txt(I)), "#,##0.00")
+            For i = 1 To 3  'SUMA EL CONTENIDO DE LOS TRES EN LA VARIABLE SUMA
+                Txt(i) = IIf(Txt(i) = "", 0, Txt(i))
+                suma = suma + CCur(Txt(i))
+                Txt(i) = Format(CCur(Txt(i)), "#,##0.00")
             Next
             '
             suma = suma + CCur(Txt(12))
@@ -6677,7 +6677,7 @@ rtnReversa:
     '------------------------------------------
     'variables locales
     Dim ObjCmd As New ADODB.Command
-    Dim I As Integer
+    Dim i As Integer
     '
     With AdoDeducciones
     '
@@ -6695,26 +6695,26 @@ rtnReversa:
                     Right(Trim(Label16(13)), 2)
 '                End If
     '
-                For I = 1 To FlexDeducciones.Rows - 1
+                For i = 1 To FlexDeducciones.Rows - 1
     '
-                    If FlexDeducciones.TextMatrix(I, 0) <> "" And _
-                    FlexDeducciones.TextMatrix(I, 1) <> "" And _
-                    FlexDeducciones.TextMatrix(I, 2) <> "" Then
+                    If FlexDeducciones.TextMatrix(i, 0) <> "" And _
+                    FlexDeducciones.TextMatrix(i, 1) <> "" And _
+                    FlexDeducciones.TextMatrix(i, 2) <> "" Then
                     '
                         .AddNew
                         .Fields("IDperiodos") = strPeriodo
                         .Fields("NumFact") = IIf(Trim(Label16(12)) <> "", Trim(Label16(12)), _
                         strRecibo)
-                        .Fields("CodGasto") = FlexDeducciones.TextMatrix(I, 0)
-                        .Fields("Titulo") = FlexDeducciones.TextMatrix(I, 1)
-                        .Fields("Monto") = CCur(FlexDeducciones.TextMatrix(I, 2))
+                        .Fields("CodGasto") = FlexDeducciones.TextMatrix(i, 0)
+                        .Fields("Titulo") = FlexDeducciones.TextMatrix(i, 1)
+                        .Fields("Monto") = CCur(FlexDeducciones.TextMatrix(i, 2))
                         .Fields("Autoriza") = 0
                         .Fields("Usuario") = gcUsuario
                         .Fields("FecReg") = Date
                         .Fields("Taquilla") = IntTaquilla
                         .Update
-                        If FlexDeducciones.TextMatrix(I, 0) = strCodRebHA Then
-                            curPagoHono = CCur(LblHono) - CCur(FlexDeducciones.TextMatrix(I, 2))
+                        If FlexDeducciones.TextMatrix(i, 0) = strCodRebHA Then
+                            curPagoHono = CCur(lblHono) - CCur(FlexDeducciones.TextMatrix(i, 2))
                             'booHA = IIf(curPagoHono = 0, False, True)
                         End If
                         '
@@ -6724,7 +6724,7 @@ rtnReversa:
     '
             End With
             .Recordset.Close    'cierra el objeto ADODB.Recordset y la conexion
-            frame3(3).Visible = True
+            Frame3(3).Visible = True
     '
             'N3
             With AdoDeducciones
@@ -6749,9 +6749,9 @@ rtnReversa:
     Private Sub RtnDeducciones(strMes As String) '-
     'variables locales
     Dim totalDed As Currency
-    Dim I As Integer
+    Dim i As Integer
     Dim StrP As String
-    I = 0
+    i = 0
     
     With AdoDeducciones
     '
@@ -6767,7 +6767,7 @@ rtnReversa:
                 StrP = !IDPeriodos
                 
                 Do
-                    I = I + 1
+                    i = i + 1
         '           Se agregan los registros de las deducciones autorizadas
                     'cnnConexion.Execute "INSERT INTO Deducciones (IDperiodos, NumFact, " _
                     & "CodGasto, Titulo, Autoriza,Monto,Usuario,FecReg) VALUES ('" & _
@@ -6797,7 +6797,7 @@ rtnReversa:
                 Loop Until .EOF
                 booDed = True
                 'Se agrega un único registro a las deducciones autorizadas
-                If I > 1 Then
+                If i > 1 Then
                     cnnConexion.Execute "INSERT INTO Deducciones (IDperiodos, CodGasto,Titulo," _
                     & "Autoriza,Monto,Usuario,FecReg) VALUES ('" & StrP & "','999999','DEDUCCIO" _
                     & "NES VARIAS',TRUE,'" & totalDed & "','" & gcUsuario & "',Date())"
@@ -6819,7 +6819,7 @@ rtnReversa:
     Call rtnLimpiar_Grid(FlexFacturas)
     With objRst
         If objRst.EOF Then
-            For I = 1 To 4: Dat(I) = ""
+            For i = 1 To 4: Dat(i) = ""
             Next
             MsgBox "Inmueble No Registrado..", vbInformation, App.ProductName
             Dat(0).SetFocus
@@ -6903,16 +6903,16 @@ rtnReversa:
 '-------------------------------------------------------------------------------------------------
 Private Function ftnValidar() As Boolean
 'variables locales
-Dim I%, Titulo$, Marca As Boolean, CurCheques@
+Dim i%, Titulo$, Marca As Boolean, CurCheques@
 '
 Titulo = App.ProductName
 
-For I = 0 To 2  'VERIFICA LOS DATOS DEL INMUEBLE/PROPIETARIO
+For i = 0 To 2  'VERIFICA LOS DATOS DEL INMUEBLE/PROPIETARIO
 '
     
-    If Dat(I) = "" Then
-        ftnValidar = MsgBox("Falta '" & Dat(I).ToolTipText & "'", vbExclamation, Titulo)
-        Dat(I).SetFocus
+    If Dat(i) = "" Then
+        ftnValidar = MsgBox("Falta '" & Dat(i).ToolTipText & "'", vbExclamation, Titulo)
+        Dat(i).SetFocus
         Exit Function
     End If
 '
@@ -6929,12 +6929,12 @@ If Txt(9) = "" Then         'Valida la descripción de la operación
     Exit Function
 End If
 '
-For I = 0 To 1  'VERIFICA FORMA DE PAGO / TIPO DE MOVIMIENTO
+For i = 0 To 1  'VERIFICA FORMA DE PAGO / TIPO DE MOVIMIENTO
 
-    If Cmb(I) = "" Then
+    If Cmb(i) = "" Then
 '
-        ftnValidar = MsgBox("Falta '" & Cmb(I).ToolTipText & "'", vbExclamation, Titulo)
-        Cmb(I).SetFocus
+        ftnValidar = MsgBox("Falta '" & Cmb(i).ToolTipText & "'", vbExclamation, Titulo)
+        Cmb(i).SetFocus
         Exit Function
 '
     End If
@@ -6960,27 +6960,27 @@ Select Case Cmb(0).ListIndex
         End If
     Case 1, 2, 4, 5  'CASO 'CHEQUE','DEPOSITO' O 'TARJETAS'
 '   -----------------------------------------------------------------------------
-        For I = 1 To 3
-            If IsNull(Txt(I)) Then Txt(I) = "0,00"
-            If Txt(I) = "" Then Txt(I) = "0,00"
+        For i = 1 To 3
+            If IsNull(Txt(i)) Then Txt(i) = "0,00"
+            If Txt(i) = "" Then Txt(i) = "0,00"
         Next
         CurCheques = CCur(Txt(1) + CCur(Txt(2)) + CCur(Txt(3)))
-         For I = 5 To 7
-            If (Cmb(I) = "DEPOSITO" Or Cmb(I) = "TRANSFERENCIA") And Cmb(I).Tag = "" Then
+         For i = 5 To 7
+            If (Cmb(i) = "DEPOSITO" Or Cmb(i) = "TRANSFERENCIA") And Cmb(i).Tag = "" Then
                 ftnValidar = MsgBox("No selecciono ninguna de las cuentas del condominio...", _
                 vbInformation, Titulo)
                 Exit Function
             End If
-            If Cmb(I) <> "DEPOSITO" And Cmb(I) <> "TRANSFERENCIA" Then Cmb(I).Tag = ""
-         Next I
+            If Cmb(i) <> "DEPOSITO" And Cmb(i) <> "TRANSFERENCIA" Then Cmb(i).Tag = ""
+         Next i
 End Select
 '
-For I = 5 To 6  'VERIFICA LOS DATOS CODIGO DE OP.
+For i = 5 To 6  'VERIFICA LOS DATOS CODIGO DE OP.
 '
-    If Dat(I) = "" Then
+    If Dat(i) = "" Then
 '
-        ftnValidar = MsgBox("Falta '" & Dat(I).ToolTipText & "'", vbExclamation, Titulo)
-        If Not Dat(I).Enabled Then Dat(I).Enabled = True: Dat(I).SetFocus
+        ftnValidar = MsgBox("Falta '" & Dat(i).ToolTipText & "'", vbExclamation, Titulo)
+        If Not Dat(i).Enabled Then Dat(i).Enabled = True: Dat(i).SetFocus
         Exit Function
 '
     End If
@@ -6993,14 +6993,14 @@ If Dat(5) = strCodPC Or Dat(5) = strCodAbonoCta Then
             Dim Total As Currency
             .Col = 6
             
-            For I = 1 To (.Rows - 1)
-                .Row = I
+            For i = 1 To (.Rows - 1)
+                .Row = i
                 If .CellPicture <> 0 Then   'VERIFICA EL TOTAL DE LO PAGADO
                     Marca = True
-                    Total = Total + IIf(FlexFacturas.TextMatrix(I, 4) <> 0, _
-                    CCur(FlexFacturas.TextMatrix(I, 3)) - CCur(vecFPS(I, 1)), vecFPS(I, 2))
+                    Total = Total + IIf(FlexFacturas.TextMatrix(i, 4) <> 0, _
+                    CCur(FlexFacturas.TextMatrix(i, 3)) - CCur(vecFPS(i, 1)), vecFPS(i, 2))
                 End If
-            Next I
+            Next i
             If Not Marca Then   'debe haber por lo menos una factura marcada para cancelar
                 ftnValidar = MsgBox("Debe Marcar por lo Menos Una Factuta Para Cancelar", _
                 vbExclamation, Titulo)
@@ -7041,11 +7041,11 @@ With FlexFacturas
 Dim vecFECHA(1 To 120) As String
 .Col = 6
 X = 1
-    For I = 1 To .Rows - 1
-        .Row = I
+    For i = 1 To .Rows - 1
+        .Row = i
         If .CellPicture <> 0 Then
         
-            vecFECHA(X) = .TextMatrix(I, 1)
+            vecFECHA(X) = .TextMatrix(i, 1)
             X = X + 1
             
         End If
@@ -7095,7 +7095,7 @@ End Sub
     '
     Command3(5).Enabled = False
     Dat(A) = Dat(B).BoundText
-    frame3(7).Caption = "Detalle de Deposito"
+    Frame3(7).Caption = "Detalle de Deposito"
     Label16(30) = "0,00"
     Label16(31) = "0,00"
     Label16(30).Tag = ""
@@ -7130,7 +7130,7 @@ End Sub
         Set Dat(9).RowSource = RstCuentas
         Set Dat(10).RowSource = RstCuentas
         '
-        For I = 9 To 10: Dat(I).Text = RstCuentas.Fields(I - 9)
+        For i = 9 To 10: Dat(i).Text = RstCuentas.Fields(i - 9)
         Next
         If UCase(RstCuentas.Fields("NombreBanco")) Like "*PROVINCIAL*" Then
             Randomize
@@ -7147,16 +7147,16 @@ End Sub
     RstCheques.Open strSQL, cnnConexion, adOpenKeyset, adLockBatchOptimistic, adCmdText
     
     If Not RstCheques.EOF Then RstCheques.MoveFirst
-        I = 0
+        i = 0
         Call rtnLimpiar_Grid(GridCheques(0))
         GridCheques(0).Rows = RstCheques.RecordCount + 2
         Label16(26) = RstCheques.RecordCount
         '
         Do Until RstCheques.EOF
-            I = I + 1
+            i = i + 1
                 With GridCheques(0)
                 For j = 0 To 2
-                    .TextMatrix(I, j) = IIf(j = 2, Format(RstCheques.Fields(j), "#,##0.00"), RstCheques.Fields(j))
+                    .TextMatrix(i, j) = IIf(j = 2, Format(RstCheques.Fields(j), "#,##0.00"), RstCheques.Fields(j))
                 Next
                 RstCheques.MoveNext
                 End With
@@ -7278,8 +7278,8 @@ End Sub
     '
     With FlexFacturas   'SE LLENA EL VECTOR FACTURADO/PAGADO/SALDO
     '                   'NECESARIO EN CASO DE REVERTIR ALGUN REGISTRO
-        For I = 0 To 2
-            vecFPS(.RowSel, I) = .TextMatrix(.RowSel, I + 2)
+        For i = 0 To 2
+            vecFPS(.RowSel, i) = .TextMatrix(.RowSel, i + 2)
             'Debug.Print vecFPS(.RowSel, I)
         Next
         .Row = .RowSel
@@ -7304,7 +7304,7 @@ End Sub
         .TextMatrix(.Row, 4) = Format(CCur(.TextMatrix(.Row, 2) - _
                 .TextMatrix(.RowSel, 3)), "#,##0.00")
         .TextMatrix(.Row, 6) = "SI"
-        Txt(11) = Format(CCur(Txt(10) + CCur(LblHono)), "#,##0.00")
+        Txt(11) = Format(CCur(Txt(10) + CCur(lblHono)), "#,##0.00")
         Txt(9) = IIf(Trim(Txt(9)) = "", "", Txt(9) + " / ") + _
             IIf(.TextMatrix(.Row, 0) Like "CH*", .TextMatrix(.Row, 0), _
             IIf(.TextMatrix(.Row, 4) = 0, .TextMatrix(.Row, 1), "Abono a Cta. " & .TextMatrix(.Row, 1)))
@@ -7320,12 +7320,12 @@ End Sub
     '
     FmeCuentas.Enabled = blnSINO
     Frame5.Enabled = blnSINO
-    For I = 0 To 2: Dat(I).Locked = blnSINO
+    For i = 0 To 2: Dat(i).Locked = blnSINO
     Next
     DatProp.Locked = blnSINO
     Txt(5).Locked = blnSINO
-    For I = 1 To 3
-        Txt(I).Locked = blnSINO
+    For i = 1 To 3
+        Txt(i).Locked = blnSINO
     Next
     '
     End Sub
@@ -7398,12 +7398,12 @@ End Sub
             Dat(6).Enabled = True
             Dat(5).SetFocus
             '
-            For I = 1 To 3
-                Cmb(I + 4) = ""
-                Txt(I + 5) = ""
-                Cmb(I + 1) = ""
-                Txt(I) = ""
-            Next I
+            For i = 1 To 3
+                Cmb(i + 4) = ""
+                Txt(i + 5) = ""
+                Cmb(i + 1) = ""
+                Txt(i) = ""
+            Next i
             '
         Case 1  'cheque
             Call RtnVisible("False")
@@ -7501,7 +7501,7 @@ End Sub
             '
             Input #numFichero, Recibo, Pago
             
-            If CHK.Value = vbUnchecked Then 'imprime el recibo
+            If chk.Value = vbUnchecked Then 'imprime el recibo
                Carpeta = "\" & Dat(0) & "\"
                CodInm = Dat(0)
                NomInm = Dat(1)
@@ -7629,12 +7629,12 @@ End Sub
     '   retorna false y devuelve el foco al combobox.
     '---------------------------------------------------------------------------------------------
     Private Function inLista(combo As ComboBox) As Boolean
-    Dim I%  'variables locales
+    Dim i%  'variables locales
     '
     With combo
-        For I = 0 To .ListCount 'si esta en la lista
-            If .List(I) = .Text Then inLista = True
-        Next I
+        For i = 0 To .ListCount 'si esta en la lista
+            If .List(i) = .Text Then inLista = True
+        Next i
         If Not inLista Then
             MsgBox "'" & .Text & "' no es un valor válido." & vbCrLf & "Seleccione un elemento " _
             & "de la lista", vbInformation, App.ProductName
@@ -7735,7 +7735,7 @@ End Sub
             '
         Else    'No existe coincidencia se agragega el cheque a tdfCheques
             ModGeneral.insertar_registro "procPagoAdd", FPago(IDRecibo), _
-            Caja, FPago(Inmueble), MskFecha(0), FPago(FP), FPago(NDoc), FPago(Banco), FPago( _
+            Caja, FPago(INMUEBLE), MskFecha(0), FPago(FP), FPago(NDoc), FPago(Banco), FPago( _
             FechaDoc), FPago(Monto), FPago(7)
             
 '            cnnConexion.Execute "INSERT INTO tdfCheques(IdRecibo,IDTaquilla,CodInmueble,FechaMo" _
@@ -7762,7 +7762,7 @@ End Sub
     '
     'Vairables cocales
     Dim objRst(1) As New ADODB.Recordset
-    Dim strSQL As String, I%
+    Dim strSQL As String, i%
     Dim vecFP(2, 4)
     '
     'Busca en el movimiento de la caja la forma de pago
@@ -7774,21 +7774,21 @@ End Sub
             cnnConexion.Execute "DELETE * FROM tdfCheques WHERE IdRecibo='" & Recibo & "'"
         Else
             GoSub Matriz
-            For I = 0 To 2    'elimina c/documento relacionado con el pago
-                If vecFP(I, 0) <> "" Then
-                    strSQL = "SELECT * FROM TDFCheques WHERE Ndoc='" & vecFP(I, 1) & "' AND B" _
-                    & "anco='" & vecFP(I, 2) & "' AND FechaDoc=#" & Format(CDate(vecFP(I, 3)), _
+            For i = 0 To 2    'elimina c/documento relacionado con el pago
+                If vecFP(i, 0) <> "" Then
+                    strSQL = "SELECT * FROM TDFCheques WHERE Ndoc='" & vecFP(i, 1) & "' AND B" _
+                    & "anco='" & vecFP(i, 2) & "' AND FechaDoc=#" & Format(CDate(vecFP(i, 3)), _
                     "mm/dd/yy") & "#;"
                     'abre el ADODB.Recordset
                     objRst(1).Open strSQL, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
                     '
-                    If objRst(1)("Monto") = vecFP(I, 4) Then    'si el doc. es total lo elimina
+                    If objRst(1)("Monto") = vecFP(i, 4) Then    'si el doc. es total lo elimina
                         cnnConexion.Execute "DELETE * FROM tdfCheques WHERE Ndoc='" & _
-                        vecFP(I, 1) & "' AND Fpago='" & vecFP(I, 0) & "'"
+                        vecFP(i, 1) & "' AND Fpago='" & vecFP(i, 0) & "'"
                     Else    'si es parte de un doc. lo descuenta
                         cnnConexion.Execute "UPDATE TdfCheques SET Monto = Monto - '" & _
-                        CCur(vecFP(I, 4)) & "' WHERE Ndoc='" & vecFP(I, 1) & "' AND Fpago='" _
-                        & vecFP(I, 0) & "'"
+                        CCur(vecFP(i, 4)) & "' WHERE Ndoc='" & vecFP(i, 1) & "' AND Fpago='" _
+                        & vecFP(i, 0) & "'"
                     End If
                     'cierra el ADODB.Recordset
                     objRst(1).Close
@@ -7804,13 +7804,13 @@ End Sub
     '   ----------------------------------------------------------------------------------------------
     Exit Sub
 Matriz:
-    For I = 0 To 2
-        vecFP(I, 0) = objRst(0)("Fpago" & IIf(I = 0, "", I))
-        vecFP(I, 1) = objRst(0)("NumDocumentoMovimientoCaja" & IIf(I = 0, "", I))
-        vecFP(I, 2) = objRst(0)("BancoDocumentoMovimientoCaja" & IIf(I = 0, "", I))
-        vecFP(I, 3) = objRst(0)("FechaChequeMovimientoCaja" & IIf(I = 0, "", I))
-        vecFP(I, 4) = objRst(0)("MontoCheque" & IIf(I = 0, "", I))
-    Next I
+    For i = 0 To 2
+        vecFP(i, 0) = objRst(0)("Fpago" & IIf(i = 0, "", i))
+        vecFP(i, 1) = objRst(0)("NumDocumentoMovimientoCaja" & IIf(i = 0, "", i))
+        vecFP(i, 2) = objRst(0)("BancoDocumentoMovimientoCaja" & IIf(i = 0, "", i))
+        vecFP(i, 3) = objRst(0)("FechaChequeMovimientoCaja" & IIf(i = 0, "", i))
+        vecFP(i, 4) = objRst(0)("MontoCheque" & IIf(i = 0, "", i))
+    Next i
     Return
     '
     End Sub
@@ -7844,12 +7844,12 @@ Matriz:
     Printer.FontBold = True
     Inicio = 3700
     Printer.FontSize = 14
-    For I = 1 To Len(Cuenta)
+    For i = 1 To Len(Cuenta)
         Printer.CurrentY = 0
         Printer.CurrentX = Inicio
-        Printer.Print Mid(Cuenta, I, 1)
+        Printer.Print Mid(Cuenta, i, 1)
         Inicio = Inicio + 250
-    Next I
+    Next i
     'titular
     Printer.FontSize = 10
     Printer.CurrentX = 4000
@@ -7871,67 +7871,67 @@ Matriz:
     Inicio = 1000
     Linea = 1200
     With GridCheques(1)
-        I = 1
+        i = 1
         curCheOB = 0
         Do
-            If .TextMatrix(I, 0) <> "" Then
-            If .TextMatrix(I, 1) <> "VENEZUELA" Then
+            If .TextMatrix(i, 0) <> "" Then
+            If .TextMatrix(i, 1) <> "VENEZUELA" Then
                 'nuemro de cheque
                 Printer.CurrentX = Inicio
                 Printer.CurrentY = Linea
-                Printer.Print .TextMatrix(I, 0)
+                Printer.Print .TextMatrix(i, 0)
                 '
                 'banco
                 Printer.CurrentX = Inicio + 1200
                 Printer.CurrentY = Linea
-                Printer.Print .TextMatrix(I, 1)
+                Printer.Print .TextMatrix(i, 1)
                 '
                 'cuenta del cheque
                 Printer.CurrentX = Inicio + 2700
                 Printer.CurrentY = Linea
-                Printer.Print .TextMatrix(I, 3)
+                Printer.Print .TextMatrix(i, 3)
                 '
-                Printer.CurrentX = 6500 - (Printer.TextWidth(.TextMatrix(I, 2)))
+                Printer.CurrentX = 6500 - (Printer.TextWidth(.TextMatrix(i, 2)))
                 Printer.CurrentY = Linea
-                Printer.Print .TextMatrix(I, 2)
+                Printer.Print .TextMatrix(i, 2)
                 '
-                curCheOB = curCheOB + CCur(.TextMatrix(I, 2))
+                curCheOB = curCheOB + CCur(.TextMatrix(i, 2))
                 Linea = Linea + 300
             End If
             End If
-            I = I + 1
-        Loop Until Trim(.TextMatrix(I, 0)) = "TOTAL:" Or I = .Rows - 1
+            i = i + 1
+        Loop Until Trim(.TextMatrix(i, 0)) = "TOTAL:" Or i = .Rows - 1
     '
     'cheques banco venezuela
     Inicio = 7200
     Linea = 1200
-    I = 1: curChe = 0
+    i = 1: curChe = 0
     '
         Do
-            If .TextMatrix(I, 0) <> "" Then
+            If .TextMatrix(i, 0) <> "" Then
             '
-                If .TextMatrix(I, 1) = "VENEZUELA" Then
+                If .TextMatrix(i, 1) = "VENEZUELA" Then
                     Printer.CurrentX = Inicio
                     Printer.CurrentY = Linea
-                    Printer.Print .TextMatrix(I, 0)
+                    Printer.Print .TextMatrix(i, 0)
                     '
                     Printer.CurrentX = Inicio + 1450
                     Printer.CurrentY = Linea
-                    Printer.Print .TextMatrix(I, 3)
+                    Printer.Print .TextMatrix(i, 3)
                     '
-                    Printer.CurrentX = 11500 - (Printer.TextWidth(.TextMatrix(I, 2)))
+                    Printer.CurrentX = 11500 - (Printer.TextWidth(.TextMatrix(i, 2)))
                     Printer.CurrentY = Linea
-                    Printer.Print .TextMatrix(I, 2)
+                    Printer.Print .TextMatrix(i, 2)
                     '
-                    curChe = curChe + CCur(.TextMatrix(I, 2))
+                    curChe = curChe + CCur(.TextMatrix(i, 2))
                     Linea = Linea + 300
                     '
                 End If
                 '
             End If
-            I = I + 1
+            i = i + 1
             '
-        Loop Until Trim(.TextMatrix(I, 0)) = "TOTAL:" Or I = .Rows - 1
+        Loop Until Trim(.TextMatrix(i, 0)) = "TOTAL:" Or i = .Rows - 1
         '
     End With
 '    'total chequesbanco venezuela
@@ -7986,7 +7986,7 @@ Matriz:
     '---------------------------------------------------------------------------------------------
     Sub dep_provincial(Optional Titu As String)     '*
     'variables locales                              '*
-    Dim booPro As Boolean, I%                       '*
+    Dim booPro As Boolean, i%                       '*
     Dim Linea%, Inicio&, Punto%                     '*
     Dim Temp$, Titular$, fecha$, Bolos$, Cuenta$    '*
     Dim curCheOB@, curChe@                          '*
@@ -8005,14 +8005,14 @@ Matriz:
     Bolos = cAletra.ALetra
     
     '
-    I = 1
+    i = 1
     If CCur(Label16(30)) > 0 Then
         booPro = True
     Else
         Do
-            If Trim(GridCheques(1).TextMatrix(I, 1)) = "PROVINCIAL" Then booPro = True
-            I = I + 1
-        Loop Until Trim(GridCheques(1).TextMatrix(I, 0)) = "TOTAL:"
+            If Trim(GridCheques(1).TextMatrix(i, 1)) = "PROVINCIAL" Then booPro = True
+            i = i + 1
+        Loop Until Trim(GridCheques(1).TextMatrix(i, 0)) = "TOTAL:"
     End If
     '
     If booPro Then  'vaoucher provincial
@@ -8021,20 +8021,20 @@ Matriz:
         Printer.FontSize = 14
         Printer.FontBold = True
         'printer cuenta
-        For I = 5 To Len(Cuenta)
+        For i = 5 To Len(Cuenta)
             Printer.CurrentY = 0
             Printer.CurrentX = Inicio
-            Printer.Print Mid(Cuenta, I, 1)
+            Printer.Print Mid(Cuenta, i, 1)
             Inicio = Inicio + 300
-        Next I
+        Next i
         'fecha de deposito
         Inicio = 1350
-        For I = 1 To Len(fecha) Step 3
+        For i = 1 To Len(fecha) Step 3
             Printer.CurrentY = -20
             Printer.CurrentX = Inicio
-            Printer.Print Mid(fecha, I, 2)
+            Printer.Print Mid(fecha, i, 2)
             Inicio = Inicio + 700
-        Next I
+        Next i
         'beneficiario
         Printer.FontSize = 10
         Printer.CurrentX = 6700
@@ -8048,24 +8048,24 @@ Matriz:
         '
         Inicio = 8000
         Linea = 1360
-        I = 1
+        i = 1
         'cheques
         With GridCheques(1)
             Do
-                If .TextMatrix(I, 0) <> "" Then
+                If .TextMatrix(i, 0) <> "" Then
                     Printer.CurrentX = Inicio
                     Printer.CurrentY = Linea
-                    Printer.Print .TextMatrix(I, 0)
+                    Printer.Print .TextMatrix(i, 0)
                     '
-                    Printer.CurrentX = 11500 - (Printer.TextWidth(.TextMatrix(I, 2)))
+                    Printer.CurrentX = 11500 - (Printer.TextWidth(.TextMatrix(i, 2)))
                     Printer.CurrentY = Linea
-                    Printer.Print .TextMatrix(I, 2)
+                    Printer.Print .TextMatrix(i, 2)
                     '
                     Linea = Linea + 260
                 End If
-                I = I + 1
+                i = i + 1
                 
-            Loop Until Trim(.TextMatrix(I, 0)) = "TOTAL:" Or I = .Rows - 1
+            Loop Until Trim(.TextMatrix(i, 0)) = "TOTAL:" Or i = .Rows - 1
             '
         End With
         '
@@ -8103,20 +8103,20 @@ Matriz:
         Printer.FontSize = 14
         Printer.FontBold = True
         'printer cuenta
-        For I = 5 To Len(Cuenta)
+        For i = 5 To Len(Cuenta)
             Printer.CurrentY = 0
             Printer.CurrentX = Inicio
-            Printer.Print Mid(Cuenta, I, 1)
+            Printer.Print Mid(Cuenta, i, 1)
             Inicio = Inicio + 300
-        Next I
+        Next i
         'fecha de deposito
         Inicio = 1350
-        For I = 1 To Len(fecha) Step 3
+        For i = 1 To Len(fecha) Step 3
             Printer.CurrentY = 0
             Printer.CurrentX = Inicio
-            Printer.Print Mid(fecha, I, 2)
+            Printer.Print Mid(fecha, i, 2)
             Inicio = Inicio + 700
-        Next I
+        Next i
         Printer.FontSize = 10
         'beneficiario
         Printer.CurrentX = 6500
@@ -8125,30 +8125,30 @@ Matriz:
         Inicio = 4600
         Linea = 1620
         'cheques
-        I = 1
+        i = 1
         With GridCheques(1)
             Do
-                If .TextMatrix(I, 0) <> "" Then
+                If .TextMatrix(i, 0) <> "" Then
                     Printer.CurrentX = Inicio
                     Printer.CurrentY = Linea
-                    Printer.Print .TextMatrix(I, 0)
+                    Printer.Print .TextMatrix(i, 0)
                     '
                     Printer.CurrentX = Inicio + 1600
                     Printer.CurrentY = Linea
-                    Printer.Print .TextMatrix(I, 3)
+                    Printer.Print .TextMatrix(i, 3)
                     '
                     Printer.CurrentX = Inicio + 4600
                     Printer.CurrentY = Linea
-                    Printer.Print .TextMatrix(I, 1)
+                    Printer.Print .TextMatrix(i, 1)
                     '
-                    Printer.CurrentX = 11600 - (Printer.TextWidth(.TextMatrix(I, 2)))
+                    Printer.CurrentX = 11600 - (Printer.TextWidth(.TextMatrix(i, 2)))
                     Printer.CurrentY = Linea
-                    Printer.Print .TextMatrix(I, 2)
+                    Printer.Print .TextMatrix(i, 2)
                     '
                     Linea = Linea + 260
                 End If
-                I = I + 1
-            Loop Until Trim(.TextMatrix(I, 0)) = "TOTAL:" Or I = .Rows - 1
+                i = i + 1
+            Loop Until Trim(.TextMatrix(i, 0)) = "TOTAL:" Or i = .Rows - 1
             '
         End With
         'monto en numeros
@@ -8187,7 +8187,7 @@ Matriz:
     
     Sub dep_banesco(Optional Titu As String)        '*
     'variables locales                              '*
-    Dim Linea%, Inicio%, I%                         '*
+    Dim Linea%, Inicio%, i%                         '*
     Dim Cuenta$, Titular$, fecha$                   '*
     Dim cAletra As New clsNum2Let           '*
     '''''''''''''''''''''''''''''''''''''''''''''''''*
@@ -8208,10 +8208,10 @@ Matriz:
     Printer.FontBold = True
     Printer.FontSize = 14
     
-    For I = 1 To Len(Cuenta)
+    For i = 1 To Len(Cuenta)
         Printer.CurrentY = Linea
         Printer.CurrentX = Inicio - 200
-        Printer.Print Mid(Cuenta, I, 1)
+        Printer.Print Mid(Cuenta, i, 1)
         Inicio = Inicio + 300
     Next
     'Printer.FontBold = False
@@ -8230,28 +8230,28 @@ Matriz:
     Printer.Print fecha
     
     'Linea = 1100
-    I = 1
+    i = 1
     'cheques cureenty=1700/2000/2300/2600
     With GridCheques(1)
     
         Do
-            If .TextMatrix(I, 0) <> "" Then
+            If .TextMatrix(i, 0) <> "" Then
                 'cuenta
                 Printer.CurrentY = Linea + 800
                 Printer.CurrentX = 4600
-                Printer.Print .TextMatrix(I, 3)
+                Printer.Print .TextMatrix(i, 3)
                 'número de cheque
                 Printer.CurrentY = Linea + 800
                 Printer.CurrentX = 7400
-                Printer.Print .TextMatrix(I, 0)
+                Printer.Print .TextMatrix(i, 0)
                 'monto
                 Printer.CurrentY = Linea + 800
-                Printer.CurrentX = (10000 - Printer.TextWidth(.TextMatrix(I, 2)))
-                Printer.Print .TextMatrix(I, 2)
+                Printer.CurrentX = (10000 - Printer.TextWidth(.TextMatrix(i, 2)))
+                Printer.Print .TextMatrix(i, 2)
                 Linea = Linea + 300
             End If
-            I = I + 1
-        Loop Until Trim(.TextMatrix(I, 0)) = "TOTAL:" Or I = .Rows - 1
+            i = i + 1
+        Loop Until Trim(.TextMatrix(i, 0)) = "TOTAL:" Or i = .Rows - 1
         
     End With
     'total
@@ -8278,7 +8278,7 @@ Matriz:
 Private Sub enviar_email()
 'variables locales
 Dim mail As New clsSendMail
-Dim I%, Y%, msg$, Dir1$, Dir2$
+Dim i%, Y%, msg$, Dir1$, Dir2$
 'valida los campos necesarios para enviar el email
 
 On Error Resume Next
