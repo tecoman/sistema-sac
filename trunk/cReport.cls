@@ -206,6 +206,11 @@ If Not mReport.HasSavedData Then
             Next
         Next
     End If
+    If InStr(Reporte, "pagosweb.rpt") > 0 Then
+        For I = 1 To mReport.Database.Tables.Count
+            mReport.Database.Tables(I).ConnectionProperties.Item("password") = "dmn+str"
+        Next
+    End If
     'parametros
     If Parametro Then
         Set crParamDefs = mReport.ParameterFields
