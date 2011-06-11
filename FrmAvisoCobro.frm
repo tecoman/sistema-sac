@@ -34,7 +34,7 @@ Begin VB.Form FrmAvisoCobro
          EndProperty
          Height          =   800
          Index           =   0
-         Left            =   210
+         Left            =   225
          MouseIcon       =   "FrmAvisoCobro.frx":5C12
          MousePointer    =   99  'Custom
          Style           =   1  'Graphical

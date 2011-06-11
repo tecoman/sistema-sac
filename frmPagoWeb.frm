@@ -166,6 +166,21 @@ End Select
 End Sub
 
 Private Sub imprimir_reporte()
+Dim rpReporte As ctlReport
+    
+    '
+    Set rpReporte = New ctlReport
+    With rpReporte
+    '
+        .Reporte = gcReport + "pagosweb.rpt"
+        .TituloVentana = "strTitulo"
+        .Salida = crPantalla
+        .Imprimir
+        If Err <> 0 Then MsgBox Err.Description, vbCritical, Err
+    '
+    End With
+
+Exit Sub
 Dim xmax As Single
 Dim ymax As Single
 Dim X As Single
@@ -232,12 +247,12 @@ Dim r As Integer
 End Sub
 
 
-Private Function BoundedText(ByVal ptr As Object, ByVal txt _
+Private Function BoundedText(ByVal ptr As Object, ByVal Txt _
     As String, ByVal max_wid As Single) As String
-    Do While ptr.TextWidth(txt) > max_wid
-        txt = Left$(txt, Len(txt) - 1)
+    Do While ptr.TextWidth(Txt) > max_wid
+        Txt = Left$(Txt, Len(Txt) - 1)
     Loop
-    BoundedText = txt
+    BoundedText = Txt
 End Function
 Private Sub Form_Load()
     'KPD-Team 1999
@@ -389,7 +404,7 @@ Dim I As Integer, ID As Integer, Fila As Integer
 Dim Pago As Currency, mfactura As Currency, sql As String, dAbono As Currency
 Dim sINM As String, sFact As String, sFP As String, sRecibo As String
 Dim cFactura As Double, sEmail As String, sApto As String
-Dim bTrans As Boolean, N As Integer, sDescrip As String, u As Integer
+Dim bTrans As Boolean, n As Integer, sDescrip As String, u As Integer
 Dim rstlocal As ADODB.Recordset
 
 
@@ -423,7 +438,7 @@ For I = 1 To grid.Rows - 1
         grid.TextMatrix(I + 1, 2))
         
         sEmail = grid.TextMatrix(I, 11)
-        N = 0
+        n = 0
         mfactura = 0
         sDescrip = ""
         
@@ -440,16 +455,16 @@ For I = 1 To grid.Rows - 1
             actualizar_factura sINM, sFact, sRecibo, mfactura
             sDescrip = sDescrip & Left(sFact, 2) & "-" & Mid(sFact, 3, 2) & "/"
             'Guardar_NumFact sFact, cFactura
-            ReDim Preserve aFacturasC(N)
+            ReDim Preserve aFacturasC(n)
             
-            aFacturasC(N) = sFact & "|" & cFactura
+            aFacturasC(n) = sFact & "|" & cFactura
             
             If grid.Row + 1 < grid.Rows Then
                 grid.Row = grid.Row + 1
             Else
                 Exit Do
             End If
-            N = N + 1
+            n = n + 1
         
         Loop
         sDescrip = Left(sDescrip, Len(sDescrip) - 1)
