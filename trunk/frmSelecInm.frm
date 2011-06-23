@@ -1,5 +1,4 @@
 VERSION 5.00
-Object = "{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}#1.1#0"; "ieframe.dll"
 Object = "{20C62CAE-15DA-101B-B9A8-444553540000}#1.1#0"; "MSMAPI32.OCX"
 Begin VB.Form frmSelecInm 
    Caption         =   "Enviar Avisos de Cobro vía mail"
@@ -116,32 +115,6 @@ Begin VB.Form frmSelecInm
       LogonUI         =   -1  'True
       NewSession      =   0   'False
    End
-   Begin SHDocVwCtl.WebBrowser wb 
-      Height          =   420
-      Left            =   3555
-      TabIndex        =   10
-      Top             =   1275
-      Visible         =   0   'False
-      Width           =   795
-      ExtentX         =   1402
-      ExtentY         =   741
-      ViewMode        =   0
-      Offline         =   0
-      Silent          =   0
-      RegisterAsBrowser=   0
-      RegisterAsDropTarget=   1
-      AutoArrange     =   0   'False
-      NoClientEdge    =   0   'False
-      AlignLeft       =   0   'False
-      NoWebView       =   0   'False
-      HideFileNames   =   0   'False
-      SingleClick     =   0   'False
-      SingleSelection =   0   'False
-      NoFolders       =   0   'False
-      Transparent     =   0   'False
-      ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
-      Location        =   "http:///"
-   End
    Begin VB.Label lbl 
       Caption         =   "2.- Selección Inmueble"
       Height          =   270
@@ -200,7 +173,7 @@ End Sub
 Private Sub Form_Load()
 Dim rstlocal As New ADODB.Recordset
 CenterForm Me
-For i = 0 To Year(Date) - 2003: cmbRfact(1).AddItem (2003 + i)
+For I = 0 To Year(Date) - 2003: cmbRfact(1).AddItem (2003 + I)
 Next
 'Presenta el periodo al mes actual
 cmbRfact(0).Text = cmbRfact(0).List(Month(Date) - 1)
@@ -252,8 +225,8 @@ If Respuesta(Mensaje) Then
             Temporal(5) = gnCta
             rstlocal.CursorLocation = adUseClient
             rstlocal.Open "Inmueble", cnnConexion, adOpenKeyset, adLockOptimistic, adCmdTable
-            For i = 0 To (.ListCount - 1)
-                rstlocal.Filter = "Codinm = '" & .List(i) & "'"
+            For I = 0 To (.ListCount - 1)
+                rstlocal.Filter = "Codinm = '" & .List(I) & "'"
                 If Not (rstlocal.EOF And rstlocal.BOF) Then
                     nEnviados = 0
                     gcCodInm = rstlocal("CodInm")
@@ -267,14 +240,8 @@ If Respuesta(Mensaje) Then
                         gnCta = CUENTA_INMUEBLE
                     End If
                     If Not Validar_Periodo(datPer1) Then Call Enviar_ACemail(datPer1)
-                        
-                    'strDireccion = "http://i.domaindlx.com/ynfantes/enviado.asp?Periodo=" & _
-                    Format(datPer1, "mm/dd/yy") & "&CodInm=" & gcCodInm & "&Enviados=" & _
-                    nEnviados & "&Fecha=" & Date & "&Clave=" & Format(datPer1, "mmddyy") & gcCodInm
-                    
-                    'Me.wb.Navigate strDireccion
-                    
-                    End If
+                            
+                End If
                 
             Next
         Else
