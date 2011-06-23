@@ -296,7 +296,7 @@ End Sub
 
 Private Sub cmd_Click(Index As Integer)
 'VAIRABLES LOCLES
-Dim rpReporte As ctlReport, strSql As String, NDoc As String
+Dim rpReporte As ctlReport, strSQL As String, NDoc As String
 Dim toLetras As New clsNum2Let
 
 If Index = 0 Then
