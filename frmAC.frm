@@ -1,5 +1,4 @@
 VERSION 5.00
-Object = "{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}#1.1#0"; "ieframe.dll"
 Object = "{8767A745-088E-4CA6-8594-073D6D2DE57A}#9.2#0"; "crviewer9.dll"
 Object = "{20C62CAE-15DA-101B-B9A8-444553540000}#1.1#0"; "MSMAPI32.OCX"
 Begin VB.Form frmAC 
@@ -18,7 +17,7 @@ Begin VB.Form frmAC
    Begin CRVIEWER9LibCtl.CRViewer9 crView 
       Height          =   5550
       Left            =   165
-      TabIndex        =   4
+      TabIndex        =   3
       Top             =   195
       Width           =   7920
       lastProp        =   500
@@ -55,7 +54,7 @@ Begin VB.Form frmAC
       Index           =   2
       Left            =   6780
       Style           =   1  'Graphical
-      TabIndex        =   3
+      TabIndex        =   2
       Top             =   5850
       Width           =   1410
    End
@@ -64,7 +63,7 @@ Begin VB.Form frmAC
       Height          =   720
       Index           =   1
       Left            =   8280
-      TabIndex        =   2
+      TabIndex        =   1
       Top             =   5850
       Width           =   1410
    End
@@ -73,7 +72,7 @@ Begin VB.Form frmAC
       Height          =   720
       Index           =   0
       Left            =   9750
-      TabIndex        =   1
+      TabIndex        =   0
       Top             =   5850
       Width           =   1410
    End
@@ -98,31 +97,6 @@ Begin VB.Form frmAC
       DownloadMail    =   -1  'True
       LogonUI         =   -1  'True
       NewSession      =   0   'False
-   End
-   Begin SHDocVwCtl.WebBrowser wb 
-      Height          =   5550
-      Left            =   180
-      TabIndex        =   0
-      Top             =   210
-      Width           =   10980
-      ExtentX         =   19368
-      ExtentY         =   9790
-      ViewMode        =   0
-      Offline         =   0
-      Silent          =   0
-      RegisterAsBrowser=   0
-      RegisterAsDropTarget=   1
-      AutoArrange     =   0   'False
-      NoClientEdge    =   0   'False
-      AlignLeft       =   0   'False
-      NoWebView       =   0   'False
-      HideFileNames   =   0   'False
-      SingleClick     =   0   'False
-      SingleSelection =   0   'False
-      NoFolders       =   0   'False
-      Transparent     =   0   'False
-      ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
-      Location        =   "http:///"
    End
 End
 Attribute VB_Name = "frmAC"
@@ -157,8 +131,6 @@ Select Case Index
             Set m_report = crView.ReportSource
             m_report.PrintOut False
             Set m_report = Nothing
-        Else
-            wb.ExecWB OLECMDID_PRINT, OLECMDEXECOPT_DONTPROMPTUSER, 1, 1
         End If
     
     Case 2  'enviar por email
@@ -181,9 +153,7 @@ Select Case Index
                 m_report.Export (False)
                 
             End If
-'            For I = 0 To 100000
-'                'retardo
-'            Next
+
             Set m_report = Nothing
             Dim Dir1$, Dir2$, Subject$
             If InStr(strEmail, ";") Then
@@ -200,47 +170,6 @@ Select Case Index
                 MsgBox "Error al enviar mensaje." & vbCrLf & Err.Description, vbCritical, strEmail
             End If
             
-            'envia el archivo via mail
-'            Set poSendMail = New clsSendMail
-'            Dim Dir1$, Dir2$
-'            With poSendMail
-'                .SMTPHostValidation = VALIDATE_HOST_DNS
-'                .EmailAddressValidation = VALIDATE_SYNTAX
-'                .Delimiter = ";"
-'                .SMTPHost = "mail.cantv.net"
-'                .from = IIf(gcNivel = nuADSYS, "sistemas@administradorasac.com", "info@administradorasac.com")
-'                .FromDisplayName = "Servicio Administración de Condominio"
-'
-'                If InStr(strEmail, ";") Then
-'
-'                    Dir1 = Left(strEmail, InStr(strEmail, ";") - 1)
-'                    Dir2 = Mid(strEmail, InStr(strEmail, ";") + 1, Len(strEmail))
-'
-'                    'mail.AddAddress Dir1, FrmConsultaCxC.Dat(3)
-'                    'mail.AddAddress Dir2, FrmConsultaCxC.Dat(3)
-'                    .Recipient = Dir1 & ";" & Dir2
-'                    .RecipientDisplayName = FrmConsultaCxC.Dat(3)
-'                    '.CcRecipient = Dir2
-'                    '.CcDisplayName = FrmConsultaCxC.Dat(3)
-'                Else
-'                    .Recipient = strEmail
-'                    .RecipientDisplayName = FrmConsultaCxC.Dat(3)
-'
-'                    'mail.AddAddress strEmail, FrmConsultaCxC.Dat(3)
-'                End If
-'                .Subject = "Aviso de Cobro " & Me.Caption
-'                .Message = Subject
-'                .Attachment = strArchivo
-'                .Send
-'
-'                'mail.Subject = "Aviso de Cobro " & Me.Caption
-'                'mail.Body = Subjet
-'                'mail.AddAttachment strArchivo
-'                'mail.Send
-'
-'            End With
-'            MsgBox "Mail enviado OK", vbInformation, strEmail
-'            Set mail = Nothing
             If Me.crView.Visible Then Kill (strArchivo)
         Else
             MsgBox "Este propietario no tiene email registrado", vbCritical, App.ProductName
@@ -258,7 +187,6 @@ End Sub
 '
 Private Sub Form_Load()
 'variables locales
-wb.Navigate strArchivo
 cmd(2).Picture = LoadPicture(gcUbiGraf & "email.ico", vbLPSmall)
 '
 End Sub
@@ -272,13 +200,9 @@ crView.Height = Me.ScaleHeight - cmd(1).Height - 400
 crView.ViewReport
 crView.Zoom (92)
 
-wb.Top = crView.Top
-wb.Left = crView.Left
-wb.Height = crView.Height
-wb.Width = crView.Width
-For i = 0 To 2
-    cmd(i).Left = Me.ScaleWidth - (cmd(i).Width * (i + 1)) - 200
-    cmd(i).Top = crView.Height + crView.Top + 100
+For I = 0 To 2
+    cmd(I).Left = Me.ScaleWidth - (cmd(I).Width * (I + 1)) - 200
+    cmd(I).Top = crView.Height + crView.Top + 100
 Next
 
 End Sub
