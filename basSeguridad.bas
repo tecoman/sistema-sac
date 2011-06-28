@@ -111,8 +111,8 @@ Attribute VB_Name = "basSeguridad"
                         rstPerfil.Close ': Set rstPerfil = Nothing
                     End If
                     'coloca la hora de entrada al trabajo
-                    If gcNivel > nuAdministrador Then    '   si no es el administrador del sistema ó
-                                            '   no es administrador de la empresa
+                    If gcNivel > nuADSYS Then       '   si no es el administrador del sistema ó
+                                                    '   no es administrador de la empresa
                         rstPerfil.Open "SELECT * FROM Emp_Asistencia WHERE Fecha=Date()", _
                         cnnConexion, adOpenKeyset, adCmdText
                         '
