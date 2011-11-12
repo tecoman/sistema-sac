@@ -60,7 +60,7 @@ Attribute VB_Name = "basSeguridad"
     rstSeg.Open "SELECT * FROM Usuarios WHERE NombreUsuario ='" & strUID & "'", cnnSeg, _
     adOpenDynamic, adLockPessimistic, adCmdText
     '
-    If Not rstSeg.EOF Then
+    If Not (rstSeg.BOF And rstSeg.EOF) Then
         
         If strPWD = rstSeg!Contraseña Then  'verifica la contraseña
         
@@ -120,7 +120,7 @@ Attribute VB_Name = "basSeguridad"
                             'registras todos los usuarios activos
                             cnnConexion.Execute "INSERT INTO Emp_Asistencia (Usuario,Fecha,Entrada," _
                             & "Salida) SELECT NombreUsuario,Date(),'12:00:00 a.m.','12:00:00 a.m.' " _
-                            & "FROM Usuarios IN '" & gcPath & "\Tablas.mdb' WHERE Nivel=2 or Nivel=3;"
+                            & "FROM Usuarios IN '" & gcPath & "\Tablas.mdb' WHERE Nivel IN (1,2,3);"
                         End If
                         rstPerfil.Close
                         '
@@ -138,7 +138,7 @@ Attribute VB_Name = "basSeguridad"
                         Set rstPerfil = Nothing
                         
                     End If
-                    If booCajero = True Then Call rtnCajero(cnnSeg)
+                    Call rtnCajero(cnnSeg)
     '            Else
     '                ftnSegur = MsgBox("Usuario: " & gcUsuario & " ya está conectado al sistema," & vbCrLf _
     '                & "Consulte al administrador del sistema", vbExclamation, App.EXEName)
@@ -183,19 +183,19 @@ SalirSistema:
     End Function
     
     '---------------------------------------------------------------------------------------------
-    Private Sub rtnFoco(ByVal txt As TextBox)
+    Private Sub rtnFoco(ByVal Txt As TextBox)
     '---------------------------------------------------------------------------------------------
     '
-    With txt
+    With Txt
         .SelStart = 0
-        .SelLength = Len(txt.Text)
+        .SelLength = Len(Txt.Text)
         .SetFocus
     End With
     '
     End Sub
     
     '---------------------------------------------------------------------------------------------
-    Private Sub rtnCajero(cnnCajero As ADODB.Connection) '
+    Public Sub rtnCajero(cnnCajero As ADODB.Connection) '
     '---------------------------------------------------------------------------------------------
     'Variables locales
     Dim rstCajero As New ADODB.Recordset
@@ -204,7 +204,7 @@ SalirSistema:
     rstCajero.Open "SELECT * FROM Taquillas WHERE USUARIO='" & gcUsuario & "'", cnnCajero, _
     adOpenKeyset, adLockOptimistic, adCmdText
     '
-    If Not rstCajero.EOF Then
+    If Not (rstCajero.EOF And rstCajero.BOF) Then
     '
         IntTaquilla = rstCajero!IDTaquilla
         '

@@ -105,7 +105,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
-Private Sub Cmd_Click(Index As Integer)
+Private Sub cmd_Click(Index As Integer)
 'variables locales
 Dim Respuesta As Integer
 Dim FP(2) As String
@@ -125,13 +125,13 @@ Select Case Index
         Exit Sub
     End If
     
-    Respuesta = MsgBox("Desea llevar a cabo este proceso", vbYesNo + vbQuestion, App.ProductName)
+    Respuesta = MsgBox("¿Desea llevar a cabo este proceso?", vbYesNo + vbQuestion, App.ProductName)
             
     If Respuesta = vbYes Then
     
         cmd(0).Enabled = False
         cmd(1).Enabled = False
-        lbl(0) = "Iniciando Proceso, Espere un momento por favor...."
+        Lbl(0) = "Iniciando Proceso, Espere un momento por favor...."
         
         'crea una instancia del objeto ADODB.Recordset
         Set rstPago = New ADODB.Recordset
@@ -144,14 +144,14 @@ Select Case Index
             .Filter = strFiltro
             .Sort = "InmuebleMovimientoCaja, AptoMovimientoCaja"
             '
-            If Not .EOF And Not .BOF Then
+            If Not (.EOF And .BOF) Then
                 'Set ctlReport = FrmAdmin.rptReporte
                 .MoveFirst
                 Do  'imprime los recibos de pago hasta fin de archivo
                     
                     If Not !Print Then
                         
-                        lbl(0) = "Inm. " & !InmuebleMovimientoCaja & " Imprimiendo Fact. '" & _
+                        Lbl(0) = "Inm. " & !InmuebleMovimientoCaja & " Imprimiendo Fact. '" & _
                         !Fact & "'"
                         DoEvents
                         FP(0) = !FPago & " - " & !NumDocumentoMovimientoCaja & " - " & _
@@ -192,12 +192,12 @@ Select Case Index
                     Err.Number
                     Call rtnBitacora("Ocurrió el error [" & Err.Number & _
                     "] al imprimir el reporte")
-                    lbl(0) = "El proceso generó algunos errores durante su ejecución"
+                    Lbl(0) = "El proceso generó algunos errores durante su ejecución"
                 Else
                     cnnConexion.Execute "DELETE * FROM Recibos_Enviar WHERE Print=True;"
                     MsgBox "El proceso ha finalizado con éxito", vbInformation, _
                     App.ProductName
-                    lbl(0) = "El proceso finalizó con éxito"
+                    Lbl(0) = "El proceso finalizó con éxito"
                 End If
                 cmd(0).Enabled = True
                 cmd(1).Enabled = True
@@ -205,7 +205,7 @@ Select Case Index
             Else
                 cmd(0).Enabled = True
                 cmd(1).Enabled = True
-                lbl(0) = "No existen recibos que imprimir..."
+                Lbl(0) = "No existen recibos que imprimir..."
             End If
         '
         End With
@@ -214,13 +214,13 @@ Select Case Index
     End If
     
     Case 3, 2
-        Dim K As Integer, J As Integer
+        Dim K As Integer, j As Integer
         
         K = IIf(Index = 3, 0, 1)
-        J = IIf(K = 0, 1, 0)
+        j = IIf(K = 0, 1, 0)
         If List(K).List(0) <> "" Then
             Do
-                List(J).AddItem List(K).List(0)
+                List(j).AddItem List(K).List(0)
                 List(K).RemoveItem (0)
             Loop Until List(K).List(0) = ""
             

@@ -1184,9 +1184,9 @@ Attribute poSendMail.VB_VarHelpID = -1
     End Sub
 
     
-    Private Sub AC0301_Click(index As Integer)
+    Private Sub AC0301_Click(Index As Integer)
     'Matriz de Menus Tablas del Sistema
-    Select Case index
+    Select Case Index
     '
         Case 0  'Ciudades
         '-------------------------
@@ -1278,9 +1278,9 @@ Attribute poSendMail.VB_VarHelpID = -1
     & gcCodInm)
     End Sub
 
-    Private Sub AC1050_Click(index As Integer)
+    Private Sub AC1050_Click(Index As Integer)
     'Matriz de Menus [Editar Cartas de Morosidad
-    Select Case index
+    Select Case Index
     '
         Case 0  'Carta de 3 meses
         '--------------------
@@ -1337,10 +1337,10 @@ Attribute poSendMail.VB_VarHelpID = -1
     End Sub
 
 
-    Private Sub AC1060501_Click(index As Integer)   'Matriz de menús catálogo de gastos
+    Private Sub AC1060501_Click(Index As Integer)   'Matriz de menús catálogo de gastos
     Dim strTitulo As String 'Variables locales
     If Estado Then Exit Sub
-    Select Case index
+    Select Case Index
         Case 0  'Todos los gastos
         '--------------------
             mcCrit = ""
@@ -1438,8 +1438,8 @@ End Sub
     End Sub
 
     
-Private Sub AC2031_Click(index As Integer)
-Select Case index
+Private Sub AC2031_Click(Index As Integer)
+Select Case Index
     Case 0  'remesa de servicios
         Call Muestra_Formulario(FrmRemesa, "Click Registrar Remesa Servicios")
     'Case 1  'remesa de gastos fijos menores
@@ -1448,8 +1448,8 @@ End Select
 
 End Sub
 
-    Private Sub AC20311_Click(index As Integer)
-    Select Case index
+    Private Sub AC20311_Click(Index As Integer)
+    Select Case Index
         Case 0  'registrar
             Call Muestra_Formulario(frmGFMen, "Click Registrar Remesa Gastos Menores")
         Case 1  'procesar
@@ -1467,26 +1467,26 @@ End Sub
     '
     End Sub
     
-    Private Sub AC2061_Click(index%)
+    Private Sub AC2061_Click(Index%)
     ' variables locales
     Dim Formulario As frmCronoPago
     '
     Set Formulario = New frmCronoPago
-    Select Case index
+    Select Case Index
     '
         Case 0  'cheques en tránsito
         '----------
-            Formulario.Opcion = index
+            Formulario.Opcion = Index
             Call Muestra_Formulario(Formulario, "Cheques en Tránsito")
                 
         Case 1  'cheques por entregar
         '----------
-            Formulario.Opcion = index
+            Formulario.Opcion = Index
             Call Muestra_Formulario(Formulario, "Cheques por Entregar")
             
         Case 2  'Cheques Pagados
         '----------
-            Formulario.Opcion = index
+            Formulario.Opcion = Index
             Call Muestra_Formulario(Formulario, "Cheques Pagados")
         
         Case 3  'plan de pagos
@@ -1497,9 +1497,9 @@ End Sub
         '
     End Sub
 
-    Private Sub AC20701_Click(index As Integer) 'Matríz de Menús Agenda Telefónica
+    Private Sub AC20701_Click(Index As Integer) 'Matríz de Menús Agenda Telefónica
     '
-    Select Case index
+    Select Case Index
     
         Case 0  'Proveedores
         '--------------------
@@ -1762,7 +1762,7 @@ End Sub
     End Sub
 
 
-    Private Sub AC3121_Click(index As Integer)
+    Private Sub AC3121_Click(Index As Integer)
     'VARIABLES LOCALES
     Dim CFD As New frmCFD
     Dim strMsg$
@@ -1771,7 +1771,7 @@ End Sub
     '
     MousePointer = vbHourglass
     'Menu cuadre fondo - deuda
-    Select Case index
+    Select Case Index
         Case 3  'impresion reporte
             strMsg = "Antes de llevar a cabo esta solicitud verifique que ha efectuado el cuadre " _
             & "de Deuda y el cuadre de fondo. Si no lo ha echo puede perder información, desea " _
@@ -1802,7 +1802,7 @@ End Sub
             End If
             
         Case 1, 2 'cuadre deuda
-            CFD.Caso = index
+            CFD.Caso = Index
             Load CFD
             '
     End Select
@@ -1822,12 +1822,12 @@ End Sub
     End Sub
 
     '----------------------------------------------------------------------------
-    Private Sub AC400_Click(index As Integer) 'Matriz de Menus
+    Private Sub AC400_Click(Index As Integer) 'Matriz de Menus
     '---------------------------------------------------------------------------
     'Contiene todos los Sub-Menú del menu {caja}
     Dim IntTemp%, Aut As frmAutCierre
     Dim rstCaja As ADODB.Recordset
-    Select Case index
+    Select Case Index
     '
         Case 12 'caja Bs
             MsgBox "Opción no disponible. Falta Poco", vbInformation, App.ProductName
@@ -2148,9 +2148,7 @@ End Sub
                             
                             CurRecibo = CurRecibo + 1
                             If Not IsNull(rstDeuda!Fact) And rstDeuda!Fact <> "" Then
-                                'Imprime el recibo de pado
-                                'Call Printer_Pago(rstDeuda!Fact, rstDeuda!Saldo, Ubica, CodInm, _
-                                Inm, strRecibo, False, FrmAdmin.RptReporte, , crptToPrinter)
+                                
                                 numFichero = FreeFile
                                 strArchivo = App.Path & Archivo_Temp
                                 Open strArchivo For Append As numFichero
@@ -2271,10 +2269,10 @@ End Sub
     
 
     '---------------------------------------------------------------------------------------------
-    Private Sub AC4001_Click(index As Integer)  'SUB MENU AUTORIZAR {MENU CAJA}
+    Private Sub AC4001_Click(Index As Integer)  'SUB MENU AUTORIZAR {MENU CAJA}
     '---------------------------------------------------------------------------------------------
     '
-    Select Case index
+    Select Case Index
         Case 0  'Aut. Deducciones
     '   ---------------------
             Call Muestra_Formulario(FrmAutorizacion, "Click Autorizar Deducciones..")
@@ -2292,21 +2290,21 @@ End Sub
     
 
     '---------------------------------------------------------------------------------------------
-    Private Sub AC4002_Click(index As Integer)  'Reportes de Caja
+    Private Sub AC4002_Click(Index As Integer)  'Reportes de Caja
     '---------------------------------------------------------------------------------------------
     '
-    If index = 0 Or index = 1 Or index = 2 Then
+    If Index = 0 Or Index = 1 Or Index = 2 Then
     On Error Resume Next
     'variables locales
     Dim rstCaja As New ADODB.Recordset
-    Dim strSQL$, strHora$, IntTemp%
+    Dim strSql$, strHora$, IntTemp%
     Dim rstOpen As ADODB.Recordset
     Dim Ventana1 As frmRCG, ventana As frmRCG, Aut As frmAutCierre
     '
     rstCaja.Open "SELECT * FROM Taquillas WHERE IDTaquilla=" & IntTaquilla, _
     cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
     
-    If rstCaja!Cuadre Or gcNivel = nuADSYS Then
+    If rstCaja!Cuadre Or gcNivel = nuADSYS Or nuAdministrador Then
         
         If gcNivel < nuSUPERVISOR Then 'Habilita la taquilla deseada
             
@@ -2327,7 +2325,7 @@ End Sub
             Set rstOpen = Nothing
         End If
         '
-        Select Case index
+        Select Case Index
             Case 1  'Reporte General
         '   ---------------------
                 FrmReport.FraCaja.Visible = True
@@ -2365,7 +2363,7 @@ End Sub
     Set rstCaja = Nothing
     
     Else
-        Select Case index
+        Select Case Index
             Case 4  'Listar Depositos en trànsito
         '   ---------------------
                 'Call rtnGenerator(gcPath & "\sac.mdb", strSQL, "Depen")
@@ -2389,10 +2387,10 @@ End Sub
     End Sub
 
     '---------------------------------------------------------------------------------------------
-    Private Sub AC404_Click(index As Integer)   'Matríz de menús
+    Private Sub AC404_Click(Index As Integer)   'Matríz de menús
     '---------------------------------------------------------------------------------------------
     '
-    Select Case index
+    Select Case Index
     '
         Case 0  'CONSULTA CUENTAS POR PAGAR
     '   ---------------------------------------------------
@@ -2430,9 +2428,9 @@ End Sub
     '
     End Sub
     
-    Private Sub AC40422_Click(index As Integer)
+    Private Sub AC40422_Click(Index As Integer)
     'variables locales
-    Select Case index
+    Select Case Index
         Case 0, 1, 2, 3, 4
             MsgBox "Opcion no disponible", vbInformation, App.ProductName
         Case 5  'estidistico deuda
@@ -2501,9 +2499,9 @@ End Sub
 '    Call Muestra_Formulario(FrmReport, "Click Imprimir " & mcTitulo)
 '    End Sub
 
-Private Sub AC4041_Click(index As Integer)
+Private Sub AC4041_Click(Index As Integer)
 '
-Select Case index
+Select Case Index
     
     Case 0
         If Not Estado Then Call Muestra_Formulario(frmGestion, "Click Seg.Gest. de cobro")
@@ -2512,7 +2510,7 @@ Select Case index
         Call Muestra_Formulario(frmConvenio, "Click Convenio de pago")
     
     Case 4
-        frmAbogado.Show , Me
+        'frmAbogado.Show , Me
         'call rtnBitacora("Click Lista de Abogados")
     
     Case 6  'consultas y Reportes
@@ -2521,14 +2519,14 @@ End Select
 '
 End Sub
 
-    Private Sub AC40421_Click(index As Integer)
+    Private Sub AC40421_Click(Index As Integer)
     'variables locales
     Dim rstPago As ADODB.Recordset
     Dim FP(2) As String
     Dim errLocal As Long
     Dim Respuesta As Long
     
-    Select Case index
+    Select Case Index
         Case 0  'Relación CxC al cobrador
         mcTitulo = "Relación CxC al Cobrador Inm: " & gcCodInm
         mcReport = "cxc_cobrador.rpt"
@@ -2582,8 +2580,8 @@ End Sub
 '    & gcCodInm)
     End Sub
 
-    Private Sub AC50601_Click(index As Integer)
-    Select Case index
+    Private Sub AC50601_Click(Index As Integer)
+    Select Case Index
         Case 0  ' conciliación cheques
             Call Muestra_Formulario(frmConciliacionCheque, "Click Ficha " & _
             "Conciliaciones Bancarias Inm.: " & gcCodInm)
@@ -2627,8 +2625,8 @@ End Sub
     '---------------------------------------------------------------------------------------------
     '   Menu:   Nomina
     '---------------------------------------------------------------------------------------------
-    Private Sub AC601_Click(index As Integer)
-    Select Case index
+    Private Sub AC601_Click(Index As Integer)
+    Select Case Index
         'Ficha del trabajador
         Case 0: Call Muestra_Formulario(FrmFichaEmp, "Click Ficha del Empleado..")
         Case 3: Call Muestra_Formulario(frmVacacion, "Click Ficha Vacaciones")
@@ -2637,10 +2635,10 @@ End Sub
     End Select
     End Sub
 
-    Private Sub AC6011_Click(index As Integer)
+    Private Sub AC6011_Click(Index As Integer)
     Dim FrmEdit As New frmEditNom
     '
-    Select Case index
+    Select Case Index
         'Editar Cargos
         Case 0
             FrmEdit.Titulo = "Mantenimiento Cargos"
@@ -2652,13 +2650,13 @@ End Sub
             FrmEdit.Source = "SELECT * FROM Emp_Contratos ORDER BY NombreContrato"
             
     End Select
-    FrmEdit.Caso = index
+    FrmEdit.Caso = Index
     Call Muestra_Formulario(FrmEdit, "Click " & FrmEdit.Titulo)
     End Sub
 
-    Private Sub AC6014_Click(index As Integer)
+    Private Sub AC6014_Click(Index As Integer)
     '
-    Select Case index
+    Select Case Index
     
         Case 0  'Detalle Nómina
         '-----------------
@@ -2693,10 +2691,10 @@ End Sub
     '
     End Sub
 
-    Public Sub AC6016_Click(index As Integer)
+    Public Sub AC6016_Click(Index As Integer)
     'menú seguro social
     MousePointer = vbHourglass
-    Select Case index
+    Select Case Index
         Case 2  'establecer parámetros del seguro social
             
             Load frmParamSSO
@@ -2733,13 +2731,13 @@ End Sub
     Private Sub AC60609_Click()
     'calculo de aguinaldos
     Dim rstlocal As New ADODB.Recordset
-    Dim strSQL As String
+    Dim strSql As String
     
-    strSQL = "SELECT Emp.Nombres, Emp.Apellidos, Emp.CodInm, Nom_Detalle.* FROM Nom_Det" _
+    strSql = "SELECT Emp.Nombres, Emp.Apellidos, Emp.CodInm, Nom_Detalle.* FROM Nom_Det" _
     & "alle INNER JOIN Emp ON Nom_Detalle.CodEmp = Emp.CodEmp WHERE (((Nom_Detalle.IDNo" _
     & "m) In (select Top 1 IDNomina  from nom_inf Order by fecha desc)));"
     
-    rstlocal.Open strSQL, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
+    rstlocal.Open strSql, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
     
     With rstlocal
     
@@ -2795,11 +2793,11 @@ End Sub
     Call Muestra_Formulario(frmBitacora, "Click Bitácora del sistema")
     End Sub
 
-    Private Sub AC707_Click(index As Integer)
+    Private Sub AC707_Click(Index As Integer)
     Dim ventana As New frmQuorum
     Dim strMsg As String
     
-    Select Case index
+    Select Case Index
         Case 1 'quorum
             
             If Not Estado Then Call Muestra_Formulario(ventana, "Click Quorum")
@@ -2830,9 +2828,9 @@ End Sub
     Call Muestra_Formulario(frmAsistencia, "Click Asistencia Personal")
     End Sub
 
-    Private Sub AC81_Click(index As Integer)
+    Private Sub AC81_Click(Index As Integer)
     'matriz de menús módulo alquileres
-    Select Case index
+    Select Case Index
         '
         Case 0  'Oferta
             Call Muestra_Formulario(frmOAlq, "Click Oferta Alquileres")
@@ -2848,6 +2846,7 @@ End Sub
     gcReport = gcPath & "\Reportes\"
     gcUbiGraf = Left(gcPath, Len(gcPath) - 6) & "\Iconos\"
     objRst.Open "Inmueble", cnnConexion, adOpenKeyset, adLockOptimistic, adCmdTable
+    objRst.Sort = "CodInm"
     ObjRstNom.Open "SELECT * FROM Inmueble ORDER BY Nombre", cnnConexion, adOpenKeyset, _
     adLockOptimistic, adCmdText
     If Not gcPath Like "\\*" Then FrmAdmin.AC707(2).Checked = True
@@ -3080,7 +3079,7 @@ SalirRutina:
     Private Sub rtnPrint_Abonos()  '
     '---------------------------------------------------------------------------------------------
     'variables locales
-    Dim strSQL As String
+    Dim strSql As String
     Dim strUser As String
     Dim strHora As String
     Dim rstAbonos As New ADODB.Recordset
@@ -3089,9 +3088,9 @@ SalirRutina:
     'Abre conexion al origen de datos
     rstAbonos.Open "copyAbonos", cnnConexion, adOpenKeyset, adLockOptimistic, adCmdTable
     'Imprimir primera parte del reporte
-    strSQL = gcUbiGraf & "\logo.bmp"
-    If Dir(strSQL) <> "" Then   'imprime el logo de la empresa
-        Printer.PaintPicture LoadPicture(strSQL), _
+    strSql = gcUbiGraf & "\logo.bmp"
+    If Dir(strSql) <> "" Then   'imprime el logo de la empresa
+        Printer.PaintPicture LoadPicture(strSql), _
         Printer.ScaleTop + 10, Printer.ScaleLeft, 4290, 1365, , , , , vbSrcCopy
         Printer.Print
     End If
@@ -3127,13 +3126,13 @@ SalirRutina:
     rstAbonos.Close
     '
     'Abre conexion al segundo origen de datos
-    strSQL = "SELECT TDFAbonos.IDRecibo, MovimientoCaja.InmuebleMovimientoCaja, MovimientoCaja." _
+    strSql = "SELECT TDFAbonos.IDRecibo, MovimientoCaja.InmuebleMovimientoCaja, MovimientoCaja." _
     & "AptoMovimientoCaja, TDFAbonos.Monto FROM (Inmueble INNER JOIN MovimientoCaja ON Inmueble" _
     & ".CodInm = MovimientoCaja.InmuebleMovimientoCaja) INNER JOIN TDFAbonos ON MovimientoCaja." _
     & "IDRecibo = TDFAbonos.IDRecibo ORDER BY MovimientoCaja.InmuebleMovimientoCaja,MovimientoC" _
     & "aja.AptoMovimientoCaja;"
     
-    rstAbonos.Open strSQL, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
+    rstAbonos.Open strSql, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
     '
     'Imprimir segunda parte del reporte
     Printer.FontSize = 12
@@ -3280,8 +3279,8 @@ SalirRutina:
    
     End Sub
 
-    Private Sub mnuBitacora_Click(index As Integer)
-    Select Case index
+    Private Sub mnuBitacora_Click(Index As Integer)
+    Select Case Index
         Case 0   'copiar
             ' Copia el contenido del Portapapeles.
             Clipboard.Clear
@@ -3311,12 +3310,12 @@ SalirRutina:
     End Sub
     
     Private Sub Del_Click()
-    Dim I%
+    Dim i%
     'On Error Resume Next
     With FrmTfondos.gridFondo(0)
         If .RowSel = 0 Then Exit Sub
-        I = .RowSel
-        If .TextMatrix(I, 0) <> "" And .TextMatrix(I, 1) <> "" Then
+        i = .RowSel
+        If .TextMatrix(i, 0) <> "" And .TextMatrix(i, 1) <> "" Then
             'Llama rutina según la acción seleccionada
             Call FrmTfondos.Eliminar
         Else
@@ -3332,13 +3331,13 @@ SalirRutina:
     End Sub
 
     'Reporte de cxp generadas por facturación
-    Private Sub AC21001070_Click(index As Integer)
+    Private Sub AC21001070_Click(Index As Integer)
     'variables locales
     Dim strFiltro As String
     Dim SubTitulo As String
-    Dim strSQL As String
+    Dim strSql As String
     '
-    Select Case index
+    Select Case Index
             
         Case 0
             strFiltro = "AND Cpp.CodInm IN (SELECT CodInm FROM Inmueble WHERE Caja='99')"
@@ -3354,11 +3353,11 @@ SalirRutina:
             
     End Select
     
-    strSQL = "SELECT Cpp.*,Inmueble.* FROM Cpp INNER JOIN Inmueble ON Cpp.CodInm=" _
+    strSql = "SELECT Cpp.*,Inmueble.* FROM Cpp INNER JOIN Inmueble ON Cpp.CodInm=" _
     & "Inmueble.CodInm WHERE Cpp.Fact LIKE 'F%' AND (Cpp.Estatus='PENDIENTE' or " _
     & "Cpp.Estatus='ASIGNADO') " & strFiltro & " ORDER BY Cpp.CodInm;"
     '
-    Call Printer_Report(strSQL, "Honorarios Administrativos", SubTitulo)
+    Call Printer_Report(strSql, "Honorarios Administrativos", SubTitulo)
     '
     End Sub
 
@@ -3371,7 +3370,7 @@ SalirRutina:
     '
     '   Emite el reporte de gastos mensuales para un período determinado
     '---------------------------------------------------------------------------------------------
-    Public Sub Reporte_GM(Optional strSQL As String, Optional Salida As crSalida, _
+    Public Sub Reporte_GM(Optional strSql As String, Optional Salida As crSalida, _
     Optional Guarda_Copia As Boolean)
     'variables locales
     Dim rpReporte As ctlReport
@@ -3382,34 +3381,34 @@ SalirRutina:
     '
     MousePointer = vbHourglass
     'Generea la consulta de los gastos a facturar para el mes correspondiente
-    If gcNivel <= nuAdministrador And strSQL <> "" Then
+    If gcNivel <= nuAdministrador And strSql <> "" Then
     
         rstCount.Open "SELECT DateAdd('m',1,MAX(Periodo)) FROM Factura WHERE Fact Not LIKE 'CHD%'", _
         cnnOLEDB + mcDatos, adOpenKeyset, adLockOptimistic, adCmdText
-        If Format(rstCount.Fields(0), "mm/dd/yyyy") <= CDate(strSQL) Then bln = True
+        If Format(rstCount.Fields(0), "mm/dd/yyyy") <= CDate(strSql) Then bln = True
         rstCount.Close
         
     End If
     
-    If strSQL = "" Then
+    If strSql = "" Then
     
-        strSQL = "SELECT  * FROM chequeDetalle IN '" & gcPath & "\sac.mdb' WHERE chequeDetal" _
+        strSql = "SELECT  * FROM chequeDetalle IN '" & gcPath & "\sac.mdb' WHERE chequeDetal" _
         & "le.CodInm='" & gcCodInm & "' AND chequeDetalle.Cargado=(SELECT DateAdd('m',1,MAX(Per" _
         & "iodo)) FROM Factura WHERE Fact Not LIKE 'CHD*');"
         Salida = crptToWindow
         
     Else
     
-        strSQL = "SELECT  * FROM chequeDetalle IN '" & gcPath & "\sac.mdb' WHERE chequeDetal" _
-        & "le.CodInm='" & gcCodInm & "' AND chequeDetalle.Cargado=#" & strSQL & "#"
+        strSql = "SELECT  * FROM chequeDetalle IN '" & gcPath & "\sac.mdb' WHERE chequeDetal" _
+        & "le.CodInm='" & gcCodInm & "' AND chequeDetalle.Cargado=#" & strSql & "#"
         
     End If
     
     'genera la consulta
-    Call rtnGenerator(mcDatos, strSQL, "qdfGastosMensuales")
+    Call rtnGenerator(mcDatos, strSql, "qdfGastosMensuales")
     '
     If bln = True Then
-        frmGasMen.OrigenD = strSQL
+        frmGasMen.OrigenD = strSql
         Call Muestra_Formulario(frmGasMen, "Gastos Mensuales en Pantalla")
         Exit Sub
     End If
@@ -3484,14 +3483,14 @@ SalirRutina:
     Dim rpReporte As ctlReport
     cnnConexion.Execute "DELETE * FROM Con_Report"
     With frmConvenio.grid
-        I = 1
+        i = 1
         Do
             
             cnnConexion.Execute "INSERT INTO Con_Report (Nmes,Periodo,Monto,gastos,honorarios,t" _
-            & "otal) VALUES (" & I & ",'01-" & .TextMatrix(I, 1) & "','" & .TextMatrix(I, 2) & _
-            "','" & .TextMatrix(I, 3) & "','" & .TextMatrix(I, 4) & "','" & .TextMatrix(I, 5) & "')"
-            I = I + 1
-        Loop Until .TextMatrix(I, 0) = ""
+            & "otal) VALUES (" & i & ",'01-" & .TextMatrix(i, 1) & "','" & .TextMatrix(i, 2) & _
+            "','" & .TextMatrix(i, 3) & "','" & .TextMatrix(i, 4) & "','" & .TextMatrix(i, 5) & "')"
+            i = i + 1
+        Loop Until .TextMatrix(i, 0) = ""
         '
     End With
     
@@ -3546,9 +3545,9 @@ SalirRutina:
     End With
     'guarda el detalle de las cuotas
     With frmConvenio.GRID1
-        For I = 1 To .Rows - 1
+        For i = 1 To .Rows - 1
             cnnConexion.Execute "INSERT INTO Convenio_Detalle (IDConvenio,Fecha,Monto) VALUES (" _
-            & Con & ",'" & .TextMatrix(I, 1) & "','" & .TextMatrix(I, 2) & "')"
+            & Con & ",'" & .TextMatrix(i, 1) & "','" & .TextMatrix(i, 2) & "')"
         Next
         
     End With

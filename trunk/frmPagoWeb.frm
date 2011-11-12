@@ -145,11 +145,10 @@ Private Declare Function InternetReadFile Lib "wininet" (ByVal hFile As Long, By
 Private Declare Function InternetOpenUrl Lib "wininet" Alias "InternetOpenUrlA" (ByVal hInternetSession As Long, ByVal lpszUrl As String, ByVal lpszHeaders As String, ByVal dwHeadersLength As Long, ByVal dwFlags As Long, ByVal dwContext As Long) As Long
         
 Private sCodPagoCondominio As String, sCodAbonoCuenta As String, sCodAbonoFuturo As String
-Private sNombreInmueble As String
+Private sNombreInmueble As String, sCajaInmueble As String
 Private aFacturasC() As String
-
-
-
+Private cErrores As New Collection
+Private sProceso As String
 
 Private Sub cmd_Click(Index As Integer)
 Select Case Index
@@ -180,70 +179,6 @@ Dim rpReporte As ctlReport
     '
     End With
 
-Exit Sub
-Dim xmax As Single
-Dim ymax As Single
-Dim X As Single
-Dim C As Integer
-Dim r As Integer
-
-    With Printer.Font
-        .Name = grid.Font.Name
-        .Size = grid.Font.Size
-        Printer.Orientation = vbPRORLandscape
-    End With
-
-    With grid
-        ' See how wide the whole thing is.
-        GAP = 0
-        ymin = 300
-        xmax = xmin + GAP
-        For C = 0 To .Cols - 1
-            xmax = xmax + .ColWidth(C) + 2 * GAP
-        Next C
-
-        ' Print each row.
-        xmin = (Printer.ScaleWidth - xmax) / 2
-        
-        Printer.CurrentY = ymin
-        Printer.CurrentX = xmin
-        Printer.Print "www.administradorasac.com"
-        Printer.CurrentX = xmin
-        Printer.Print "Pagos Web: " & Format(Date, "dd/mm/yyyy")
-        Printer.Print
-        ymin = Printer.CurrentY
-        For r = 0 To .Rows - 1
-            ' Draw a line above this row.
-            If r > 0 Then Printer.Line (xmin, _
-                Printer.CurrentY)-(xmax + xmin, Printer.CurrentY)
-            Printer.CurrentY = Printer.CurrentY + GAP
-
-            ' Print the entries on this row.
-            X = xmin + GAP
-            For C = 0 To .Cols - 1
-                Printer.CurrentX = X
-                Printer.Print BoundedText(Printer, .TextMatrix(r, _
-                    C), .ColWidth(C));
-                X = X + .ColWidth(C) + 2 * GAP
-            Next C
-            Printer.CurrentY = Printer.CurrentY + GAP
-
-            ' Move to the next line.
-            Printer.Print
-        Next r
-        ymax = Printer.CurrentY
-
-        ' Draw a box around everything.
-        Printer.Line (xmin, ymin)-(xmax + xmin, ymax), , B
-
-        ' Draw lines between the columns.
-        X = xmin
-        For C = 0 To .Cols - 1
-            X = X + .ColWidth(C) + 2 * GAP
-            Printer.Line (X, ymin)-(X, ymax)
-        Next C
-    End With
-    Printer.EndDoc
 End Sub
 
 
@@ -260,7 +195,7 @@ Private Sub Form_Load()
     'E-Mail: KPDTeam@Allapi.net
     MousePointer = vbHourglass
     Dim hOpen As Long, hFile As Long, sBuffer As String, Ret As Long
-    Dim Pago, detalle, hConnect As Long
+    Dim Pago, Detalle, hConnect As Long
     
     'Create a buffer for the file we're going to download
     'Create an internet connection
@@ -311,6 +246,14 @@ Private Sub Form_Load()
         vbCritical, App.ProductName
         
     End If
+    If IntTaquilla = 0 Then
+        Dim cnn As ADODB.Connection
+        Set cnn = New ADODB.Connection
+        cnn.Open cnnOLEDB & gcPath & "\tablas.mdb"
+        basSeguridad.rtnCajero cnn
+        cnn.Close
+        Set cnn = Nothing
+    End If
     MousePointer = vbDefault
 End Sub
 
@@ -323,13 +266,13 @@ rtnLimpiar_Grid grid
 Reg = Split(contenido, "<br>")
 Filas = UBound(Reg)
 grid.Rows = Filas + 1
-For I = 0 To Filas - 1
+For i = 0 To Filas - 1
     Fila = Fila + 1
     grid.Col = 0
     grid.Row = Fila
     Set grid.CellPicture = img(2)
     grid.CellPictureAlignment = flexAlignCenterCenter
-    maestro = Split(Reg(I), "|")
+    maestro = Split(Reg(i), "|")
     For j = 0 To 13
         valor = maestro(j)
         If IsDate(valor) And Not IsNumeric(valor) Then
@@ -380,8 +323,10 @@ If grid.ColSel = 0 Then
             grid.TextMatrix(Fila, 3) = "T" And _
             (grid.TextMatrix(Fila, 7) <> grid.TextMatrix(Fila, 8)) Then
                 grid.TextMatrix(Fila + 1, 2) = _
-                InputBox("Ingrese en número de operación registrada en banco", _
+                InputBox("Ingrese en número de operación registrada en banco." & vbCrLf & "SI EL NUMERO DE OPERACION EN BANCO COINCIDE CON LA REGISTRADA POR EL CLIENTE DEJE ESTE VALOR EN BLANCO", _
                 "Número de Operación")
+                If Trim(grid.TextMatrix(Fila + 1, 2)) = Trim(grid.TextMatrix(Fila, 4)) Then grid.TextMatrix(Fila + 1, 2) = ""
+                
         End If
     End If
 ElseIf grid.ColSel = 14 Then
@@ -400,10 +345,11 @@ End If
 End Sub
 
 Private Sub procesar_pago()
-Dim I As Integer, ID As Integer, Fila As Integer
-Dim Pago As Currency, mfactura As Currency, sql As String, dAbono As Currency
+Dim i As Integer, ID As Integer, Fila As Integer
+Dim Pago As Currency, mfactura As Currency, sql As String, dAbono As Double, mAbono As Double
 Dim sINM As String, sFact As String, sFP As String, sRecibo As String
-Dim cFactura As Double, sEmail As String, sApto As String
+Dim cFactura As Double, sEmail As String, sApto As String, sNdoc As String, sFdoc As String
+Dim sBanco As String, sNdoc2 As String
 Dim bTrans As Boolean, n As Integer, sDescrip As String, u As Integer
 Dim rstlocal As ADODB.Recordset
 
@@ -414,46 +360,75 @@ pBar.Visible = True
 pBar.Max = grid.Rows - 1
 Call rtnBitacora("Inicio procesar pagos web")
 
-For I = 1 To grid.Rows - 1
+
+For i = 1 To grid.Rows - 1
     grid.Col = 0
-    grid.Row = I
-    pBar.Value = I
+    grid.Row = i
+    pBar.Value = i
+    
     'si el registro esta marcado para procesar, entramos en esta rutina
-    If grid.CellPicture = img(3) And grid.TextMatrix(I, 10) = "P" Then
+    If grid.CellPicture = img(3) And grid.TextMatrix(i, 10) = "P" Then
+        
         'abrimos una transaccion para guardas este pago
         cnnConexion.BeginTrans
         bTrans = True
         On Error GoTo ReversarPago:
         Call rtnBitacora("-- Inicar transacción...")
-        Pago = grid.TextMatrix(I, 6)
-        ID = grid.TextMatrix(I, 1)
         
         Fila = grid.RowSel
-        grid.Row = I + 1
-        sApto = grid.TextMatrix(grid.RowSel, 5)
-        'efectuamos el registro en la tabla MovimientoCaja
-        sFP = IIf(grid.TextMatrix(I, 3) = "D", "DEPOSITO", "TRANSFERENCIA")
-        sRecibo = guardar_movimiento_caja(grid.TextMatrix(grid.RowSel, 4), sApto, _
-        sFP, grid.TextMatrix(I, 4), grid.TextMatrix(I, 5), CDbl(grid.TextMatrix(I, 6)), grid.TextMatrix(I, 8), _
-        grid.TextMatrix(I + 1, 2))
+        grid.Row = i + 1
         
-        sEmail = grid.TextMatrix(I, 11)
-        n = 0
+        ' seteamos las variables generales del pago
+        Pago = grid.TextMatrix(i, 6)
+        ID = grid.TextMatrix(i, 1)      'monto total del pago
+        sFP = IIf(grid.TextMatrix(i, 3) = "D", "DEPOSITO", "TRANSFERENCIA")
+        sEmail = grid.TextMatrix(i, 11)
+        sNdoc = grid.TextMatrix(i, 4)
+        sFdoc = grid.TextMatrix(i, 5)
+        sNdoc2 = grid.TextMatrix(i + 1, 2)
+        sBanco = grid.TextMatrix(i, 8)
+
+        
+        If formaPagoYaRegistrada(sNdoc, sBanco, sFP) Then
+            sProceso = "Agregar Pago"
+            Err.Raise -2147467259 + ID, "Registrar " & sFP, sFP & " " & sBanco & " " & sNdoc & " ya registrado(a)"
+        End If
+            
         mfactura = 0
-        sDescrip = ""
+        n = 0
         
         Do While (grid.CellPicture = 0)
             
-            pBar.Value = I + 1
-            DoEvents
+            sDescrip = ""
             sINM = grid.TextMatrix(grid.RowSel, 4)
+            sApto = grid.TextMatrix(grid.RowSel, 5)
+            mAbono = CDbl(grid.TextMatrix(grid.RowSel, 6))
             sFact = grid.TextMatrix(grid.RowSel, 7)
+            
+            ' si la factura tiene saldo pendiente
             cFactura = monto_factura(sINM, sFact)
+            If cFactura > 0 Then
             
-            mfactura = mfactura + cFactura
+                sDescrip = sDescrip & Left(sFact, 2) & "-" & Mid(sFact, 3, 2)
+                
+                '   efectuamos el registro en la tabla MovimientoCaja
+                sRecibo = guardar_movimiento_caja(sINM, sApto, sFP, sNdoc, _
+                        sFdoc, mAbono, sBanco, sDescrip, sCodPagoCondominio, _
+                        "PAGO CONDOMINIO (via web)", sNdoc2)
+                        
+                'cFactura = monto_factura(sINM, sFact)
+                mfactura = mfactura + cFactura
+                
+                ' actualizamos la tabla factura, propietarios, periodos, Inmueble
+                actualizar_factura sINM, sFact, sRecibo, cFactura, sCodPagoCondominio, _
+                    "PAGO CONDOMINIO (via web)"
             
-            actualizar_factura sINM, sFact, sRecibo, mfactura
-            sDescrip = sDescrip & Left(sFact, 2) & "-" & Mid(sFact, 3, 2) & "/"
+            End If
+            
+            pBar.Value = i + 1
+            DoEvents
+            
+            
             'Guardar_NumFact sFact, cFactura
             ReDim Preserve aFacturasC(n)
             
@@ -467,15 +442,15 @@ For I = 1 To grid.Rows - 1
             n = n + 1
         
         Loop
-        sDescrip = Left(sDescrip, Len(sDescrip) - 1)
+        'sDescrip = Left(sDescrip, Len(sDescrip) - 1)
         
         
-        sql = "UPDATE MovimientoCaja SET MontoMovimientoCaja='" & Pago & _
+        'sql = "UPDATE MovimientoCaja SET MontoMovimientoCaja='" & Pago & _
               "', MontoCheque='" & Pago & "', DescripcionMovimientoCaja='" & sDescrip & _
               "' WHERE IDRecibo='" & sRecibo & "'"
         
-        cnnConexion.Execute sql, u
-        Call rtnBitacora("---- Actualizar (" & u & ") el movimiento de caja #" & sRecibo)
+'        cnnConexion.Execute sql, u
+'        Call rtnBitacora("---- Actualizar (" & u & ") el movimiento de caja #" & sRecibo)
         '
         If mfactura = 0 Then
             
@@ -484,6 +459,7 @@ For I = 1 To grid.Rows - 1
             Err.Clear
         
         Else
+            
             If Pago > mfactura Then
             
                 dAbono = Pago - mfactura
@@ -492,85 +468,139 @@ For I = 1 To grid.Rows - 1
                 sql = "SELECT * FROM factura IN '" & gcPath & "\" & sINM & "\inm.mdb' " & _
                       "WHERE codprop='" & sApto & "' AND saldo > 0 ORDER BY periodo ASC"
                 Set rstlocal = cnnConexion.Execute(sql)
+                
                 ' si hay facturas pendientes abonamos a esa factura
                 If Not (rstlocal.EOF And rstlocal.BOF) Then
-                    sql = "UPDATE Factura IN '" & gcPath & "\" & sINM & "\inm.mdb' set Saldo = Saldo - '" & dAbono & "', usuario='" & _
-                    gcUsuario & "', fecha='" & Format(Time(), "hh:mm:ss") & "', pagado = pagado + '" & dAbono & "' WHERE FACT='" & rstlocal("FACT") & "'"
-                    cnnConexion.Execute sql, u
-                    Call rtnBitacora("---- Aplicar (" & u & ") abono factura " & rstlocal("FACT") & ".")
-                    '
-                    'registramos el movimiento en la tabla periodo
-                    sql = "INSERT INTO Periodos(IDRecibo,IDPeriodos,Periodo,CodGasto,Descripcion,Monto,Facturado) " & _
-                    "VALUES ('" & sRecibo & "','" & sRecibo & Format(rstlocal("periodo"), "mmyy") & "','" & _
-                    Format(rstlocal("periodo"), "mm-yy") & "','" & sCodAbonoCuenta & "','ABONO A CUENTA','" & dAbono & _
-                    "','" & rstlocal("facturado") & "')"
-                    cnnConexion.Execute sql, u
                     
-                    sql = "UPDATE MovimientoCaja SET DescripcionMovimientoCaja = " & _
-                    "DescripcionMovimientoCaja & ' / Abono a Cuenta " & Format(rstlocal("periodo"), "mm-yy") & _
-                    "' WHERE IDRecibo='" & sRecibo & "'"
+                    sDescrip = "Abono a Cuenta " & Format(rstlocal("periodo"), "mm-yy")
                     
-                    cnnConexion.Execute sql, u
+                    '   efectuamos el registro en la tabla MovimientoCaja
+                    sRecibo = guardar_movimiento_caja(sINM, sApto, sFP, sNdoc, _
+                        sFdoc, dAbono, sBanco, sDescrip, sCodAbonoCuenta, _
+                        "ABONO A CUENTA (via web)", sNdoc2)
+                        
+                    ' actualizamos la tabla factura, propietarios, periodos, Inmueble
+                    actualizar_factura sINM, sFact, sRecibo, dAbono, sCodAbonoCuenta, _
+                    "ABONO A CUENTA (via web)"
+                    
+'                    sql = "UPDATE Factura IN '" & gcPath & "\" & sINM & "\inm.mdb' set Saldo = Saldo - '" & dAbono & "', usuario='" & _
+'                    gcUsuario & "', fecha='" & Format(Time(), "hh:mm:ss") & "', pagado = pagado + '" & dAbono & "' WHERE FACT='" & rstlocal("FACT") & "'"
+'                    cnnConexion.Execute sql, u
+'                    Call rtnBitacora("---- Aplicar (" & u & ") abono factura " & rstlocal("FACT") & ".")
+'                    '
+'                    'registramos el movimiento en la tabla periodo
+'                    sql = "INSERT INTO Periodos(IDRecibo,IDPeriodos,Periodo,CodGasto,Descripcion,Monto,Facturado) " & _
+'                    "VALUES ('" & sRecibo & "','" & sRecibo & Format(rstlocal("periodo"), "mmyy") & "','" & _
+'                    Format(rstlocal("periodo"), "mm-yy") & "','" & sCodAbonoCuenta & "','ABONO A CUENTA','" & dAbono & _
+'                    "','" & rstlocal("facturado") & "')"
+'                    cnnConexion.Execute sql, u
+'
+'                    sql = "UPDATE MovimientoCaja SET DescripcionMovimientoCaja = " & _
+'                    "DescripcionMovimientoCaja & ' / Abono a Cuenta " & Format(rstlocal("periodo"), "mm-yy") & _
+'                    "' WHERE IDRecibo='" & sRecibo & "'"
+'
+'                    cnnConexion.Execute sql, u
                      
                 Else
-                    '   hacemos un abono a futuro, no hay facturas pendientes
-                    '   registramos el movimiento en la tabla periodo
-                    sql = "INSERT INTO Periodos(IDRecibo,IDPeriodos,Periodo,CodGasto,Descripcion,Monto,Facturado) " & _
-                    "VALUES('" & sRecibo & "','" & sRecibo & sCodAbonoFuturo & "','" & _
-                    Format(DateAdd("m", 1, CDate("01-" & Left(sFact, 2) & _
-                    "-" & Mid(sFact, 3, 2))), "MM-YY") & "'," & _
-                    "'" & sCodAbonoFuturo & "','Abono Próx. Facturación','" & dAbono & _
-                    "',0)"
-                    cnnConexion.Execute sql, u
+                    Dim Periodo As String
                     
-                    ' actualizamos la información del movimiento de caja
-                    sql = "UPDATE MovimientoCaja SET DescripcionMovimientoCaja = " & _
-                    "DescripcionMovimientoCaja & ' / Abono a Prox.Facturación' WHERE IDRecibo='" & _
-                    sRecibo & "'"
-                    cnnConexion.Execute sql, u
+                    
+                    sDescrip = "ABONO A PROX. FACTURACION (via web) " & Periodo
+                    
+                    '   efectuamos el registro en la tabla MovimientoCaja
+                    sRecibo = guardar_movimiento_caja(sINM, sApto, sFP, sNdoc, _
+                        sFdoc, dAbono, sBanco, sDescrip, sCodAbonoCuenta, _
+                        "ABONO A FUTURO (via web)", sNdoc2)
+                        
+                    ' actualizamos la tabla factura, propietarios, periodos, Inmueble
+                    actualizar_factura sINM, sFact, sRecibo, dAbono, sCodAbonoCuenta, _
+                    "ABONO A CUENTA (via web)"
+                    
+'                    '   hacemos un abono a futuro, no hay facturas pendientes
+'                    '   registramos el movimiento en la tabla periodo
+'                    sql = "INSERT INTO Periodos(IDRecibo,IDPeriodos,Periodo,CodGasto,Descripcion,Monto,Facturado) " & _
+'                    "VALUES('" & sRecibo & "','" & sRecibo & sCodAbonoFuturo & "','" & _
+'                    Format(DateAdd("m", 1, CDate("01-" & Left(sFact, 2) & _
+'                    "-" & Mid(sFact, 3, 2))), "MM-YY") & "'," & _
+'                    "'" & sCodAbonoFuturo & "','Abono Próx. Facturación','" & dAbono & _
+'                    "',0)"
+'                    cnnConexion.Execute sql, u
+'
+'                    ' actualizamos la información del movimiento de caja
+'                    sql = "UPDATE MovimientoCaja SET DescripcionMovimientoCaja = " & _
+'                    "DescripcionMovimientoCaja & ' / Abono a Prox.Facturación' WHERE IDRecibo='" & _
+'                    sRecibo & "'"
+'                    cnnConexion.Execute sql, u
                                         
                 End If
+                '   insertamos la informacion del documento
+            'Dim sCaja As String
                 
                 ' actualizamos la información del propietario
-                sql = "UPDATE propietarios IN '" & gcPath & "\" & sINM & "\inm.mdb'  SET Deuda = Deuda - '" & dAbono & "', " & _
-                "Ultpago = Ultpago + '" & dAbono & "' WHERE Codigo='" & sApto & "'"
-                cnnConexion.Execute sql, u
+'                sql = "UPDATE propietarios IN '" & gcPath & "\" & sINM & "\inm.mdb'  SET Deuda = Deuda - '" & dAbono & "', " & _
+'                "Ultpago = Ultpago + '" & dAbono & "' WHERE Codigo='" & sApto & "'"
+'                cnnConexion.Execute sql, u
+
+                
 
             End If
-            '   actualizamos la deuda general del inmueble
-            sql = "UPDATE Inmueble INNER JOIN MovimientoCaja ON Inmueble.CodInm = MovimientoCaja." & _
-                  "InmuebleMovimientoCaja SET Inmueble.Deuda = Inmueble.Deuda-MovimientoCaja." & _
-                  "MontoMovimientoCaja WHERE (((MovimientoCaja.IDRecibo)='" & sRecibo & "'));"
-            cnnConexion.Execute sql, u
-            Call rtnBitacora("---- Actualizar (" & u & ") deuda inmueble.")
+            '   ---------------------- INGRESAMOS EL DOCUMENTO A LA TABLA CHEQUES ---------------------
+            ModGeneral.insertar_registro "procPagoAdd", sRecibo, CStr(IntTaquilla), sINM, Format(Date, "dd/mm/yy"), _
+            sFP, sNdoc, sBanco, Format(CDate(sFdoc), "dd/mm/yy"), Pago, ""
+            '   ------ SI ES TRANSFERENCIA REGISTRAMOS OTRO DOCUMENTO POR EL REGISTRADO EN BANCO ------
+            If sNdoc2 <> "" And sFP = "TRANSFERENCIA" Then
+                If formaPagoYaRegistrada(sNdoc2, sBanco, sFP) Then
+                    sProceso = "Agregar Pago"
+                    Err.Raise -2147467259 + ID, "Registrar " & sFP, sFP & " " & sBanco & " " & sNdoc2 & " ya registrado(a)"
+                End If
+                ModGeneral.insertar_registro "procPagoAdd", sRecibo, CStr(IntTaquilla), sINM, _
+                Format(Date, "dd/mm/yy"), sFP, sNdoc2, sBanco, Format(CDate(sFdoc), "dd/mm/yy"), 0, ""
+                
+            End If
             '
-            cnnConexion.CommitTrans
-            '   guardamos el movimiento de caja
-            grid.TextMatrix(Fila, 10) = "A"
-            Call rtnBitacora("-- Pago OK!!!. Cerrar Transacción.")
-            'cnnConexion.RollbackTrans
+ReversarPago:
+            If Err <> 0 Then
+                cnnConexion.RollbackTrans
+                grid.Col = 10
+                grid.Row = Fila
+                grid.CellForeColor = vbRed
+                grid.TextMatrix(Fila, 10) = "E"
+                Err.Description = "Línea: " & Fila & ": " & Err.Description
+                cErrores.Add Err.Description
+                Call rtnBitacora("-- Error en operacion. ID: " & ID & ". " & Err.Description)
+                Err.Clear
+            Else
+                cnnConexion.CommitTrans
+                '   guardamos el movimiento de caja
+                grid.TextMatrix(Fila, 10) = "A"
+                Call rtnBitacora("-- Pago OK!!!. Cerrar Transacción.")
+                ' enviamos la cancelación de gastos vía email
+                enviar_recibos sINM, sRecibo, sEmail
+                Call rtnBitacora("-- Enviar email de confirmación.")
+                '
+                grid.TextMatrix(Fila + 1, 8) = actualizarFTP(ID, "A")
+            End If
             bTrans = False
-            ' enviamos la cancelación de gastos vía email
-            enviar_recibos sINM, sRecibo, sEmail
-            Call rtnBitacora("-- Enviar email de confirmación.")
-            '
-            grid.TextMatrix(Fila + 1, 8) = actualizarFTP(ID, "A")
-            I = grid.RowSel - 1
+            i = grid.RowSel - 1
         
         End If
         
-    ElseIf grid.TextMatrix(I, 14) = "Sí" Then ' eliminar pago
-        ID = grid.TextMatrix(I, 1)
+    ElseIf grid.TextMatrix(i, 14) = "Sí" Then ' eliminar pago
+        ID = grid.TextMatrix(i, 1)
         Call rtnBitacora("Pago ID: " & ID & " rechazado por el usuario")
-        grid.TextMatrix(I + 1, 8) = actualizarFTP(ID, "R")
+        grid.TextMatrix(i + 1, 8) = actualizarFTP(ID, "R")
     End If
     
 Next
-ReversarPago:
-If Err <> 0 Then
+If cErrores.Count > 0 Then
     If bTrans Then cnnConexion.RollbackTrans
-    Call rtnBitacora("-- Error en operacion. ID: " & ID & ". " & Err.Description)
-    MsgBox "No se completo el proceso. Pago ID:" & ID & vbCrLf & Err.Description
+    sDescrip = "El proceso se completo, pero ocurrieron los siguientes errores: " & vbCrLf
+    'For Each error In cErrores
+    For i = 1 To cErrores.Count
+        sDescrip = sDescrip & "- " & cErrores.Item(i) & vbCrLf
+    Next
+    sDescrip = sDescrip & "Verifique las transacciones con estatus (E) en color rojo."
+    MsgBox sDescrip
 Else
     Call rtnBitacora("Fin proceso pago web.")
     MsgBox "Proceso finalizado con éxito.", vbInformation, App.ProductName
@@ -582,7 +612,7 @@ End Sub
 
 Private Function actualizarFTP(ID As Integer, Estatus As String) As String
 Dim hOpen As Long, hFile As Long, sBuffer As String, Ret As Long
-Dim detalle, hConnect As Long, URL As String
+Dim Detalle, hConnect As Long, URL As String
 URL = "http://www.administradorasac.com/pago.confirmar.asp?id=" & ID & "&estatus=" & Estatus
 sBuffer = ""
 ' Create a buffer for the file we're going to download
@@ -612,6 +642,7 @@ End Function
 Private Function monto_factura(Inmueble As String, Factura As String) As Double
 Dim sql As String, cnn As ADODB.Connection, rst As ADODB.Recordset
 
+sProceso = "monto_factura"
 Set cnn = New ADODB.Connection
 
 cnn.Open cnnOLEDB$ & gcPath & "\" & Inmueble & "\inm.mdb"
@@ -626,10 +657,10 @@ End Function
 
 
 Private Sub actualizar_factura(Inmueble As String, Factura As String, _
-ReciboCaja As String, dPagado As Currency)
+ReciboCaja As String, dPagado As Double, Codigo As String, Detalle As String)
 
 Dim StrRutaInmueble As String, sql As String, u As Integer
-
+sProceso = "actualizar_factura"
 StrRutaInmueble = gcPath & "\" & Inmueble & "\inm.mdb"
 '
 '   actualizamos la deuda del propietario
@@ -645,7 +676,7 @@ Call rtnBitacora("---- Actualizar (" & u & ") Deuda Propietario.")
 '
 sql = "INSERT INTO Periodos(IDRecibo,IDPeriodos,Periodo,CodGasto, Descripcion, Monto, Facturado ) " & _
       "SELECT '" & ReciboCaja & "','" & ReciboCaja & "' & format(periodo, 'mmyy')," & _
-      "format(periodo,'mm-yy'),'" & sCodPagoCondominio & "','PAGO CONDOMINIO (via web)'," & _
+      "format(periodo,'mm-yy'),'" & Codigo & "','" & Detalle & "'," & _
       "Saldo, Facturado FROM Factura IN '" & _
       StrRutaInmueble & "' WHERE Fact='" & Factura & "'"
 cnnConexion.Execute sql, u
@@ -661,20 +692,36 @@ sql = "UPDATE Factura IN '" & StrRutaInmueble & "' SET " & "Pagado = Pagado + Sa
 cnnConexion.Execute sql, u
 Call rtnBitacora("---- Actualizar Saldo (" & u & ") factura Nº " & Factura)
 '
+'   actualizamos la deuda general del inmueble
+sql = "UPDATE Inmueble INNER JOIN MovimientoCaja ON Inmueble.CodInm = MovimientoCaja." & _
+    "InmuebleMovimientoCaja SET Inmueble.Deuda = Inmueble.Deuda-MovimientoCaja." & _
+    "MontoMovimientoCaja WHERE (((MovimientoCaja.IDRecibo)='" & ReciboCaja & "'));"
+cnnConexion.Execute sql, u
+            
+Call rtnBitacora("---- Actualizar (" & u & ") deuda inmueble.")
+'
 End Sub
 
 Private Function guardar_movimiento_caja(Inmueble As String, _
     Apartamento As String, FormaPago As String, _
     NumeroDocumento As String, FechaDocumento As String, _
-    Monto As Double, Banco As String, _
+    Monto As Double, Banco As String, Descripcion As String, _
+    Codigo As String, CuentaMovimiento As String, _
     Optional NumeroDocumento2 As String) As String
 
 Dim strRecibo, nTransaccion As Integer
 Dim rst As ADODB.Recordset, sql As String
 Dim r As Integer, sCaja As Integer
 
+sProceso = "CajaInmueble"
+
 sCaja = CajaInmueble(Inmueble)
+sCajaInmueble = sCaja
+
+sProceso = "procNumTransaccion"
 Set rst = ejecutar_procedure("procNumTransaccion", Date, sCaja)
+
+sProceso = "guardar_movimiento_caja"
 
 nTransaccion = rst("maximo") + 1
 
@@ -684,28 +731,22 @@ sql = "INSERT INTO MovimientoCaja(IDTaquilla, IDRecibo, NumeroMovimientoCaja, Fe
     "TipoMovimientoCaja, MontoMovimientoCaja, CodGasto, CuentaMovimientoCaja, InmuebleMovimientoCaja," & _
     "AptoMovimientoCaja, FormaPagoMovimientoCaja, BancoDocumentoMovimientoCaja, " & _
     "EfectivoMovimientoCaja, FPago, NumDocumentoMovimientoCaja, FechaChequeMovimientoCaja, " & _
-    "MontoCheque, Usuario, Freg, Hora) VALUES(" & IntTaquilla & ",'" & strRecibo & "'," & nTransaccion & _
-    ",Date(),'INGRESO',0,'" & sCodPagoCondominio & "','PAGO CONDOMINIO (via web)','" & Inmueble & "','" & _
+    "MontoCheque, Usuario, Freg, Hora,DescripcionMovimientoCaja) VALUES(" & IntTaquilla & ",'" & strRecibo & "'," & nTransaccion & _
+    ",Date(),'INGRESO','" & Monto & "','" & Codigo & "','" & CuentaMovimiento & "','" & Inmueble & "','" & _
     Apartamento & "','" & FormaPago & "','" & Banco & "',0,'" & FormaPago & "','" & NumeroDocumento & "','" & FechaDocumento & "','" & Monto & _
-    "','" & gcUsuario & "',Date(),Time())"
+    "','" & gcUsuario & "',Date(),Time(),'" & Descripcion & "')"
 
 cnnConexion.Execute sql, r
 
 Call rtnBitacora("---- Guardar (" & r & ") Movimiento de Caja #" & strRecibo)
 
-'   insertamos la informacion del documento
-ModGeneral.insertar_registro "procPagoAdd", strRecibo, sCaja, Inmueble, Date, FormaPago, _
-NumeroDocumento, Banco, FechaDocumento, Monto, ""
-If NumeroDocumento2 <> "" And FormaPago = "TRANSFERENCIA" Then
-    ModGeneral.insertar_registro "procPagoAdd", strRecibo, sCaja, Inmueble, _
-    Date, FormaPago, NumeroDocumento2, Banco, FechaDocumento, 0, ""
-End If
 If r > 0 Then guardar_movimiento_caja = strRecibo
 
 End Function
 
 Private Function CajaInmueble(Inmueble As String) As Integer
 Dim rst As ADODB.Recordset
+
 Set rst = ejecutar_procedure("procBuscaCaja", Inmueble)
 If Not (rst.EOF And rst.BOF) Then
     CajaInmueble = rst("Caja")
@@ -778,8 +819,8 @@ Dim mFTP As New cFtp, Facturas() As String
         'numFichero = FreeFile
         'strArchivo = App.Path & Archivo_Temp
         'Open strArchivo For Input As numFichero 'abre el archivo de recibos cancelados
-        For I = 0 To UBound(aFacturasC)
-            Facturas = Split(aFacturasC(I), "|")
+        For i = 0 To UBound(aFacturasC)
+            Facturas = Split(aFacturasC(i), "|")
             Carpeta = "\" & Inmueble & "\"
             sArchivo = Facturas(0) & ".pdf"
             Call Printer_Pago(Facturas(0), CCur(Facturas(1)), Carpeta, _
@@ -808,3 +849,12 @@ Dim mFTP As New cFtp, Facturas() As String
 'End With
 '
 End Sub
+
+Private Function formaPagoYaRegistrada(Numero_Documento$, Nombre_Banco$, Forma_Pago$) As Boolean
+Dim rst As ADODB.Recordset
+
+Set rst = ejecutar_procedure("procPagoExiste", Numero_Documento, Nombre_Banco, Forma_Pago)
+formaPagoYaRegistrada = Not (rst.EOF And rst.BOF)
+rst.Close
+Set rst = Nothing
+End Function
