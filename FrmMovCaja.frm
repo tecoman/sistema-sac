@@ -10,27 +10,27 @@ Object = "{5E9E78A0-531B-11CF-91F6-C2863C385E30}#1.0#0"; "MSFLXGRD.OCX"
 Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "MSWINSCK.OCX"
 Begin VB.Form FrmMovCaja 
    Caption         =   "Cobranza por Caja"
-   ClientHeight    =   45
+   ClientHeight    =   9255
    ClientLeft      =   60
    ClientTop       =   405
-   ClientWidth     =   2475
+   ClientWidth     =   11535
    ControlBox      =   0   'False
    Icon            =   "FrmMovCaja.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MDIChild        =   -1  'True
-   ScaleHeight     =   45
-   ScaleWidth      =   2475
+   ScaleHeight     =   9255
+   ScaleWidth      =   11535
    WindowState     =   2  'Maximized
    Begin ComctlLib.Toolbar Toolbar1 
       Align           =   1  'Align Top
-      Height          =   870
+      Height          =   480
       Left            =   0
       TabIndex        =   97
       Top             =   0
-      Width           =   2475
-      _ExtentX        =   4366
-      _ExtentY        =   1535
+      Width           =   11535
+      _ExtentX        =   20346
+      _ExtentY        =   847
       ButtonWidth     =   714
       ButtonHeight    =   688
       AllowCustomize  =   0   'False
@@ -174,7 +174,7 @@ Begin VB.Form FrmMovCaja
          Strikethrough   =   0   'False
       EndProperty
       ShowToday       =   0   'False
-      StartOfWeek     =   64946177
+      StartOfWeek     =   89784321
       TitleBackColor  =   -2147483646
       TitleForeColor  =   16777215
       CurrentDate     =   37319
@@ -261,25 +261,25 @@ Begin VB.Form FrmMovCaja
       TabCaption(1)   =   "Lista"
       TabPicture(1)   =   "FrmMovCaja.frx":035E
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "DataGrid1"
-      Tab(1).Control(1)=   "Frame2"
-      Tab(1).Control(2)=   "FrmBusca1"
-      Tab(1).Control(3)=   "FrmBusca"
+      Tab(1).Control(0)=   "FrmBusca"
+      Tab(1).Control(1)=   "FrmBusca1"
+      Tab(1).Control(2)=   "Frame2"
+      Tab(1).Control(3)=   "DataGrid1"
       Tab(1).ControlCount=   4
       TabCaption(2)   =   "Deducciones"
       TabPicture(2)   =   "FrmMovCaja.frx":037A
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "Label16(2)"
-      Tab(2).Control(1)=   "Label16(0)"
-      Tab(2).Control(2)=   "ADOcontrol(4)"
-      Tab(2).Control(3)=   "dtc"
-      Tab(2).Control(4)=   "Winsock1"
+      Tab(2).Control(0)=   "frame3(3)"
+      Tab(2).Control(1)=   "frame3(1)"
+      Tab(2).Control(2)=   "frame3(2)"
+      Tab(2).Control(3)=   "Command3(0)"
+      Tab(2).Control(4)=   "Command3(1)"
       Tab(2).Control(5)=   "AdoDeducciones"
-      Tab(2).Control(6)=   "Command3(1)"
-      Tab(2).Control(7)=   "Command3(0)"
-      Tab(2).Control(8)=   "frame3(2)"
-      Tab(2).Control(9)=   "frame3(1)"
-      Tab(2).Control(10)=   "frame3(3)"
+      Tab(2).Control(6)=   "Winsock1"
+      Tab(2).Control(7)=   "dtc"
+      Tab(2).Control(8)=   "ADOcontrol(4)"
+      Tab(2).Control(9)=   "Label16(0)"
+      Tab(2).Control(10)=   "Label16(2)"
       Tab(2).ControlCount=   11
       TabCaption(3)   =   "Lista Cheques"
       TabPicture(3)   =   "FrmMovCaja.frx":0396
@@ -1121,7 +1121,7 @@ Begin VB.Form FrmMovCaja
                _Version        =   393216
                CalendarTitleBackColor=   -2147483646
                CalendarTitleForeColor=   -2147483643
-               Format          =   64946177
+               Format          =   89784321
                CurrentDate     =   37417
             End
             Begin MSDataListLib.DataCombo Dat 
@@ -3600,7 +3600,7 @@ Attribute VB_Exposed = False
         FechaDoc
         Monto
         IDRecibo
-        INMUEBLE
+        Inmueble
     End Enum
     '---------------------------------------------------------------------------------------------
     
@@ -4079,7 +4079,7 @@ Attribute VB_Exposed = False
                 
                 If CCur(Label16(30)) > 0 Then   'si el deposito tiene efectivo
                 '
-                    strSQL = "UPDATE TDFCheques INNER JOIN (Caja INNER JOIN Inmueble" _
+                    strSql = "UPDATE TDFCheques INNER JOIN (Caja INNER JOIN Inmueble" _
                     & " ON Caja.CodigoCaja = Inmueble.Caja) ON TDFCheques.CodInmueble = Inmuebl" _
                     & "e.CodInm SET TDFCheques.IDDeposito = '" & NDep & "' WHERE (((TDFCheques." _
                     & "Fpago)= 'EFECTIVO') AND ((Caja.CodigoCaja)='" & Cja & "') AND ((isnull(T" _
@@ -4087,12 +4087,12 @@ Attribute VB_Exposed = False
                     & "FCheques.IDTaquilla)=" & IntTaquilla & ") AND ((TDFCheques.Banco) [variable]))"
                         
                     If Label16(30).Tag = "BSF" Then   ' dep. tiene Bs. fuertes
-                        strSQL = Replace(strSQL, "[variable]", "not Like 'Bs%'")
-                        cnnConexion.Execute strSQL, n
+                        strSql = Replace(strSql, "[variable]", "not Like 'Bs%'")
+                        cnnConexion.Execute strSql, n
                     
                     ElseIf Label16(30).Tag = "BS" Then
-                        strSQL = Replace(strSQL, "[variable]", "Like 'Bs%'")
-                        cnnConexion.Execute strSQL, n
+                        strSql = Replace(strSql, "[variable]", "Like 'Bs%'")
+                        cnnConexion.Execute strSql, n
                     End If
                     '
                     Call rtnBitacora("Ingresado Efectivo Dep.: " & NDep & " Caja " & Cja)
@@ -4959,7 +4959,7 @@ End Sub
     '
     'Crea un espacio de trabajo para las op. de caja
     'Dim WrkCaja As Workspace    'Crea un espacion de trabajo
-    Dim F%, strSQL$ 'Lista de Transacciones para actualizar el Grid
+    Dim F%, strSql$ 'Lista de Transacciones para actualizar el Grid
     '
     'Set WrkCaja = CreateWorkspace("", "Admin", "")
     'Set Endoso = New STEndoso
@@ -5009,7 +5009,7 @@ End Sub
 Call RtnEstado(6, Toolbar1, ADOcontrol(0).Recordset.EOF Or ADOcontrol(0).Recordset.BOF)
     Call RtnProUtility("Configurando Presentación en pantalla....", 3000)
     '
-    strSQL = "SELECT MC.IDTaquilla, MC.InmuebleMovimientoCaja, I.Nombre, Mc.AptoMovimiento" _
+    strSql = "SELECT MC.IDTaquilla, MC.InmuebleMovimientoCaja, I.Nombre, Mc.AptoMovimiento" _
     & "Caja, I.Caja, MC.NumeroMovimientoCaja, MC.MontoMovimientoCaja, MC.FormaPagoMovim" _
     & "ientoCaja, MC.FechaMovimientoCaja, MC.IndiceMovimientoCaja FROM inmueble as I IN" _
     & "NER JOIN MovimientoCaja as MC ON I.CodInm = Mc.InmuebleMovimientoCaja Where (((" _
@@ -5018,7 +5018,7 @@ Call RtnEstado(6, Toolbar1, ADOcontrol(0).Recordset.EOF Or ADOcontrol(0).Records
     '
     ADOcontrol(3).ConnectionString = cnnOLEDB + gcPath + "\sac.mdb"
     ADOcontrol(3).CommandType = adCmdText
-    ADOcontrol(3).RecordSource = strSQL
+    ADOcontrol(3).RecordSource = strSql
     ADOcontrol(3).Refresh
     DoEvents
     
@@ -5381,7 +5381,7 @@ End Sub
     Private Sub OptBusca_Click(Index As Integer)
     '---------------------------------------------------------------------------------------------
     '
-    Dim strSQL$
+    Dim strSql$
     ADOcontrol(3).CommandType = adCmdText
     Select Case Index   'Selecciona una opción
     '
@@ -5439,7 +5439,7 @@ End Sub
     Private Sub SSTab1_Click(PreviousTab As Integer)
     '---------------------------------------------------------------------------------------------
     'variables locales
-    Dim strSQL As String
+    Dim strSql As String
     '
     MntCalendar.Visible = False
     
@@ -5474,22 +5474,22 @@ End Sub
             Set objRst = New ADODB.Recordset
             'selecciona solo las cajas que tengan movimiento en la fecha
     '       ---------------------------
-            strSQL = "SELECT DISTINCT CodigoCaja as Codigo, DescripCaja  as Descripcion FROM Ca" _
+            strSql = "SELECT DISTINCT CodigoCaja as Codigo, DescripCaja  as Descripcion FROM Ca" _
             & "ja INNER JOIN Inmueble ON Caja.codigoCaja=Inmueble.Caja WHERE CodInm IN (SELECT " _
             & "CodInmueble From TDFCheques WHERE FechaMov=Date() AND (Fpago='EFECTIVO' Or Fpago" _
             & "='CHEQUE') AND (IDDeposito='' or Isnull(IDDeposito)) and IDTaquilla=" & IntTaquilla & ") ORDER BY codigocaja;"
             
-            objRst.Open strSQL, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
+            objRst.Open strSql, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
             
   '         ---------------------------
             If Not objRst.EOF Then
                 Set RstCheque = New ADODB.Recordset
                 
-                strSQL = "SELECT COUNT(IDTaquilla) From TDFCheques WHERE IDTaquilla=" & _
+                strSql = "SELECT COUNT(IDTaquilla) From TDFCheques WHERE IDTaquilla=" & _
                 IntTaquilla & " AND Fpago='CHEQUE' AND (IsNull(IDDeposito) or IDDeposito='') " _
                 & "AND FechaMov=#" & Format(Date, "mm/dd/yyyy") & "#;"
                 '
-                RstCheque.Open strSQL, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
+                RstCheque.Open strSql, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
                 Label16(27) = RstCheque.Fields(0)
                 
                 Set Dat(7).RowSource = objRst
@@ -5509,18 +5509,18 @@ End Sub
 
 Private Sub Text2_KeyPress(KeyAscii As Integer)
 'Ver todas las cajas o una caja determinada
-Dim strSQL As String
+Dim strSql As String
 On Error GoTo Salir:
 '
 If KeyAscii = 13 Then
 
-    strSQL = "SELECT MC.IDTaquilla, MC.InmuebleMovimientoCaja, I.Nombre, Mc.AptoMovimientoCaja," _
+    strSql = "SELECT MC.IDTaquilla, MC.InmuebleMovimientoCaja, I.Nombre, Mc.AptoMovimientoCaja," _
     & "I.Caja, MC.NumeroMovimientoCaja, MC.MontoMovimientoCaja, MC.FormaPagoMovimientoCaja, MC." _
     & "FechaMovimientoCaja, MC.IndiceMovimientoCaja FROM inmueble as I INNER JOIN MovimientoCaj" _
     & "a as MC ON I.CodInm = Mc.InmuebleMovimientoCaja Where (((MC.IDTaquilla) " & Text2 & ") A" _
     & "nd ((MC.FechaMovimientoCaja) =#" & Format(Text3, "mm/dd/yy") & "#)) ORDER BY MC.IndiceMo" _
     & "vimientoCaja DESC"
-    ADOcontrol(3).RecordSource = strSQL
+    ADOcontrol(3).RecordSource = strSql
     '
     ADOcontrol(0).Recordset.Filter = ""
     If Text2 = "" Then
@@ -7087,7 +7087,7 @@ End Sub
     'Rev-22/08/2002-------------------------------------------------------------------------------
     Private Sub RtnBuscaCaja(A%, B%)
     'variables locales
-    Dim strSQL As String
+    Dim strSql As String
     Dim RstCuentas As ADODB.Recordset
     Dim RstCheques As New ADODB.Recordset
     Dim RstEfectivo As ADODB.Recordset
@@ -7140,11 +7140,11 @@ End Sub
         '
     End If
     '
-    strSQL = "SELECT Ndoc,Banco,Monto FROM TdfCheques WHERE CodInmueble IN (SELECT CodI" _
+    strSql = "SELECT Ndoc,Banco,Monto FROM TdfCheques WHERE CodInmueble IN (SELECT CodI" _
     & "nm FROM Inmueble WHERE Caja='" & Dat(7) & "') AND FechaMov=Date() and IDTaquilla" _
     & "=" & IntTaquilla & " and (IsNull(IdDeposito) Or IDDeposito='') and Fpago='CHEQUE';"
     '
-    RstCheques.Open strSQL, cnnConexion, adOpenKeyset, adLockBatchOptimistic, adCmdText
+    RstCheques.Open strSql, cnnConexion, adOpenKeyset, adLockBatchOptimistic, adCmdText
     
     If Not RstCheques.EOF Then RstCheques.MoveFirst
         i = 0
@@ -7179,13 +7179,13 @@ End Sub
         '
         '
         RstEfectivo.Close
-        strSQL = "Select IIF(Isnull(Sum(Monto)),0,Sum(Monto)) " & _
+        strSql = "Select IIF(Isnull(Sum(Monto)),0,Sum(Monto)) " & _
         "FROM TdfCheques WHERE FPago='EFECTIVO' " & _
         "AND Banco Like 'Bs%' AND IDTaquilla=" & IntTaquilla & _
         " AND FechaMov=Date() and CodInmueble in (SELECT CodInm " & _
         "from Inmueble where Caja = '" & Dat(7) & "') and (IDDeposito='' or Isnull(IDDeposito))"
         
-        Set RstEfectivo = cnnConexion.Execute(strSQL)
+        Set RstEfectivo = cnnConexion.Execute(strSql)
         
         If CSng(Label16(29)) > 0 Then
             Label16(29) = Format(CSng(Label16(29)) - RstEfectivo(0), "#,##0.00")
@@ -7250,7 +7250,7 @@ End Sub
     '-------------------------------------------------------------------------------------------------
     With ObjCheques
     '
-    If Not .EOF Then  'si existe alguna coincidencia, valida la fecha de procesamiento
+    If Not (.BOF And .EOF) Then  'si existe alguna coincidencia, valida la fecha de procesamiento
     '
         If !FechaMov = Date Then    'fue procesado hoy valida que sea por la misma taquilla
             If !IDTaquilla <> IntTaquilla Then
@@ -7587,7 +7587,7 @@ End Sub
     Sub Cpp_Honorarios()
     '
     On Error Resume Next
-    Dim strSQL$, strFact$
+    Dim strSql$, strFact$
     Dim dateV As Date, n As Long
     '
     If curPagoHono > 0 Then 'si realmente se cobran honorarios
@@ -7596,13 +7596,13 @@ End Sub
         dateV = DateAdd("M", 1, Date)
         strFact = Right(strRecibo, 7)
         '
-        strSQL = "INSERT INTO Cpp(Tipo,Ndoc,Fact,CodProv,Benef,Detalle,Monto,Ivm,Total,FRec" _
+        strSql = "INSERT INTO Cpp(Tipo,Ndoc,Fact,CodProv,Benef,Detalle,Monto,Ivm,Total,FRec" _
         & "ep,Fecr,Fven,CodInm,Moneda,Estatus,Usuario,Freg) VALUES('**','" & strN & "','" & _
         strFact & "','" & sysCodPro & "','" & sysEmpresa & "','HONORARIOS DE ABOGADO " _
         & "INM.:" & Dat(0) & " APTO.:" & Dat(2) & " Caja del " & Date & "','" & curPagoHono _
         & "',0,'" & curPagoHono & "',Date(),Date(),'" & dateV & "','" & Dat(0) & "','BS','P" _
         & "ENDIENTE','" & gcUsuario & "',Date())"
-        cnnConexion.Execute strSQL, n
+        cnnConexion.Execute strSql, n
         '
         Call rtnBitacora("Agregado [" & n & "] Cpp Hono. Abg. " & Dat(0) & "/" & Dat(2) & "/" & _
         strN)
@@ -7653,15 +7653,15 @@ End Sub
     '   Busca monto cardo a esa factura y el titulo del reintegro
     '---------------------------------------------------------------------------------------------
     Private Sub Busca_Reintegro(strCG As String, Row As Long)
-    Dim strSQL$
+    Dim strSql$
     Dim rstGasto As New ADODB.Recordset
     '
-    strSQL = "SELECT * FROM DetFact WHERE CodGasto='" & strCG & "' AND Fact='" & _
+    strSql = "SELECT * FROM DetFact WHERE CodGasto='" & strCG & "' AND Fact='" & _
     Trim(Label16(12)) & "'"
     '
     With rstGasto
         '
-        .Open strSQL, cnnOLEDB + StrRutaInmueble, adOpenKeyset, adLockOptimistic, adCmdText
+        .Open strSql, cnnOLEDB + StrRutaInmueble, adOpenKeyset, adLockOptimistic, adCmdText
         '
         If Not .EOF Or Not .BOF Then
             '
@@ -7669,8 +7669,8 @@ End Sub
             'FlexDeducciones.TextMatrix(Row, 3) = !Monto
             .Close
             strCG = Left(strCG, 2) & "2" & Right(strCG, 3)
-            strSQL = "SELECT * FROM Tgastos WHERE CodGasto='" & strCG & "';"
-            .Open strSQL, cnnOLEDB + StrRutaInmueble, adOpenKeyset, adLockOptimistic, adCmdText
+            strSql = "SELECT * FROM Tgastos WHERE CodGasto='" & strCG & "';"
+            .Open strSql, cnnOLEDB + StrRutaInmueble, adOpenKeyset, adLockOptimistic, adCmdText
             If Not .EOF Or Not .BOF Then
                 'asigna valores a las variables
                 FlexDeducciones.TextMatrix(Row, 1) = Left(!Titulo, 50)
@@ -7735,7 +7735,7 @@ End Sub
             '
         Else    'No existe coincidencia se agragega el cheque a tdfCheques
             ModGeneral.insertar_registro "procPagoAdd", FPago(IDRecibo), _
-            Caja, FPago(INMUEBLE), MskFecha(0), FPago(FP), FPago(NDoc), FPago(Banco), FPago( _
+            Caja, FPago(Inmueble), MskFecha(0), FPago(FP), FPago(NDoc), FPago(Banco), FPago( _
             FechaDoc), FPago(Monto), FPago(7)
             
 '            cnnConexion.Execute "INSERT INTO tdfCheques(IdRecibo,IDTaquilla,CodInmueble,FechaMo" _
@@ -7762,25 +7762,25 @@ End Sub
     '
     'Vairables cocales
     Dim objRst(1) As New ADODB.Recordset
-    Dim strSQL As String, i%
+    Dim strSql As String, i%
     Dim vecFP(2, 4)
     '
     'Busca en el movimiento de la caja la forma de pago
-    strSQL = "SELECT * FROM MovimientoCaja WHERE IdRecibo='" & Recibo & "';"
+    strSql = "SELECT * FROM MovimientoCaja WHERE IdRecibo='" & Recibo & "';"
     '
     With objRst(0)
-        .Open strSQL, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
+        .Open strSql, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
         If .Fields("FormaPagoMovimientoCaja") = "EFECTIVO" Then
             cnnConexion.Execute "DELETE * FROM tdfCheques WHERE IdRecibo='" & Recibo & "'"
         Else
             GoSub Matriz
             For i = 0 To 2    'elimina c/documento relacionado con el pago
                 If vecFP(i, 0) <> "" Then
-                    strSQL = "SELECT * FROM TDFCheques WHERE Ndoc='" & vecFP(i, 1) & "' AND B" _
+                    strSql = "SELECT * FROM TDFCheques WHERE Ndoc='" & vecFP(i, 1) & "' AND B" _
                     & "anco='" & vecFP(i, 2) & "' AND FechaDoc=#" & Format(CDate(vecFP(i, 3)), _
                     "mm/dd/yy") & "#;"
                     'abre el ADODB.Recordset
-                    objRst(1).Open strSQL, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
+                    objRst(1).Open strSql, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
                     '
                     If objRst(1)("Monto") = vecFP(i, 4) Then    'si el doc. es total lo elimina
                         cnnConexion.Execute "DELETE * FROM tdfCheques WHERE Ndoc='" & _

@@ -212,7 +212,7 @@ Gestion_Error:
     End Function
 
     'Rev.-22/08/2002---Presentación de la barra de herramientas según el boton pulsado------------
-    Public Sub RtnEstado(boton%, BarraH As ToolBar, Optional Rstsr As Boolean)
+    Public Sub RtnEstado(boton%, BarraH As Toolbar, Optional Rstsr As Boolean)
     '
     With BarraH
     '
@@ -717,7 +717,7 @@ End Sub
     ' #
     ' # si no es un demo hay que comentar la línea siguiente
     ' #
-    'Demo = True
+    Demo = True
     
     
     'valida que no se este ejecutando una nueva instancia de la aplicacion
@@ -1502,7 +1502,7 @@ Ocurre_Error:
         'Si pasa algún propietario filtra por ese valor
         If Propietario <> "" Then .Filter = "Codigo='" & Propietario & "'"
         '
-        If Not .EOF Or Not .BOF Then
+        If Not (.EOF And .BOF) Then
             .MoveFirst
             If mPeriodo <= CDate("01/07/2005") Then
                 'Genera una consulta de los totales de gastos comunes por gasto en el período señalado
@@ -1538,7 +1538,7 @@ Ocurre_Error:
                     '
                         .Open strSQL, cnnOLEDB + mcDatos, adOpenStatic, adLockReadOnly, adCmdText
                         '
-                        If Not .EOF Or Not .BOF Then
+                        If Not (.EOF And .BOF) Then
                             .MoveFirst
                             Nombre = IIf(IsNull(rstEmail(0)!Nombre), "", rstEmail(0)!Nombre)
                             'Mes = UCase(Format(.Fields("Periodo"), "mmm-yyyy"))
@@ -1578,7 +1578,7 @@ Ocurre_Error:
                                     Else
                                         m = CLng(!Total)
                                     End If
-                                    Print #numFichero, detalle(!codGasto, !detalle, m, !subTotal)
+                                    Print #numFichero, Detalle(!codGasto, !Detalle, m, !subTotal)
                                 Close numFichero
                                 Comun = Comun + m
                                 .MoveNext
@@ -1607,10 +1607,10 @@ Ocurre_Error:
         'Envia el archivo generado vía e-amil
 10         If Not Ver And !email <> "" Then
                 '
-                If frmSelecInm.MAPm.SessionID = 0 Then
-                    frmSelecInm.MAPs.SignOn
-                    frmSelecInm.MAPm.SessionID = frmSelecInm.MAPs.SessionID
-                End If
+'                If frmSelecInm.MAPm.SessionID = 0 Then
+'                    frmSelecInm.MAPs.SignOn
+'                    frmSelecInm.MAPm.SessionID = frmSelecInm.MAPs.SessionID
+'                End If
                 '
                 If InStr(!email, ";") = 0 Then
                     Dir1 = !email
@@ -1620,40 +1620,41 @@ Ocurre_Error:
                     Dir1 = Left(!email, PyC - 1)
                     Dir2 = Trim(Mid(!email, PyC + 1, 200))
                 End If
-                frmSelecInm.MAPm.Compose
-                frmSelecInm.MAPm.RecipIndex = 0
-                frmSelecInm.MAPm.RecipAddress = Dir1
-                frmSelecInm.MAPm.RecipDisplayName = Nombre
-                frmSelecInm.MAPm.RecipType = mapToList
-                
+'                frmSelecInm.MAPm.Compose
+'                frmSelecInm.MAPm.RecipIndex = 0
+'                frmSelecInm.MAPm.RecipAddress = Dir1
+'                frmSelecInm.MAPm.RecipDisplayName = Nombre
+'                frmSelecInm.MAPm.RecipType = mapToList
+'
+'                '
+'                If Dir2 <> "" Then
+'                    frmSelecInm.MAPm.RecipIndex = 1
+'                    frmSelecInm.MAPm.RecipAddress = Dir2
+'                    frmSelecInm.MAPm.RecipDisplayName = Nombre
+'                    frmSelecInm.MAPm.RecipType = mapCcList
+'                End If
+'                '
+'                frmSelecInm.MAPm.MsgNoteText = Subjet
+'                frmSelecInm.MAPm.MsgSubject = "Aviso de Cobro Período: " & Mes
+'                frmSelecInm.MAPm.AttachmentPosition = Len(frmSelecInm.MAPm.MsgNoteText) - 1
+'                frmSelecInm.MAPm.AttachmentName = UCase(Right(strArchivo, Len(strArchivo) - InStrRev(strArchivo, "\")))
+'                frmSelecInm.MAPm.AttachmentPathName = strArchivo 'gcPath & gcUbica & "\reportes\" _
+'                & Naviso & ".html"
+'                frmSelecInm.MAPm.Send False
+'                If mPeriodo > CDate("01/07/2005") Then Kill strArchivo
+'                nEnviados = nEnviados + 1
+'                'frmselecinm.MAPs.SignOff
                 '
-                If Dir2 <> "" Then
-                    frmSelecInm.MAPm.RecipIndex = 1
-                    frmSelecInm.MAPm.RecipAddress = Dir2
-                    frmSelecInm.MAPm.RecipDisplayName = Nombre
-                    frmSelecInm.MAPm.RecipType = mapCcList
-                End If
-                '
-                frmSelecInm.MAPm.MsgNoteText = Subjet
-                frmSelecInm.MAPm.MsgSubject = "Aviso de Cobro Período: " & Mes
-                frmSelecInm.MAPm.AttachmentPosition = Len(frmSelecInm.MAPm.MsgNoteText) - 1
-                frmSelecInm.MAPm.AttachmentName = UCase(Right(strArchivo, Len(strArchivo) - InStrRev(strArchivo, "\")))
-                frmSelecInm.MAPm.AttachmentPathName = strArchivo 'gcPath & gcUbica & "\reportes\" _
-                & Naviso & ".html"
-                frmSelecInm.MAPm.Send False
-                If mPeriodo > CDate("01/07/2005") Then Kill strArchivo
-                nEnviados = nEnviados + 1
-                'frmselecinm.MAPs.SignOff
-                '
+                ModGeneral.enviar_email Dir1, sysEmpresa, "Aviso de Cobro Período: " & Mes, False, Replace(Subjet, "%periodo%", Mes), strArchivo
             End If
             .MoveNext
             Loop Until .EOF
-            If Not Ver Then
-                If frmSelecInm.MAPm.SessionID <> 0 Then
-                    frmSelecInm.MAPs.SignOff
-                    frmSelecInm.MAPm.SessionID = 0
-                End If
-            End If
+'            If Not Ver Then
+'                If frmSelecInm.MAPm.SessionID <> 0 Then
+'                    frmSelecInm.MAPs.SignOff
+'                    frmSelecInm.MAPm.SessionID = 0
+'                End If
+'            End If
         End If
         .Close
     End With
@@ -1741,9 +1742,9 @@ Ocurre_Error:
     '   Devuelve una cadena que genera una nueva linea en la tabla dentro del
     '   archivo *.html
     '---------------------------------------------------------------------------------------------
-    Private Function detalle(codGasto$, Descripcion$, Comun&, Monto@) As String
+    Private Function Detalle(codGasto$, Descripcion$, Comun&, Monto@) As String
     '
-    detalle = "<tr class='sacDetalle'><td ALIGN=CENTER>" & codGasto & "</td>" _
+    Detalle = "<tr class='sacDetalle'><td ALIGN=CENTER>" & codGasto & "</td>" _
    & "<td>" & Descripcion & "</td><td ALIGN=RIGHT >" & IIf(Comun = 0, "", _
    Format(Comun, "#,##0.00")) & "</td><td ALIGN=RIGHT >" & Format(Monto, "#,##0.00") _
    & "</td></tr>"
@@ -2790,9 +2791,9 @@ Salir: If Err <> 0 Then
 Public Sub addToolTip(Contacto As String, Gestion As String, Por As String)
 Dim INI&, lTop&
 Set frmTT = New frmToolTip
-frmTT.lbl(1) = Contacto
-frmTT.lbl(2) = Gestion
-frmTT.lbl(4) = Por
+frmTT.Lbl(1) = Contacto
+frmTT.Lbl(2) = Gestion
+frmTT.Lbl(4) = Por
 INI = Screen.Height
 frmTT.Top = INI
 frmTT.Show
@@ -3605,6 +3606,7 @@ End Function
     ' estos valores se setean en el caso de que algun parámetro requerido venga vacio
     '-----------------------------------------------------------------------------------
     If CodInm = "" Then
+        Call rtnBitacora("Factura: " & strNF)
         CodInm = "2" & Mid(strNF, 5, 3)
         Carpeta = "\" & CodInm & "\"
     End If
@@ -3612,6 +3614,7 @@ End Function
         Set rstDP = ModGeneral.ejecutar_procedure("procBuscaCaja", CodInm)
         If Not (rstDP.EOF And rstDP.BOF) Then Inmueble = rstDP("nombre")
         rstDP.Close
+        Call rtnBitacora("Nombre Inm: " & Inmueble)
     End If
     '-----------------------------------------------------------------------------------
     '
@@ -4744,8 +4747,8 @@ Salir:
     Public Function ejecutar_procedure(nombre_procedimiento As String, _
     ParamArray Parametros() As Variant) As ADODB.Recordset
     
-    
     Dim cmdCP As New ADODB.Command
+    
     '
     cmdCP.ActiveConnection = cnnConexion
     cmdCP.CommandText = nombre_procedimiento
@@ -4871,7 +4874,7 @@ Salir:
     End If
     file = gcPath & "\nomina\" & "RP" & IDNomina & ".rpt"
     'si la copia de los recibos de pago no exise la generamos
-    If Dir(file) = "" Then
+    If Dir(file, vbArchive) = "" Then
         crReporte.Reporte = gcReport + "nom_rec_pago.rpt"
         crReporte.OrigenDatos(0) = gcPath & "\sac.mdb"
         crReporte.OrigenDatos(1) = gcPath & "\sac.mdb"
@@ -4881,6 +4884,7 @@ Salir:
         crReporte.Formulas(0) = "subtitulo='" & strTitulo & "'"
         If Guardar_Copia Then
             crReporte.Salida = crArchivoDisco
+            crReporte.FormatoSalida = crEFTCrystalReport
             crReporte.ArchivoSalida = file
             errLocal = crReporte.Imprimir
             If errLocal <> 0 Then

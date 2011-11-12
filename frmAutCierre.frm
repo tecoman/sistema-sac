@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{CDE57A40-8B86-11D0-B3C6-00A0C90AEA82}#1.0#0"; "MSDATGRD.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{67397AA1-7FB1-11D0-B148-00A0C922E820}#6.0#0"; "MSADODC.OCX"
 Object = "{0ECD9B60-23AA-11D0-B351-00A0C9055D8E}#6.0#0"; "MSHFLXGD.OCX"
 Begin VB.Form frmAutCierre 
@@ -53,11 +53,11 @@ Begin VB.Form frmAutCierre
       TabCaption(1)   =   "Totales"
       TabPicture(1)   =   "frmAutCierre.frx":27BE
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "TXT"
-      Tab(1).Control(1)=   "mGrid"
+      Tab(1).Control(0)=   "LBL(0)"
+      Tab(1).Control(1)=   "LBL(1)"
       Tab(1).Control(2)=   "Command1(0)"
-      Tab(1).Control(3)=   "LBL(1)"
-      Tab(1).Control(4)=   "LBL(0)"
+      Tab(1).Control(3)=   "mGrid"
+      Tab(1).Control(4)=   "TXT"
       Tab(1).ControlCount=   5
       Begin VB.CheckBox chk 
          Caption         =   "Todas la Taquillas"
@@ -281,12 +281,12 @@ Attribute VB_Exposed = False
     Public booSel As Boolean
 
     
-    Private Sub Command1_Click(index As Integer)
+    Private Sub Command1_Click(Index As Integer)
     'variables locales
     Dim strT As String
     '
     strT = Format(Ado.Recordset("IDTaquilla"), "00")
-    Select Case index
+    Select Case Index
         Case 0  'autorizar cuadre y cierre
             If Respuesta("Cierre caja " & strT & vbCrLf & "Saldo Apertura Bs." & Txt & vbCrLf & _
             "Desea continuar?") Then
@@ -306,7 +306,7 @@ Attribute VB_Exposed = False
         
         Case 2  'desautorizar
             If booSel Then
-                IntTaquilla = IIf(CHK.Value = vbChecked, 99, Ado.Recordset("IDTaquilla"))
+                IntTaquilla = IIf(chk.Value = vbChecked, 99, Ado.Recordset("IDTaquilla"))
                 Unload Me
             Else
                 If Respuesta("Seguro de desautorizar el cierre de la caja " & strT & "?") Then
@@ -325,7 +325,7 @@ Attribute VB_Exposed = False
     Private Sub dGrid_DblClick()
     If Ado.Recordset("IDTaquilla") <> "" Then
         If booSel Then
-            IntTaquilla = IIf(CHK.Value = vbChecked, 99, Ado.Recordset("IDTaquilla"))
+            IntTaquilla = IIf(chk.Value = vbChecked, 99, Ado.Recordset("IDTaquilla"))
             Unload Me
         Else
             Lbl(0) = "Taquilla: " & Format(Ado.Recordset("IDTaquilla"), "00") & " Cajero: " & _
@@ -337,26 +337,26 @@ Attribute VB_Exposed = False
 
     Private Sub Form_Load()
     'variables locales
-    Dim strSql$
+    Dim strSQL$
     '
     If booSel Then
     
         stab.TabVisible(1) = False
-        strSql = "SELECT * FROM Taquillas"
-        CHK.Visible = True
+        strSQL = "SELECT * FROM Taquillas"
+        chk.Visible = True
         Command1(2).Caption = "Aceptar"
         
     Else    'es cierre de caja
     
-        strSql = "SELECT * FROM taquillas WHERE IDTaquilla IN (SELECT IDTaquilla FROM Taquillas" _
+        strSQL = "SELECT * FROM taquillas WHERE IDTaquilla IN (SELECT IDTaquilla FROM Taquillas" _
         & " IN '" & gcPath & "\sac.mdb' WHERE estado=true);"
-        CHK.Visible = False
+        chk.Visible = False
         
     End If
     
     Ado.ConnectionString = cnnOLEDB + gcPath + "\tablas.mdb"
     Ado.CommandType = adCmdText
-    Ado.RecordSource = strSql
+    Ado.RecordSource = strSQL
     Ado.Refresh
     'Set dGrid.DataSource = ado
     dGrid.Refresh
@@ -377,7 +377,7 @@ Attribute VB_Exposed = False
     Dim rstCaja As ADODB.Recordset
     Dim rstTotales As ADODB.Recordset
     Dim curSaldoO@, curTotal@, Monto$
-    Dim strSql$, strMensaje$, i%, J%
+    Dim strSQL$, strMensaje$, I%, j%
     Dim Linea
     '
     Timer1.Interval = 0
@@ -389,39 +389,39 @@ Attribute VB_Exposed = False
     If rstCaja!Estado Then
         curSaldoO = rstCaja!OpenSaldo
         Set rstTotales = New ADODB.Recordset
-        strSql = "SELECT Fpago, Format(Count(Fpago),'00'), Sum(TDFCheques.Monto) From TDFCheque" _
+        strSQL = "SELECT Fpago, Format(Count(Fpago),'00'), Sum(TDFCheques.Monto) From TDFCheque" _
         & "s Where FechaMov = Date() And IDTaquilla=" & intCaja & " and Monto <> 0 GROUP BY Fpa" _
         & "go, FechaMov ORDER BY Fpago"
-        rstTotales.Open strSql, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
+        rstTotales.Open strSQL, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
         '
         With rstTotales
-            If Not .EOF And Not .BOF Then
-                .MoveFirst: J = 1
+            If Not (.EOF And .BOF) Then
+                .MoveFirst: j = 1
                 mGrid.Rows = .RecordCount + 4
                 Do
-                    For i = 0 To 2
-                        mGrid.TextMatrix(J, i) = IIf(i = 2, Format(.Fields(i), "#,##0.00 "), _
-                        .Fields(i))
-                    Next i
+                    For I = 0 To 2
+                        mGrid.TextMatrix(j, I) = IIf(I = 2, Format(.Fields(I), "#,##0.00 "), _
+                        .Fields(I))
+                    Next I
                     curTotal = curTotal + .Fields(2)
-                    .MoveNext: J = J + 1
+                    .MoveNext: j = j + 1
                 Loop Until .EOF
-                mGrid.Row = J
+                mGrid.Row = j
                 mGrid.Col = 0
                 mGrid.RowSel = mGrid.Rows - 1
                 mGrid.ColSel = mGrid.Cols - 1
                 mGrid.FillStyle = flexFillRepeat
                 mGrid.CellFontBold = True
-                J = J + 1: mGrid.MergeRow(J) = True
+                j = j + 1: mGrid.MergeRow(j) = True
                 'aqui muestra el saldo de apertura y total de la caja
-                mGrid.TextMatrix(J, 0) = "SALDO DE APERTURA"
-                mGrid.TextMatrix(J, 1) = "SALDO DE APERTURA"
-                mGrid.TextMatrix(J, 2) = Format(curSaldoO, "#,##0.00 ")
-                J = J + 1: mGrid.MergeRow(J) = True
-                mGrid.TextMatrix(J, 0) = "TOTAL EN CAJA:"
-                mGrid.TextMatrix(J, 1) = "TOTAL EN CAJA:"
-                mGrid.TextMatrix(J, 2) = Format(curTotal, "#,##0.00 ")
-                stab.Tab = 1
+                mGrid.TextMatrix(j, 0) = "SALDO DE APERTURA"
+                mGrid.TextMatrix(j, 1) = "SALDO DE APERTURA"
+                mGrid.TextMatrix(j, 2) = Format(curSaldoO, "#,##0.00 ")
+                j = j + 1: mGrid.MergeRow(j) = True
+                mGrid.TextMatrix(j, 0) = "TOTAL EN CAJA:"
+                mGrid.TextMatrix(j, 1) = "TOTAL EN CAJA:"
+                mGrid.TextMatrix(j, 2) = Format(curTotal, "#,##0.00 ")
+                stab.tab = 1
             Else
                 MsgBox "Totales en Cero...", vbInformation, App.ProductName
             End If

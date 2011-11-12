@@ -172,7 +172,7 @@ End Property
 
 Public Function Imprimir(Optional Copias As Long, Optional DataSource As ADODB.Recordset) As Long
 'variables locales
-Dim I As Integer, P As Integer, j As Integer
+Dim i As Integer, P As Integer, j As Integer
 Dim mFormulasF As CRAXDRT.FormulaFieldDefinitions
 Dim mFormulaF As CRAXDRT.FormulaFieldDefinition
 Dim crParamDefs As CRAXDRT.ParameterFieldDefinitions
@@ -187,37 +187,39 @@ Set mReport = mApp.OpenReport(Reporte, 1)
 If Not mReport.HasSavedData Then
     'si no recive un ADODB.Recordset
     If Origen Then
-        For I = 0 To UBound(mvarOrigenDatos)
-            mReport.Database.Tables(I + 1).Location = OrigenDatos(I)
+        For i = 0 To UBound(mvarOrigenDatos)
+            mReport.Database.Tables(i + 1).Location = OrigenDatos(i)
         Next
     End If
     If mvarFormuladeSeleccion <> "" Then mReport.RecordSelectionFormula = FormuladeSeleccion
 
     If Formula Then
         Set mFormulasF = mReport.FormulaFields
-        For I = 0 To UBound(mvarFormulas)
-            P = InStr(mvarFormulas(I), "=") - 1
+        For i = 0 To UBound(mvarFormulas)
+            P = InStr(mvarFormulas(i), "=") - 1
             For Each mFormulaF In mFormulasF
-                If mvarFormulas(I) <> "" Then
-                    If UCase(mFormulaF.FormulaFieldName) = Trim(UCase(Left(mvarFormulas(I), P))) Then
-                        mFormulaF.Text = Mid(Formulas(I), P + 2, Len(Formulas(I)))
+                If mvarFormulas(i) <> "" Then
+                    If UCase(mFormulaF.FormulaFieldName) = Trim(UCase(Left(mvarFormulas(i), P))) Then
+                        mFormulaF.Text = Mid(Formulas(i), P + 2, Len(Formulas(i)))
                     End If
                 End If
             Next
         Next
     End If
     If InStr(Reporte, "pagosweb.rpt") > 0 Then
-        For I = 1 To mReport.Database.Tables.Count
-            mReport.Database.Tables(I).ConnectionProperties.Item("password") = "dmn+str"
+        For i = 1 To mReport.Database.Tables.Count
+            mReport.Database.Tables(i).ConnectionProperties.Item("password") = "dmn+str"
         Next
+        mReport.PaperSize = crPaperLetter
+        mReport.PaperOrientation = crLandscape
     End If
     'parametros
     If Parametro Then
         Set crParamDefs = mReport.ParameterFields
-        I = 0
+        i = 0
         For Each crParamDef In crParamDefs
-            crParamDef.AddCurrentValue (Parametros(I))
-            I = I + 1
+            crParamDef.AddCurrentValue (Parametros(i))
+            i = i + 1
         Next
     End If
     
@@ -227,10 +229,10 @@ If orden Then
     Dim DefCampo As CRAXDRT.DatabaseFieldDefinition
     Dim Tabla As String, campo As String, Direccion As String
     
-    For I = 0 To UBound(mvarOrdenRegistros)
-        Direccion = Left(mvarOrdenRegistros(I), 1)
-        Tabla = UCase(Mid(mvarOrdenRegistros(I), 2, InStr(mvarOrdenRegistros(I), ".") - 2))
-        campo = Mid(mvarOrdenRegistros(I), InStr(mvarOrdenRegistros(I), ".") + 1, 100)
+    For i = 0 To UBound(mvarOrdenRegistros)
+        Direccion = Left(mvarOrdenRegistros(i), 1)
+        Tabla = UCase(Mid(mvarOrdenRegistros(i), 2, InStr(mvarOrdenRegistros(i), ".") - 2))
+        campo = Mid(mvarOrdenRegistros(i), InStr(mvarOrdenRegistros(i), ".") + 1, 100)
         
         For j = 1 To mReport.Database.Tables.Count
             If UCase(mReport.Database.Tables(j).Name) = Tabla Then

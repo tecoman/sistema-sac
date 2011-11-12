@@ -408,7 +408,7 @@ Select Case Index
         Set frmMail = Nothing
     
     Case 1  'adjutar archivo
-        If list(2).ListCount <= 3 Then
+        If List(2).ListCount <= 3 Then
             With FrmAdmin.CDlMain
             
                  .CancelError = True
@@ -418,23 +418,23 @@ Select Case Index
                 .ShowOpen
                 
                 If Err.Number = cdlCancel Then Exit Sub
-                list(2).AddItem .FileName
+                List(2).AddItem .FileName
             End With
         Else
             MsgBox "Solo puede adjuntar hasta 3 archivos", vbInformation, App.ProductName
         End If
     
     Case 0
-        list(1).Clear
-        list(4).Clear
-        list(1).Visible = False
-        cmd(0).Visible = False
+        List(1).Clear
+        List(4).Clear
+        List(1).Visible = False
+        Cmd(0).Visible = False
     
     Case 2
         Call enviar_email
     
     Case 3
-        list(2).RemoveItem list(2).ListIndex
+        List(2).RemoveItem List(2).ListIndex
 End Select
 End Sub
 
@@ -443,12 +443,12 @@ Dim rstlocal As ADODB.Recordset
 
 If Area = 2 Then
     
-    list(0).Clear
-    list(1).Clear
-    list(2).Clear
-    list(3).Clear
-    list(4).Clear
-    opt(0).Value = True
+    List(0).Clear
+    List(1).Clear
+    List(2).Clear
+    List(3).Clear
+    List(4).Clear
+    Opt(0).Value = True
     dtc(IIf(Index = 0, 1, 0)) = dtc(Index).BoundText
     If Not dtc(IIf(Index = 0, 1, 0)).MatchedWithList Then
         dtc(IIf(Index = 0, 1, 0)) = ""
@@ -477,8 +477,8 @@ If sArchivo <> "" Then 'envia un reporte por mail
     
     dtc(0) = gcCodInm
     Call dtc_Click(0, 2)
-    opt(2).Value = True
-    list(2).AddItem sArchivo
+    Opt(2).Value = True
+    List(2).AddItem sArchivo
 'Else
 '    MsgBox "No se encuentra el archivo", vbInformation, App.ProductName
 End If
@@ -488,17 +488,17 @@ End Sub
 Private Sub List_Click(Index As Integer)
 Select Case Index
     Case 1
-        list(3).AddItem list(1).list(list(1).ListIndex)
-        list(0).AddItem list(4).list(list(1).ListIndex)
-        list(4).RemoveItem (list(1).ListIndex)
-        list(1).RemoveItem (list(1).ListIndex)
+        List(3).AddItem List(1).List(List(1).ListIndex)
+        List(0).AddItem List(4).List(List(1).ListIndex)
+        List(4).RemoveItem (List(1).ListIndex)
+        List(1).RemoveItem (List(1).ListIndex)
         
         
     Case 3
-        list(1).AddItem list(3).list(list(3).ListIndex)
-        list(4).AddItem list(3).list(list(3).ListIndex)
-        list(0).RemoveItem (list(3).ListIndex)
-        list(3).RemoveItem (list(3).ListIndex)
+        List(1).AddItem List(3).List(List(3).ListIndex)
+        List(4).AddItem List(3).List(List(3).ListIndex)
+        List(0).RemoveItem (List(3).ListIndex)
+        List(3).RemoveItem (List(3).ListIndex)
         
         
 End Select
@@ -512,10 +512,10 @@ Private Sub cargar_destinatarios(Index As Integer)
 'variables locales
 Dim rstlocal As ADODB.Recordset
 
-list(3).Clear
-list(0).Clear
-list(1).Visible = False
-cmd(0).Visible = False
+List(3).Clear
+List(0).Clear
+List(1).Visible = False
+Cmd(0).Visible = False
 
 Select Case Index
     
@@ -529,23 +529,23 @@ Select Case Index
                 If Not .EOF And Not .BOF Then
                     .MoveFirst
                     If Index = 0 Then
-                        list(3).Clear
-                        list(0).Clear
+                        List(3).Clear
+                        List(0).Clear
                         Do
-                            list(3).AddItem !Codigo + " - " + !Nombre
-                            list(0).AddItem !email
+                            List(3).AddItem !Codigo + " - " + !Nombre
+                            List(0).AddItem !email
                             .MoveNext
                         Loop Until .EOF
                     Else
-                        list(1).Clear
-                        list(4).Clear
+                        List(1).Clear
+                        List(4).Clear
                          Do
-                            list(1).AddItem !Codigo + " - " + !Nombre
-                            list(4).AddItem !email
+                            List(1).AddItem !Codigo + " - " + !Nombre
+                            List(4).AddItem !email
                             .MoveNext
                         Loop Until .EOF
-                        list(1).Visible = True
-                        cmd(0).Visible = True
+                        List(1).Visible = True
+                        Cmd(0).Visible = True
                     End If
                 End If
                 .Close
@@ -562,8 +562,8 @@ Select Case Index
                 If Not .EOF And Not .BOF Then
                     .MoveFirst
                     Do
-                        list(3).AddItem !Codigo + " - " + !Nombre
-                        list(0).AddItem !email
+                        List(3).AddItem !Codigo + " - " + !Nombre
+                        List(0).AddItem !email
                         .MoveNext
                     Loop Until .EOF
                 End If
@@ -583,31 +583,31 @@ Private Sub enviar_email()
 
 Dim I%, Y%, n%, msg$, Dir1$, Dir2$, archivos$
 'valida los campos necesarios para enviar el email
-If Txt(0) = "" Then msg = "- Falta el sujeto del mensaje." & vbCrLf
-If Txt(1) = "" Then msg = msg + "- Debe escribir en el cuerpo del mensaje." & vbCrLf
-If list(0).ListCount = 0 Then msg = msg + "- Agregue destinatario(s) a su mensaje." & vbCrLf
+If txt(0) = "" Then msg = "- Falta el sujeto del mensaje." & vbCrLf
+If txt(1) = "" Then msg = msg + "- Debe escribir en el cuerpo del mensaje." & vbCrLf
+If List(0).ListCount = 0 Then msg = msg + "- Agregue destinatario(s) a su mensaje." & vbCrLf
 If msg <> "" Then
     MsgBox "No se puede enviar el mensaje:" & vbCrLf & vbCrLf & msg, vbCritical, App.ProductName
     Exit Sub
 End If
 pBar.Visible = True
-pBar.Max = list(0).ListCount
+pBar.Max = List(0).ListCount
 MousePointer = vbHourglass
-cmd(4).Enabled = False
-cmd(1).Enabled = False
-cmd(2).Enabled = False
-For I = 0 To list(2).ListCount - 1
-    archivos = archivos & list(2).list(I) & IIf(I = list(2).ListCount - 1, "", ",")
+Cmd(4).Enabled = False
+Cmd(1).Enabled = False
+Cmd(2).Enabled = False
+For I = 0 To List(2).ListCount - 1
+    archivos = archivos & List(2).List(I) & IIf(I = List(2).ListCount - 1, "", ",")
 Next
 
-For I = 0 To list(0).ListCount - 1
+For I = 0 To List(0).ListCount - 1
     
-    If InStr(list(0).list(I), ";") Then
-        Dir1 = Left(list(0).list(I), InStr(list(0).list(I), ";") - 1)
+    If InStr(List(0).List(I), ";") Then
+        Dir1 = Left(List(0).List(I), InStr(List(0).List(I), ";") - 1)
     Else
-        Dir1 = list(0).list(I)
+        Dir1 = List(0).List(I)
     End If
-    If ModGeneral.enviar_email(Dir1, "administracion@administradorasac.com", Txt(0), True, Txt(1), archivos) Then
+    If ModGeneral.enviar_email(Dir1, "administracion@administradorasac.com", txt(0), False, txt(1), archivos) Then
         n = n + 1
         pBar.Value = n
     Else
@@ -695,9 +695,9 @@ End If
 
 MousePointer = vbDefault
 pBar.Visible = False
-cmd(4).Enabled = True
-cmd(1).Enabled = True
-cmd(2).Enabled = True
+Cmd(4).Enabled = True
+Cmd(1).Enabled = True
+Cmd(2).Enabled = True
 
 'If Err = 0 Then
 '    MsgBox pBar.Max & IIf(pBar.Max > 1, " Mensajes Enviados ", " Mensaje Enviado ") & "con éxito.", _

@@ -1,34 +1,14 @@
 VERSION 5.00
-Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "mschrt20.ocx"
 Begin VB.Form frmChartDeuda 
    Caption         =   "Estadistico Inmueble"
    ClientHeight    =   4125
    ClientLeft      =   60
    ClientTop       =   450
    ClientWidth     =   7140
-   ControlBox      =   0   'False
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MDIChild        =   -1  'True
    ScaleHeight     =   4125
    ScaleWidth      =   7140
-   WindowState     =   2  'Maximized
-   Begin VB.Frame fra 
-      Height          =   6600
-      Index           =   1
-      Left            =   240
-      TabIndex        =   12
-      Top             =   2220
-      Width           =   14430
-      Begin MSChart20Lib.MSChart MSChart1 
-         Height          =   5745
-         Left            =   345
-         OleObjectBlob   =   "frmChartDeuda.frx":0000
-         TabIndex        =   14
-         Top             =   420
-         Width           =   13500
-      End
-   End
    Begin VB.Frame fra 
       Caption         =   "Introduzca los campos requeridos:"
       BeginProperty Font 
@@ -43,7 +23,7 @@ Begin VB.Form frmChartDeuda
       Height          =   1605
       Index           =   0
       Left            =   255
-      TabIndex        =   3
+      TabIndex        =   2
       Top             =   375
       Width           =   14430
       Begin VB.ComboBox cmb 
@@ -51,37 +31,37 @@ Begin VB.Form frmChartDeuda
          Index           =   5
          Left            =   1935
          Sorted          =   -1  'True
-         TabIndex        =   13
+         TabIndex        =   11
          Top             =   915
          Width           =   5070
       End
       Begin VB.ComboBox cmb 
          Height          =   315
          Index           =   0
-         ItemData        =   "frmChartDeuda.frx":2356
+         ItemData        =   "frmChartDeuda.frx":0000
          Left            =   510
-         List            =   "frmChartDeuda.frx":2358
-         TabIndex        =   8
+         List            =   "frmChartDeuda.frx":0002
+         TabIndex        =   7
          Top             =   915
          Width           =   1425
       End
       Begin VB.ComboBox cmb 
          Height          =   315
          Index           =   1
-         ItemData        =   "frmChartDeuda.frx":235A
+         ItemData        =   "frmChartDeuda.frx":0004
          Left            =   7815
-         List            =   "frmChartDeuda.frx":2385
-         TabIndex        =   7
+         List            =   "frmChartDeuda.frx":002F
+         TabIndex        =   6
          Top             =   915
          Width           =   1185
       End
       Begin VB.ComboBox cmb 
          Height          =   315
          Index           =   2
-         ItemData        =   "frmChartDeuda.frx":23F5
+         ItemData        =   "frmChartDeuda.frx":009F
          Left            =   10605
-         List            =   "frmChartDeuda.frx":2420
-         TabIndex        =   6
+         List            =   "frmChartDeuda.frx":00CA
+         TabIndex        =   5
          Top             =   915
          Width           =   1185
       End
@@ -89,7 +69,7 @@ Begin VB.Form frmChartDeuda
          Height          =   315
          Index           =   3
          Left            =   9000
-         TabIndex        =   5
+         TabIndex        =   4
          Top             =   915
          Width           =   1455
       End
@@ -97,7 +77,7 @@ Begin VB.Form frmChartDeuda
          Height          =   315
          Index           =   4
          Left            =   11790
-         TabIndex        =   4
+         TabIndex        =   3
          Top             =   915
          Width           =   1455
       End
@@ -121,7 +101,7 @@ Begin VB.Form frmChartDeuda
          Height          =   285
          Index           =   1
          Left            =   480
-         TabIndex        =   11
+         TabIndex        =   10
          Top             =   570
          Width           =   6495
       End
@@ -145,7 +125,7 @@ Begin VB.Form frmChartDeuda
          Height          =   285
          Index           =   2
          Left            =   7830
-         TabIndex        =   10
+         TabIndex        =   9
          Top             =   570
          Width           =   2595
       End
@@ -169,7 +149,7 @@ Begin VB.Form frmChartDeuda
          Height          =   285
          Index           =   3
          Left            =   10605
-         TabIndex        =   9
+         TabIndex        =   8
          Top             =   570
          Width           =   2640
       End
@@ -178,33 +158,22 @@ Begin VB.Form frmChartDeuda
       Caption         =   "&Cerrar"
       Height          =   960
       Index           =   2
-      Left            =   13455
-      Picture         =   "frmChartDeuda.frx":2490
+      Left            =   10770
+      Picture         =   "frmChartDeuda.frx":013A
       Style           =   1  'Graphical
-      TabIndex        =   2
-      Top             =   8970
+      TabIndex        =   1
+      Top             =   3015
       Width           =   1215
    End
    Begin VB.CommandButton cmd 
       Caption         =   "&Imprimir"
       Height          =   960
       Index           =   1
-      Left            =   12240
-      Picture         =   "frmChartDeuda.frx":279A
-      Style           =   1  'Graphical
-      TabIndex        =   1
-      Top             =   8970
-      Width           =   1215
-   End
-   Begin VB.CommandButton cmd 
-      Caption         =   "&Graficar"
-      Height          =   960
-      Index           =   0
-      Left            =   11025
-      Picture         =   "frmChartDeuda.frx":2AA4
+      Left            =   9555
+      Picture         =   "frmChartDeuda.frx":0444
       Style           =   1  'Graphical
       TabIndex        =   0
-      Top             =   8970
+      Top             =   3015
       Width           =   1215
    End
 End
@@ -227,9 +196,9 @@ Private Sub cmb_Click(Index As Integer)
 Dim strCriterio As String
 '
 If Index = 0 Then
-    strCriterio = "CodInm ='" & cmb(0) & "'"
+    strCriterio = "CodInm ='" & Cmb(0) & "'"
 ElseIf Index = 5 Then
-    strCriterio = "Nombre Like '*" & cmb(5) & "*'"
+    strCriterio = "Nombre Like '*" & Cmb(5) & "*'"
 End If
 '
 If strCriterio <> "" Then
@@ -238,8 +207,8 @@ If strCriterio <> "" Then
         .MoveFirst
         .Find strCriterio
         If Not .EOF And Not .BOF Then
-            cmb(0) = !CodInm
-            cmb(5) = !Nombre
+            Cmb(0) = !CodInm
+            Cmb(5) = !Nombre
             Inm = !CodInm
             curDA = !Deuda
         Else
@@ -275,7 +244,8 @@ Private Sub cmd_Click(Index As Integer)
 Select Case Index
 
     Case 0  'graficar
-        If Not novalida Then Call grafica
+        'If Not novalida Then Call grafica
+    
     Case 1 'imprimir
     
     Case 2  'close
@@ -294,16 +264,16 @@ With rstlocal
     If Not .EOF And Not .BOF Then
         .MoveFirst
         Do
-            cmb(0).AddItem !CodInm
-            cmb(5).AddItem !Nombre
+            Cmb(0).AddItem !CodInm
+            Cmb(5).AddItem !Nombre
             .MoveNext
         Loop Until .EOF
     End If
     '
     
 End With
-For I = 3 To 4
-    For j = 2001 To Year(Date): cmb(I).AddItem j
+For i = 3 To 4
+    For j = 2001 To Year(Date): Cmb(i).AddItem j
     Next
 Next
 End Sub
@@ -313,140 +283,3 @@ rstlocal.Close
 Set rstlocal = Nothing
 End Sub
 
-Private Sub grafica()
-'variables locales
-Dim rstGraf As New ADODB.Recordset
-Dim cnnGraf As New ADODB.Connection
-Dim curIni As Currency
-Dim curPago As Currency
-Dim curFact As Currency
-Dim fIni As Date
-Dim fFin As Date
-Dim strSQL As String
-
-'limpia el contenido de la tabla chartDeuda
-cnnGraf.Open cnnOLEDB & gcPath & "\" & Inm & "\inm.mdb"
-
-cnnGraf.Execute "DELETE * FROM ChartDeuda"
-'
-'comienza a efectuar los calculos
-'pagos recibidos entre la fecha Inicial y la fecha actual
-strSQL = "SELECT Sum(P.Monto) AS Pagos FROM MovimientoCaja as C INNER JOIN Periodos as P ON" _
-& " C.IDRecibo = P.IDRecibo WHERE (((P.CodGasto)='900030' Or (P.CodGasto)='900001') AND ((C.Fec" _
-& "haMovimientoCaja) Between #" & Format(DateAdd("d", 1, pIni), "mm/dd/yy") & "# And #" & _
-Format(Date, "mm/dd/yy") & "#) AND ((C.InmuebleMovimientoCaja)='" & Inm & "'));"
-
-rstGraf.Open strSQL, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
-If Not rstGraf.BOF And Not rstGraf.EOF Then
-    If Not IsNull(rstGraf("Pagos")) Then curPago = rstGraf("Pagos")
-End If
-rstGraf.Close
-'
-'calculo de lo facturado entre la fecha inicial hasta la fecha
-
-strSQL = "SELECT Sum(Facturado) AS Factu FROM Factura WHERE FechaFactura >#" & _
-Format(pIni, "mm/dd/yy") & "#"
-
-rstGraf.Open strSQL, cnnGraf, adOpenKeyset, adLockOptimistic, adCmdText
-If Not rstGraf.EOF And Not rstGraf.BOF Then
-    If Not IsNull(rstGraf("Factu")) Then curFact = rstGraf("Factu")
-End If
-rstGraf.Close
-'
-'// tengo la deuda al inicio del periodo
-curIni = curDA + curPago - curFact
-
-cnnGraf.Execute "INSERT INTO ChartDeuda(Mes,Deuda,Facturado,Pagos) VALUES ('" & pIni & "','" _
-& curIni & "','" & curFact & "','" & curPago & "')"
-pIni = DateAdd("d", 1, pIni)
-
-Do
-    
-    pPeriodo = DateAdd("m", 1, pPeriodo)
-    
-    strSQL = "SELECT * FROM Factura WHERE Periodo =#" & Format(pPeriodo, "m/d/yy") & "#"
-    rstGraf.Open strSQL, cnnGraf, adOpenKeyset, adLockOptimistic, adCmdText
-    If Not rstGraf.EOF And Not rstGraf.BOF Then
-        If Not IsNull(rstGraf("FechaFactura")) Then fFin = rstGraf("FechaFactura")
-    End If
-    rstGraf.Close
-    '
-    'calculo lo facturado
-    curFact = 0
-    strSQL = "SELECT Sum(Facturado) AS Factu FROM Factura WHERE FechaFactura IN (SELECT FechaFa" _
-    & "ctura FROM Factura WHERE Periodo =#" & Format(pPeriodo, "m/d/yy") & "#)"
-    
-    rstGraf.Open strSQL, cnnGraf, adOpenKeyset, adLockOptimistic, adCmdText
-    
-    If Not rstGraf.EOF And Not rstGraf.BOF Then
-        If Not IsNull(rstGraf("Factu")) Then curFact = rstGraf("Factu")
-    End If
-    rstGraf.Close
-    '
-    'calculo lo pagado
-    curPago = 0
-    strSQL = "SELECT Sum(P.Monto) AS Pagos FROM MovimientoCaja as C INNER JOIN Periodos as " _
-    & "P ON C.IDRecibo = P.IDRecibo WHERE (((P.CodGasto)='900030' Or (P.CodGasto)='900001') " _
-    & "AND ((C.FechaMovimientoCaja) Between #" & Format(pIni, "mm/dd/yy") & "# And #" & _
-    Format(fFin, "mm/dd/yy") & "#) AND ((C.InmuebleMovimientoCaja)='" & Inm & "'));"
-
-    rstGraf.Open strSQL, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
-    If Not rstGraf.BOF And Not rstGraf.EOF Then
-        If Not IsNull(rstGraf("Pagos")) Then curPago = rstGraf("Pagos")
-    End If
-    rstGraf.Close
-    '
-    curIni = curIni + curFact - curPago
-    
-    cnnGraf.Execute "INSERT INTO ChartDeuda(Mes,Deuda,Facturado,Pagos) VALUES ('" & fFin & "','" _
-    & curIni & "','" & curFact & "','" & curPago & "')"
-    
-    pIni = DateAdd("D", 1, fFin)
-    
-Loop Until fFin = pFin
-'
-End Sub
-
-Private Function novalida() As Boolean
-Dim rstFecFact As New ADODB.Recordset
-
-If Inm = "" Then
-    novalida = MsgBox("Falta el Código del Inmueble", vbExclamation, App.ProductName)
-    Exit Function
-End If
-If Not IsDate("01/" & cmb(1) & "/" & cmb(3)) Then
-    novalida = MsgBox("Introdujo en valor no válido en el campo 'Inicio Período'", vbExclamation, _
-    App.ProductName)
-    Exit Function
-Else
-    pIni = "01/" & cmb(1) & "/" & cmb(3)
-    pPeriodo = pIni
-    rstFecFact.Open "Select FechaFactura FROM Factura WHERE Periodo =#" & Format(pIni, "m/d/yy") & "#", cnnOLEDB & _
-    gcPath & "\" & Inm & "\inm.mdb", adOpenKeyset, adLockOptimistic, adCmdText
-    If Not rstFecFact.EOF And Not rstFecFact.BOF Then
-        pIni = rstFecFact("FechaFactura")
-    End If
-    rstFecFact.Close
-    
-End If
-If Not IsDate("01/" & cmb(2) & "/" & cmb(4)) Then
-    novalida = MsgBox("Introdujo en valor no válido en el campo 'Final Período'", vbExclamation, _
-    App.ProductName)
-    Exit Function
-Else
-    pFin = "01/" & cmb(2) & "/" & cmb(4)
-    rstFecFact.Open "SELECT FechaFactura FROM Factura WHERE Periodo =#" & Format(pFin, "m/d/yy") & "#", cnnOLEDB & gcPath & "\" & Inm & "\inm.mdb", adOpenKeyset, adLockOptimistic, adCmdText
-    If Not rstFecFact.EOF And Not rstFecFact.BOF Then
-        pFin = rstFecFact("FechaFactura")
-    End If
-    rstFecFact.Close
-    
-End If
-If pFin < pIni Then
-    novalida = MsgBox("El Final el período no puede ser un valor menor que el inicio", _
-    vbExclamation, App.ProductName)
-End If
-'
-Set rstFecFact = Nothing
-
-End Function
