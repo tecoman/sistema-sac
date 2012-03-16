@@ -595,8 +595,8 @@ End Sub
 
 Private Sub Form_Load()
 
-Lbl(0).Visible = False
-Lbl(1).Visible = False
+lbl(0).Visible = False
+lbl(1).Visible = False
 cmb(0).Visible = False
 cmb(1).Visible = False
 cmb(2).Visible = False
@@ -607,8 +607,8 @@ Line1(0).Visible = False
 Line2(0).Visible = False
 Line3(0).Visible = False
 Line4(0).Visible = False
-Lbl(3).Visible = False
-Lbl(2).Visible = False
+lbl(3).Visible = False
+lbl(2).Visible = False
 cmb(8).Visible = False
 cmb(11).Visible = False
 cmb(7).Visible = False
@@ -708,8 +708,8 @@ Private Sub Option1_Click(Index As Integer)
   Select Case Index
     Case 0
          If Option1(0).Value = True Then
-            Lbl(0).Visible = True
-            Lbl(1).Visible = True
+            lbl(0).Visible = True
+            lbl(1).Visible = True
             cmb(0).Visible = True
             cmb(1).Visible = True
             cmb(2).Visible = True
@@ -724,8 +724,8 @@ Private Sub Option1_Click(Index As Integer)
     
     Case 1
          If Option1(1).Value = True Then
-            Lbl(3).Visible = True
-            Lbl(2).Visible = True
+            lbl(3).Visible = True
+            lbl(2).Visible = True
             cmb(8).Visible = True
             cmb(11).Visible = True
             cmb(7).Visible = True
@@ -739,8 +739,8 @@ Private Sub Option1_Click(Index As Integer)
          End If
     Case 2
          If Option1(2).Value = True Then
-            Lbl(0).Visible = False
-            Lbl(1).Visible = False
+            lbl(0).Visible = False
+            lbl(1).Visible = False
             cmb(0).Visible = False
             cmb(1).Visible = False
             cmb(2).Visible = False
@@ -754,8 +754,8 @@ Private Sub Option1_Click(Index As Integer)
          End If
     Case 3
          If Option1(3).Value = True Then
-            Lbl(3).Visible = False
-            Lbl(2).Visible = False
+            lbl(3).Visible = False
+            lbl(2).Visible = False
             cmb(8).Visible = False
             cmb(11).Visible = False
             cmb(7).Visible = False
@@ -776,7 +776,7 @@ End Sub
  Dim Fecha2 As Date
  Dim Nom() As Long, P As String, m As String, qui As String
  Dim Z As Integer, u As Integer, s As Integer, Mes As String
- Dim q As Integer, N As String, l As Integer, ano As String
+ Dim q As Integer, n As String, l As Integer, ano As String
  Dim X As Integer, K As String, r As String, msn As String
  Dim Nreport As String, T As Date, I As Integer
  Dim A As Integer, B As Integer, C As Integer, D As Integer
@@ -870,9 +870,9 @@ paso:
                     Mes = (MonthName(Mid(Nom(X), 2, 2)))
                     ano = Right(Nom(X), 4)
                     msn = "De la Quincena  " & qui & "  De  " & Mes & "  Del  " & ano & " "
-                    If rrlocal <> 0 Then
-                        MsgBox "El reporte " & List1(Z).List(q) & "  " & msn & _
-                        " no se encuentra   ", vbCritical, Err.Description
+                    If errLocal <> 0 Then
+                        MsgBox Err.Description, _
+                        vbCritical, App.ProductName
                     End If
                 End If
             End With
@@ -886,19 +886,19 @@ paso:
 
           For W = 0 To List1(3).ListCount - 1
               For u = 0 To List1(4).ListCount - 1
-                  N = Right(List1(4).List(u), 2)
+                  n = Right(List1(4).List(u), 2)
                   Z = 3
                   '
                   Select Case List1(Z).List(W)
                   
                     Case "Nomina Vs Facturacion"
-                        Nreport = "FA" & N & Nom(X) & ".rpt"
+                        Nreport = "FA" & n & Nom(X) & ".rpt"
               
                     Case "Recibo de Pago"
-                        Nreport = "RP" & N & Nom(X) & ".RPT"
+                        Nreport = "RP" & n & Nom(X) & ".RPT"
              
                     Case "Carta al Banco"
-                        Nreport = "CB" & N & Nom(X) & ".RPT"
+                        Nreport = "CB" & n & Nom(X) & ".RPT"
              
                     Case "Nomina General"
                         Nreport = "RG" & List1(4).List(u) & Nom(X) & ".RPT"
@@ -1010,7 +1010,7 @@ paso:
         For W = 0 To List1(3).ListCount - 1
             For s = 0 To List1(4).ListCount - 1
                'p = List1(4).list(q)
-                N = Right(List1(4).List(q), 2)
+                n = Right(List1(4).List(q), 2)
                     Select Case List1(3).List(W)
                            Case "Nomina Vs Facturacion"
                                  r = "FA"
@@ -1030,7 +1030,7 @@ paso:
                     rsttodo.MoveFirst
                Do
                   K = (rsttodo("IDnomina"))
-                  repotg = r & N & K & ".RPT"
+                  repotg = r & n & K & ".RPT"
                   Set rpReporte = New ctlReport
                   With rpReporte
                        .Reporte = gcPath & "\Nomina\" & repotg

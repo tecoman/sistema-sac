@@ -46,19 +46,19 @@ Public Property Get FormatoSalida() As CRExportFormatType
     FormatoSalida = mvarFormatoSalida
 End Property
 
-Public Property Let OrdenRegistros(Index As Integer, ByVal vData As String)
-If Index = 0 Then
+Public Property Let OrdenRegistros(index As Integer, ByVal vData As String)
+If index = 0 Then
     ReDim mvarOrdenRegistros(0)
 Else
     ReDim Preserve mvarOrdenRegistros(UBound(mvarOrdenRegistros) + 1)
 End If
-mvarOrdenRegistros(Index) = vData
+mvarOrdenRegistros(index) = vData
 orden = True
 End Property
 
 
-Public Property Get OrdenRegistros(Index As Integer) As String
-OrdenRegistros = mvarOrdenRegistros(Index)
+Public Property Get OrdenRegistros(index As Integer) As String
+OrdenRegistros = mvarOrdenRegistros(index)
 End Property
 
 Public Property Let ArchivoSalida(ByVal vData As String)
@@ -107,46 +107,46 @@ Public Property Get TituloVentana() As String
 TituloVentana = mvarTituloVentana
 End Property
 
-Public Property Let OrigenDatos(Index As Integer, ByVal vData As String)
-If Index = 0 Then
+Public Property Let OrigenDatos(index As Integer, ByVal vData As String)
+If index = 0 Then
     ReDim mvarOrigenDatos(0)
 Else
     ReDim Preserve mvarOrigenDatos(UBound(mvarOrigenDatos) + 1)
 End If
-mvarOrigenDatos(Index) = vData
+mvarOrigenDatos(index) = vData
 Origen = True
 End Property
 
-Public Property Get OrigenDatos(Index As Integer) As String
-OrigenDatos = mvarOrigenDatos(Index)
+Public Property Get OrigenDatos(index As Integer) As String
+OrigenDatos = mvarOrigenDatos(index)
 End Property
 
-Public Property Let Formulas(Index As Integer, ByVal vData As String)
-If Index = 0 Then
+Public Property Let Formulas(index As Integer, ByVal vData As String)
+If index = 0 Then
     ReDim mvarFormulas(0)
 Else
     ReDim Preserve mvarFormulas(UBound(mvarFormulas) + 1)
 End If
-mvarFormulas(Index) = vData
+mvarFormulas(index) = vData
 Formula = True
 End Property
 
-Public Property Get Formulas(Index As Integer) As String
-Formulas = mvarFormulas(Index)
+Public Property Get Formulas(index As Integer) As String
+Formulas = mvarFormulas(index)
 End Property
 
-Public Property Let Parametros(Index As Integer, ByVal vData)
-If Index = 0 Then
+Public Property Let Parametros(index As Integer, ByVal vData)
+If index = 0 Then
     ReDim mvarParametros(0)
 Else
     ReDim Preserve mvarParametros(UBound(mvarParametros) + 1)
 End If
-mvarParametros(Index) = vData
+mvarParametros(index) = vData
 Parametro = True
 End Property
 
-Public Property Get Parametros(Index As Integer)
-Parametros = mvarParametros(Index)
+Public Property Get Parametros(index As Integer)
+Parametros = mvarParametros(index)
 End Property
 
 Public Property Let Salida(ByVal vData As crSalida)
@@ -168,47 +168,50 @@ End Property
 Public Property Get Reporte() As String
 Attribute Reporte.VB_UserMemId = 0
 Reporte = mvarReporte
+
 End Property
 
 Public Function Imprimir(Optional Copias As Long, Optional DataSource As ADODB.Recordset) As Long
 'variables locales
-Dim i As Integer, P As Integer, j As Integer
+Dim I As Integer, P As Integer, j As Integer
 Dim mFormulasF As CRAXDRT.FormulaFieldDefinitions
 Dim mFormulaF As CRAXDRT.FormulaFieldDefinition
 Dim crParamDefs As CRAXDRT.ParameterFieldDefinitions
 Dim crParamDef As CRAXDRT.ParameterFieldDefinition
 
 '
-On Error Resume Next
+On Error GoTo Salir
 
-If Reporte = "" Then Exit Function
+If Reporte = "" Then
+    Err.Raise 48, "Impresion Reporte", "No se encuentra el reporte solicitado."
+End If
 Set mReport = mApp.OpenReport(Reporte, 1)
 
 If Not mReport.HasSavedData Then
     'si no recive un ADODB.Recordset
     If Origen Then
-        For i = 0 To UBound(mvarOrigenDatos)
-            mReport.Database.Tables(i + 1).Location = OrigenDatos(i)
+        For I = 0 To UBound(mvarOrigenDatos)
+            mReport.Database.Tables(I + 1).Location = OrigenDatos(I)
         Next
     End If
     If mvarFormuladeSeleccion <> "" Then mReport.RecordSelectionFormula = FormuladeSeleccion
 
     If Formula Then
         Set mFormulasF = mReport.FormulaFields
-        For i = 0 To UBound(mvarFormulas)
-            P = InStr(mvarFormulas(i), "=") - 1
+        For I = 0 To UBound(mvarFormulas)
+            P = InStr(mvarFormulas(I), "=") - 1
             For Each mFormulaF In mFormulasF
-                If mvarFormulas(i) <> "" Then
-                    If UCase(mFormulaF.FormulaFieldName) = Trim(UCase(Left(mvarFormulas(i), P))) Then
-                        mFormulaF.Text = Mid(Formulas(i), P + 2, Len(Formulas(i)))
+                If mvarFormulas(I) <> "" Then
+                    If UCase(mFormulaF.FormulaFieldName) = Trim(UCase(Left(mvarFormulas(I), P))) Then
+                        mFormulaF.Text = Mid(Formulas(I), P + 2, Len(Formulas(I)))
                     End If
                 End If
             Next
         Next
     End If
     If InStr(Reporte, "pagosweb.rpt") > 0 Then
-        For i = 1 To mReport.Database.Tables.Count
-            mReport.Database.Tables(i).ConnectionProperties.Item("password") = "dmn+str"
+        For I = 1 To mReport.Database.Tables.Count
+            mReport.Database.Tables(I).ConnectionProperties.Item("password") = "dmn+str"
         Next
         mReport.PaperSize = crPaperLetter
         mReport.PaperOrientation = crLandscape
@@ -216,10 +219,17 @@ If Not mReport.HasSavedData Then
     'parametros
     If Parametro Then
         Set crParamDefs = mReport.ParameterFields
-        i = 0
+        I = 0
         For Each crParamDef In crParamDefs
-            crParamDef.AddCurrentValue (Parametros(i))
-            i = i + 1
+            If IsArray(Parametros(I)) Then
+                Dim valor
+                For Each valor In Parametros(I)
+                    crParamDef.AddCurrentValue valor
+                Next
+            Else
+                crParamDef.AddCurrentValue (Parametros(I))
+            End If
+            I = I + 1
         Next
     End If
     
@@ -229,10 +239,10 @@ If orden Then
     Dim DefCampo As CRAXDRT.DatabaseFieldDefinition
     Dim Tabla As String, campo As String, Direccion As String
     
-    For i = 0 To UBound(mvarOrdenRegistros)
-        Direccion = Left(mvarOrdenRegistros(i), 1)
-        Tabla = UCase(Mid(mvarOrdenRegistros(i), 2, InStr(mvarOrdenRegistros(i), ".") - 2))
-        campo = Mid(mvarOrdenRegistros(i), InStr(mvarOrdenRegistros(i), ".") + 1, 100)
+    For I = 0 To UBound(mvarOrdenRegistros)
+        Direccion = Left(mvarOrdenRegistros(I), 1)
+        Tabla = UCase(Mid(mvarOrdenRegistros(I), 2, InStr(mvarOrdenRegistros(I), ".") - 2))
+        campo = Mid(mvarOrdenRegistros(I), InStr(mvarOrdenRegistros(I), ".") + 1, 100)
         
         For j = 1 To mReport.Database.Tables.Count
             If UCase(mReport.Database.Tables(j).Name) = Tabla Then
@@ -268,6 +278,7 @@ ElseIf Salida = crArchivoDisco Then
     mReport.ExportOptions.DiskFileName = mvarArchivoSalida
     mReport.Export False
 End If
+Salir:
 If Err <> 0 And Err <> 401 Then
     Imprimir = Err 'MsgBox("Error al imprimir el reporte:" & _
     Err.Description, vbCritical, "Error " & Err)

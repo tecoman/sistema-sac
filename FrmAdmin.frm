@@ -3,16 +3,15 @@ Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "MSWINSCK.OCX"
 Begin VB.MDIForm FrmAdmin 
-   BackColor       =   &H00800000&
+   BackColor       =   &H00400000&
    Caption         =   "-"
-   ClientHeight    =   870
+   ClientHeight    =   1905
    ClientLeft      =   60
-   ClientTop       =   -255
-   ClientWidth     =   9915
+   ClientTop       =   -555
+   ClientWidth     =   12660
    Icon            =   "FrmAdmin.frx":0000
    LinkTopic       =   "MDIForm1"
    Moveable        =   0   'False
-   Picture         =   "FrmAdmin.frx":27A2
    ScrollBars      =   0   'False
    StartUpPosition =   2  'CenterScreen
    WindowState     =   2  'Maximized
@@ -29,9 +28,9 @@ Begin VB.MDIForm FrmAdmin
       Height          =   360
       Left            =   0
       TabIndex        =   0
-      Top             =   510
-      Width           =   9915
-      _ExtentX        =   17489
+      Top             =   1545
+      Width           =   12660
+      _ExtentX        =   22331
       _ExtentY        =   635
       _Version        =   393216
       BeginProperty Panels {8E3867A5-8586-11D1-B16A-00C0F0283628} 
@@ -43,20 +42,20 @@ Begin VB.MDIForm FrmAdmin
          EndProperty
          BeginProperty Panel2 {8E3867AB-8586-11D1-B16A-00C0F0283628} 
             Alignment       =   2
-            Picture         =   "FrmAdmin.frx":17BF4
+            Picture         =   "FrmAdmin.frx":27A2
          EndProperty
          BeginProperty Panel3 {8E3867AB-8586-11D1-B16A-00C0F0283628} 
             Alignment       =   2
             Object.Width           =   3528
             MinWidth        =   3528
-            Picture         =   "FrmAdmin.frx":18A46
+            Picture         =   "FrmAdmin.frx":35F4
             Object.ToolTipText     =   "Origen de datos...."
          EndProperty
       EndProperty
    End
    Begin MSComDlg.CommonDialog CDlMain 
-      Left            =   720
-      Top             =   480
+      Left            =   585
+      Top             =   60
       _ExtentX        =   847
       _ExtentY        =   847
       _Version        =   393216
@@ -1086,6 +1085,11 @@ Begin VB.MDIForm FrmAdmin
       Begin VB.Menu AC707 
          Caption         =   "Modo Local"
          Index           =   2
+      End
+      Begin VB.Menu AC707 
+         Caption         =   "Historico"
+         Enabled         =   0   'False
+         Index           =   3
       End
    End
    Begin VB.Menu Mante 
@@ -2297,7 +2301,7 @@ End Sub
     On Error Resume Next
     'variables locales
     Dim rstCaja As New ADODB.Recordset
-    Dim strSql$, strHora$, IntTemp%
+    Dim strSQL$, strHora$, IntTemp%
     Dim rstOpen As ADODB.Recordset
     Dim Ventana1 As frmRCG, ventana As frmRCG, Aut As frmAutCierre
     '
@@ -2731,13 +2735,13 @@ End Sub
     Private Sub AC60609_Click()
     'calculo de aguinaldos
     Dim rstlocal As New ADODB.Recordset
-    Dim strSql As String
+    Dim strSQL As String
     
-    strSql = "SELECT Emp.Nombres, Emp.Apellidos, Emp.CodInm, Nom_Detalle.* FROM Nom_Det" _
+    strSQL = "SELECT Emp.Nombres, Emp.Apellidos, Emp.CodInm, Nom_Detalle.* FROM Nom_Det" _
     & "alle INNER JOIN Emp ON Nom_Detalle.CodEmp = Emp.CodEmp WHERE (((Nom_Detalle.IDNo" _
     & "m) In (select Top 1 IDNomina  from nom_inf Order by fecha desc)));"
     
-    rstlocal.Open strSql, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
+    rstlocal.Open strSQL, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
     
     With rstlocal
     
@@ -2820,6 +2824,35 @@ End Sub
                     vbInformation, App.ProductName
                 End If
             End If
+                
+        Case 3
+            'cambia la ruta de acceso en la base de datos local
+            Me.AC707(3).Checked = Not Me.AC707(3).Checked
+            If Me.AC707(3).Checked Then
+                gcPath = gcPath & "Historico"
+                mcDatos = Replace(mcDatos, "datos", "datosHistorico")
+                stb.Panels(3).Text = "HISTORICO"
+            Else
+                gcPath = Replace(gcPath, "Historico", "")
+                mcDatos = Replace(mcDatos, "datosHistorico", "datos")
+                stb.Panels(3).Text = gcPath
+            End If
+            '
+            cnnConexion.Close
+            cnnConexion.Open cnnOLEDB & gcPath & "\sac.mdb"
+            objRst.Open , cnnConexion
+            ObjRstNom.Open , cnnConexion
+            '
+            Dim Frm As Form
+            '
+            For Each Frm In Forms
+            '
+                If Frm.Name <> "FrmSelCon" And Frm.Name <> "FrmAdmin" Then
+                    If Frm.Tag = "1" Then Unload Frm
+                End If
+                '
+            Next
+            
     End Select
     End Sub
 
@@ -2853,7 +2886,7 @@ End Sub
     wsServidor.Listen
     Me.BackColor = RGB(0, 0, 102)
     ' si es el administrador del sistema activa todos los menus
-    If gcNivel = nuADSYS Or nuAdministrador Then
+    If gcNivel = nuADSYS Or gcNivel = nuAdministrador Then
         Dim ctlMenu As Control
         Dim strIndice As String
         For Each ctlMenu In FrmAdmin.Controls
@@ -3079,7 +3112,7 @@ SalirRutina:
     Private Sub rtnPrint_Abonos()  '
     '---------------------------------------------------------------------------------------------
     'variables locales
-    Dim strSql As String
+    Dim strSQL As String
     Dim strUser As String
     Dim strHora As String
     Dim rstAbonos As New ADODB.Recordset
@@ -3088,9 +3121,9 @@ SalirRutina:
     'Abre conexion al origen de datos
     rstAbonos.Open "copyAbonos", cnnConexion, adOpenKeyset, adLockOptimistic, adCmdTable
     'Imprimir primera parte del reporte
-    strSql = gcUbiGraf & "\logo.bmp"
-    If Dir(strSql) <> "" Then   'imprime el logo de la empresa
-        Printer.PaintPicture LoadPicture(strSql), _
+    strSQL = gcUbiGraf & "\logo.bmp"
+    If Dir(strSQL) <> "" Then   'imprime el logo de la empresa
+        Printer.PaintPicture LoadPicture(strSQL), _
         Printer.ScaleTop + 10, Printer.ScaleLeft, 4290, 1365, , , , , vbSrcCopy
         Printer.Print
     End If
@@ -3126,13 +3159,13 @@ SalirRutina:
     rstAbonos.Close
     '
     'Abre conexion al segundo origen de datos
-    strSql = "SELECT TDFAbonos.IDRecibo, MovimientoCaja.InmuebleMovimientoCaja, MovimientoCaja." _
+    strSQL = "SELECT TDFAbonos.IDRecibo, MovimientoCaja.InmuebleMovimientoCaja, MovimientoCaja." _
     & "AptoMovimientoCaja, TDFAbonos.Monto FROM (Inmueble INNER JOIN MovimientoCaja ON Inmueble" _
     & ".CodInm = MovimientoCaja.InmuebleMovimientoCaja) INNER JOIN TDFAbonos ON MovimientoCaja." _
     & "IDRecibo = TDFAbonos.IDRecibo ORDER BY MovimientoCaja.InmuebleMovimientoCaja,MovimientoC" _
     & "aja.AptoMovimientoCaja;"
     
-    rstAbonos.Open strSql, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
+    rstAbonos.Open strSQL, cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
     '
     'Imprimir segunda parte del reporte
     Printer.FontSize = 12
@@ -3310,12 +3343,12 @@ SalirRutina:
     End Sub
     
     Private Sub Del_Click()
-    Dim i%
+    Dim I%
     'On Error Resume Next
     With FrmTfondos.gridFondo(0)
         If .RowSel = 0 Then Exit Sub
-        i = .RowSel
-        If .TextMatrix(i, 0) <> "" And .TextMatrix(i, 1) <> "" Then
+        I = .RowSel
+        If .TextMatrix(I, 0) <> "" And .TextMatrix(I, 1) <> "" Then
             'Llama rutina según la acción seleccionada
             Call FrmTfondos.Eliminar
         Else
@@ -3335,7 +3368,7 @@ SalirRutina:
     'variables locales
     Dim strFiltro As String
     Dim SubTitulo As String
-    Dim strSql As String
+    Dim strSQL As String
     '
     Select Case Index
             
@@ -3353,11 +3386,11 @@ SalirRutina:
             
     End Select
     
-    strSql = "SELECT Cpp.*,Inmueble.* FROM Cpp INNER JOIN Inmueble ON Cpp.CodInm=" _
+    strSQL = "SELECT Cpp.*,Inmueble.* FROM Cpp INNER JOIN Inmueble ON Cpp.CodInm=" _
     & "Inmueble.CodInm WHERE Cpp.Fact LIKE 'F%' AND (Cpp.Estatus='PENDIENTE' or " _
     & "Cpp.Estatus='ASIGNADO') " & strFiltro & " ORDER BY Cpp.CodInm;"
     '
-    Call Printer_Report(strSql, "Honorarios Administrativos", SubTitulo)
+    Call Printer_Report(strSQL, "Honorarios Administrativos", SubTitulo)
     '
     End Sub
 
@@ -3370,7 +3403,7 @@ SalirRutina:
     '
     '   Emite el reporte de gastos mensuales para un período determinado
     '---------------------------------------------------------------------------------------------
-    Public Sub Reporte_GM(Optional strSql As String, Optional Salida As crSalida, _
+    Public Sub Reporte_GM(Optional strSQL As String, Optional Salida As crSalida, _
     Optional Guarda_Copia As Boolean)
     'variables locales
     Dim rpReporte As ctlReport
@@ -3381,34 +3414,34 @@ SalirRutina:
     '
     MousePointer = vbHourglass
     'Generea la consulta de los gastos a facturar para el mes correspondiente
-    If gcNivel <= nuAdministrador And strSql <> "" Then
+    If gcNivel <= nuAdministrador And strSQL <> "" Then
     
         rstCount.Open "SELECT DateAdd('m',1,MAX(Periodo)) FROM Factura WHERE Fact Not LIKE 'CHD%'", _
         cnnOLEDB + mcDatos, adOpenKeyset, adLockOptimistic, adCmdText
-        If Format(rstCount.Fields(0), "mm/dd/yyyy") <= CDate(strSql) Then bln = True
+        If Format(rstCount.Fields(0), "mm/dd/yyyy") <= CDate(strSQL) Then bln = True
         rstCount.Close
         
     End If
     
-    If strSql = "" Then
+    If strSQL = "" Then
     
-        strSql = "SELECT  * FROM chequeDetalle IN '" & gcPath & "\sac.mdb' WHERE chequeDetal" _
+        strSQL = "SELECT  * FROM chequeDetalle IN '" & gcPath & "\sac.mdb' WHERE chequeDetal" _
         & "le.CodInm='" & gcCodInm & "' AND chequeDetalle.Cargado=(SELECT DateAdd('m',1,MAX(Per" _
         & "iodo)) FROM Factura WHERE Fact Not LIKE 'CHD*');"
         Salida = crptToWindow
         
     Else
     
-        strSql = "SELECT  * FROM chequeDetalle IN '" & gcPath & "\sac.mdb' WHERE chequeDetal" _
-        & "le.CodInm='" & gcCodInm & "' AND chequeDetalle.Cargado=#" & strSql & "#"
+        strSQL = "SELECT  * FROM chequeDetalle IN '" & gcPath & "\sac.mdb' WHERE chequeDetal" _
+        & "le.CodInm='" & gcCodInm & "' AND chequeDetalle.Cargado=#" & strSQL & "#"
         
     End If
     
     'genera la consulta
-    Call rtnGenerator(mcDatos, strSql, "qdfGastosMensuales")
+    Call rtnGenerator(mcDatos, strSQL, "qdfGastosMensuales")
     '
     If bln = True Then
-        frmGasMen.OrigenD = strSql
+        frmGasMen.OrigenD = strSQL
         Call Muestra_Formulario(frmGasMen, "Gastos Mensuales en Pantalla")
         Exit Sub
     End If
@@ -3483,14 +3516,14 @@ SalirRutina:
     Dim rpReporte As ctlReport
     cnnConexion.Execute "DELETE * FROM Con_Report"
     With frmConvenio.grid
-        i = 1
+        I = 1
         Do
             
             cnnConexion.Execute "INSERT INTO Con_Report (Nmes,Periodo,Monto,gastos,honorarios,t" _
-            & "otal) VALUES (" & i & ",'01-" & .TextMatrix(i, 1) & "','" & .TextMatrix(i, 2) & _
-            "','" & .TextMatrix(i, 3) & "','" & .TextMatrix(i, 4) & "','" & .TextMatrix(i, 5) & "')"
-            i = i + 1
-        Loop Until .TextMatrix(i, 0) = ""
+            & "otal) VALUES (" & I & ",'01-" & .TextMatrix(I, 1) & "','" & .TextMatrix(I, 2) & _
+            "','" & .TextMatrix(I, 3) & "','" & .TextMatrix(I, 4) & "','" & .TextMatrix(I, 5) & "')"
+            I = I + 1
+        Loop Until .TextMatrix(I, 0) = ""
         '
     End With
     
@@ -3545,9 +3578,9 @@ SalirRutina:
     End With
     'guarda el detalle de las cuotas
     With frmConvenio.GRID1
-        For i = 1 To .Rows - 1
+        For I = 1 To .Rows - 1
             cnnConexion.Execute "INSERT INTO Convenio_Detalle (IDConvenio,Fecha,Monto) VALUES (" _
-            & Con & ",'" & .TextMatrix(i, 1) & "','" & .TextMatrix(i, 2) & "')"
+            & Con & ",'" & .TextMatrix(I, 1) & "','" & .TextMatrix(I, 2) & "')"
         Next
         
     End With

@@ -256,8 +256,8 @@ Select Case Index
         dlg.FilterIndex = 1
         dlg.DialogTitle = "Estado de Cuenta Formato excel"
         dlg.ShowOpen
-        txt.Text = dlg.FileTitle
-        txt.Tag = dlg.FileName
+        Txt.Text = dlg.FileTitle
+        Txt.Tag = dlg.FileName
              
     Case 3 ' Ejecutar la conciliacion
         conciliacion
@@ -321,14 +321,14 @@ If Not procesado Then
 End If
 On Error GoTo Salir:
 ' validamos que se haya seleccionado un archivo
-If Trim(txt.Text) = "" Then
+If Trim(Txt.Text) = "" Then
     MsgBox "Seleccione la ubicación del archivo que contiene los movimientos bancarios", vbInformation, App.ProductName
     Exit Sub
 End If
 
 ' validamos que el archivo existe en la ubicación seleccionada
-If (Dir(Trim(txt), vbArchive) = "") Then
-    MsgBox "Verifique que el archivo seleccionado existe en esta ubicación: " & txt, vbInformation, App.ProductName
+If (Dir(Trim(Txt), vbArchive) = "") Then
+    MsgBox "Verifique que el archivo seleccionado existe en esta ubicación: " & Txt, vbInformation, App.ProductName
     Exit Sub
 End If
 For n = 0 To 3
@@ -344,7 +344,7 @@ Set conexion = New ADODB.Connection
 Set rst = New ADODB.Recordset
 
 conexion.Open "Provider=Microsoft.Jet.OLEDB.4.0;" & _
-    "Data Source=" & txt & _
+    "Data Source=" & Txt & _
     ";Extended Properties=""Excel 8.0;HDR=Yes;"""
 
 Set rst = conexion.OpenSchema(adSchemaTables)
@@ -355,7 +355,7 @@ End If
 rst.Close
 
 If hoja = "" Then
-    MsgBox "El Libro " & txt & " no tiene hojas de datos", vbCritical, App.ProductName
+    MsgBox "El Libro " & Txt & " no tiene hojas de datos", vbCritical, App.ProductName
     Exit Sub
 End If
 
@@ -395,7 +395,7 @@ If Err.Description <> "" Then
         msg = msg & vbCrLf & "El archivo no se puede leer porque el libro, " & _
         "o la hoja esta protegido con contraseña." & vbCrLf & _
         "- Elimine la contraseña, o bien" & vbCrLf & _
-        "- Abra el archivo " & txt & vbCrLf & _
+        "- Abra el archivo " & Txt & vbCrLf & _
         "desde excel, e intente nuevamente la operación."
         
     'End If

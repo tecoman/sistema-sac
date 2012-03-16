@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
 Object = "{C932BA88-4374-101B-A56C-00AA003668DC}#1.1#0"; "MSMASK32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{0ECD9B60-23AA-11D0-B351-00A0C9055D8E}#6.0#0"; "MSHFLXGD.OCX"
@@ -12,20 +12,36 @@ Begin VB.Form frmIEco
    ClientWidth     =   4680
    ControlBox      =   0   'False
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MDIChild        =   -1  'True
    ScaleHeight     =   3195
    ScaleWidth      =   4680
    Tag             =   "1"
    WindowState     =   2  'Maximized
+   Begin VB.TextBox txtCopy 
+      Alignment       =   1  'Right Justify
+      Height          =   315
+      Index           =   5
+      Left            =   5610
+      TabIndex        =   51
+      Top             =   8445
+      Width           =   1080
+   End
+   Begin VB.TextBox txtCopy 
+      Height          =   315
+      Index           =   4
+      Left            =   510
+      TabIndex        =   50
+      Top             =   8490
+      Width           =   4725
+   End
    Begin TabDlg.SSTab SSTab1 
-      Height          =   7770
+      Height          =   8895
       Left            =   90
       TabIndex        =   0
       Top             =   150
       Width           =   12825
       _ExtentX        =   22622
-      _ExtentY        =   13705
+      _ExtentY        =   15690
       _Version        =   393216
       TabHeight       =   520
       ShowFocusRect   =   0   'False
@@ -43,7 +59,11 @@ Begin VB.Form frmIEco
       Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraIECO(0)"
       Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).ControlCount=   1
+      Tab(0).Control(1)=   "txtCopy(2)"
+      Tab(0).Control(1).Enabled=   0   'False
+      Tab(0).Control(2)=   "txtCopy(3)"
+      Tab(0).Control(2).Enabled=   0   'False
+      Tab(0).ControlCount=   3
       TabCaption(1)   =   "Comparativo Fondo - Deuda"
       TabPicture(1)   =   "frmIEco.frx":001C
       Tab(1).ControlEnabled=   0   'False
@@ -56,11 +76,28 @@ Begin VB.Form frmIEco
       TabCaption(2)   =   "Informe Económico"
       TabPicture(2)   =   "frmIEco.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraIECO(2)"
-      Tab(2).Control(1)=   "cmdIECO(4)"
-      Tab(2).Control(2)=   "cmdIECO(3)"
-      Tab(2).Control(3)=   "grid(4)"
+      Tab(2).Control(0)=   "grid(4)"
+      Tab(2).Control(1)=   "cmdIECO(3)"
+      Tab(2).Control(2)=   "cmdIECO(4)"
+      Tab(2).Control(3)=   "fraIECO(2)"
       Tab(2).ControlCount=   4
+      Begin VB.TextBox txtCopy 
+         Alignment       =   1  'Right Justify
+         Height          =   315
+         Index           =   3
+         Left            =   5520
+         TabIndex        =   49
+         Top             =   7815
+         Width           =   1080
+      End
+      Begin VB.TextBox txtCopy 
+         Height          =   315
+         Index           =   2
+         Left            =   435
+         TabIndex        =   48
+         Top             =   7815
+         Width           =   4725
+      End
       Begin VB.OptionButton opt 
          Alignment       =   1  'Right Justify
          Caption         =   "SAC"
@@ -359,7 +396,7 @@ Begin VB.Form frmIEco
             _ExtentX        =   2461
             _ExtentY        =   556
             _Version        =   393216
-            Format          =   51642369
+            Format          =   84803585
             CurrentDate     =   37909
          End
          Begin MSMask.MaskEdBox MskFecha 
@@ -406,7 +443,7 @@ Begin VB.Form frmIEco
             _ExtentX        =   2461
             _ExtentY        =   556
             _Version        =   393216
-            Format          =   51642369
+            Format          =   84803585
             CurrentDate     =   37909
          End
          Begin VB.Label lblIeco 
@@ -723,6 +760,7 @@ Attribute VB_Exposed = False
         Case 0: Call IE 'informe económico
         
         Case 1: Call View 'VER
+            Call mostrarInformeEconomico
             
         Case 2: Unload Me 'cerrar formulario
         
@@ -759,33 +797,33 @@ Attribute VB_Exposed = False
     MousePointer = vbHourglass
     
     'selecciona las cuentas de fondos que aparecerán en el informe
-    grid(0).Col = 1
+    Grid(0).Col = 1
     
-    For I = 1 To grid(0).Rows - 1
-        grid(0).Row = I
-        If grid(0).CellPicture = img(1) Then
-            strIN = strIN & IIf(strIN = "", "('", "','") & grid(0).TextMatrix(I, 0)
+    For I = 1 To Grid(0).Rows - 1
+        Grid(0).Row = I
+        If Grid(0).CellPicture = img(1) Then
+            strIN = strIN & IIf(strIN = "", "('", "','") & Grid(0).TextMatrix(I, 0)
         End If
     Next I
     '
     Fila = 1
-    grid(3).Rows = 2
+    Grid(3).Rows = 2
     
-    Call rtnLimpiar_Grid(grid(3))
+    Call rtnLimpiar_Grid(Grid(3))
     
     If strIN <> "" Then
     
         strIN = strIN & "')"
         strSQL = "SELECT * FROM Tgastos WHERE CodGasto IN " & strIN
         rstlocal.Open strSQL, cnnOLEDB + mcDatos, adOpenKeyset, adLockOptimistic, adCmdText
-        If Not rstlocal.EOF And Not rstlocal.BOF Then
+        If Not (rstlocal.EOF And rstlocal.BOF) Then
             rstlocal.MoveFirst
             Do
-                grid(3).TextMatrix(Fila, 0) = rstlocal!Titulo
-                grid(3).TextMatrix(Fila, 1) = Format(rstlocal!SaldoActual, m)
+                Grid(3).TextMatrix(Fila, 0) = rstlocal!Titulo
+                Grid(3).TextMatrix(Fila, 1) = Format(rstlocal!SaldoActual, m)
                 curTFondo = curTFondo + rstlocal!SaldoActual
                 rstlocal.MoveNext
-                grid(3).AddItem ("")
+                Grid(3).AddItem ("")
                 Fila = Fila + 1
             Loop Until rstlocal.EOF
         End If
@@ -815,47 +853,47 @@ Attribute VB_Exposed = False
             curTemp = curTemp + rstlocal.Fields(0)
         End If
         rstlocal.Close
-        grid(3).TextMatrix(Fila, 0) = "INT. MORATORIOS CARGADOS " & Format(dtp(0), "dd/mm/yyyy") _
+        Grid(3).TextMatrix(Fila, 0) = "INT. MORATORIOS CARGADOS " & Format(dtp(0), "dd/mm/yyyy") _
         & " AL " & Format(Date, "dd/mm/yyyy")
-        grid(3).TextMatrix(Fila, 1) = Format(curTemp, m)
+        Grid(3).TextMatrix(Fila, 1) = Format(curTemp, m)
         Fila = Fila + 1
-        grid(3).AddItem ("")
+        Grid(3).AddItem ("")
         '
         curTFondo = curTFondo + curTemp
     
     End If
     '
     'selecciona las cuentas de cuotas especiales
-    grid(1).Col = 1
+    Grid(1).Col = 1
     
-    For I = 1 To grid(1).Rows - 1
+    For I = 1 To Grid(1).Rows - 1
     
-        grid(1).Row = I
+        Grid(1).Row = I
         
-        If grid(1).CellPicture = img(1) Then
+        If Grid(1).CellPicture = img(1) Then
             'strIN = strIN & IIf(strIN = "", "('", "','") & Grid(1).TextMatrix(i, 0)
             '
             
             rstlocal.Open "SELECT Sum(MovFondo.Debe) AS D,Sum(MovFondo.Haber) AS H,Tgastos.Titu" _
             & "lo FROM MovFondo INNER JOIN Tgastos ON MovFondo.CodGasto = Tgastos.CodGasto WHER" _
-            & "E MovFondo.CodGasto ='" & grid(1).TextMatrix(I, 0) & "' AND MovFondo.Del= False GROUP BY MovFondo.CodGas" _
+            & "E MovFondo.CodGasto ='" & Grid(1).TextMatrix(I, 0) & "' AND MovFondo.Del= False GROUP BY MovFondo.CodGas" _
             & "to, Tgastos.Titulo;", cnnOLEDB + mcDatos, adOpenKeyset, adLockOptimistic, adCmdText
-            If Not rstlocal.EOF And Not rstlocal.BOF Then
+            If Not (rstlocal.EOF And rstlocal.BOF) Then
             '
                 Saldo_Fecha = rstlocal("H") - rstlocal("D")
                 '
-                grid(3).TextMatrix(Fila, 0) = "SALDO A LA FECHA " & rstlocal("Titulo")
-                grid(3).TextMatrix(Fila, 1) = Format(Saldo_Fecha, m)
+                Grid(3).TextMatrix(Fila, 0) = "SALDO A LA FECHA " & rstlocal("Titulo")
+                Grid(3).TextMatrix(Fila, 1) = Format(Saldo_Fecha, m)
                 Fila = Fila + 1
                 curTFondo = curTFondo + Saldo_Fecha
-                grid(3).AddItem ("")
+                Grid(3).AddItem ("")
                 rstlocal.Close
                 'monto por recaudar
                 
                 rstlocal.Open "SELECT Sum(DF.Monto) AS Total FROM DetFact AS DF INNER JOIN Factura " _
                 & "AS F ON DF.Fact = F.FACT WHERE F.Saldo>0 AND DF.CodGasto='" & _
-                grid(1).TextMatrix(I, 0) & "';"
-                If Not rstlocal.EOF And Not rstlocal.BOF Then Por_Cobrar = IIf(IsNull(rstlocal("Total")), 0, rstlocal("Total"))
+                Grid(1).TextMatrix(I, 0) & "';"
+                If Not (rstlocal.EOF And rstlocal.BOF) Then Por_Cobrar = IIf(IsNull(rstlocal("Total")), 0, rstlocal("Total"))
             End If
             rstlocal.Close
             
@@ -864,22 +902,22 @@ Attribute VB_Exposed = False
         
     Next I
     '
-    grid(3).TextMatrix(Fila, 0) = "TOTAL FONDOS"
-    grid(3).TextMatrix(Fila, 2) = Format(curTFondo, m)
-    grid(3).AddItem ("")
-    grid(3).AddItem ("")
+    Grid(3).TextMatrix(Fila, 0) = "TOTAL FONDOS"
+    Grid(3).TextMatrix(Fila, 2) = Format(curTFondo, m)
+    Grid(3).AddItem ("")
+    Grid(3).AddItem ("")
     Fila = Fila + 2
     '
     'imprime la deuda actual del condominio
     rstlocal.Open "SELECT * FROM Inmueble WHERE CodInm='" & gcCodInm & "'", _
     cnnConexion, adOpenKeyset, adLockOptimistic, adCmdText
-    curTemp = rstlocal!Deuda
+    curTemp = rstlocal!DeudaAct
     rstlocal.Close
     
     '
-    grid(3).TextMatrix(Fila, 0) = "DEUDA DE CONDOMINIO"
-    grid(3).TextMatrix(Fila, 1) = Format(curTemp, m)
-    grid(3).AddItem ("")
+    Grid(3).TextMatrix(Fila, 0) = "DEUDA DE CONDOMINIO"
+    Grid(3).TextMatrix(Fila, 1) = Format(curTemp, m)
+    Grid(3).AddItem ("")
     Fila = Fila + 1
     '
     'imprime monTo por facturar
@@ -887,66 +925,66 @@ Attribute VB_Exposed = False
     & "x(Periodo)) FROM Factura WHERE Fact Not LIKE 'CH%')", cnnOLEDB + mcDatos, adOpenKeyset, _
     adLockOptimistic, adCmdText
     If Not IsNull(rstlocal.Fields(0)) Then
-        grid(3).TextMatrix(Fila, 0) = "GASTOS POR FACTURAR"
-        grid(3).TextMatrix(Fila, 1) = Format(CLng(rstlocal.Fields(0)), "#,##0.00")
+        Grid(3).TextMatrix(Fila, 0) = "GASTOS POR FACTURAR"
+        Grid(3).TextMatrix(Fila, 1) = Format(CLng(rstlocal.Fields(0)), "#,##0.00")
         curTemp = curTemp + CLng(rstlocal.Fields(0))
-        grid(3).AddItem ("")
+        Grid(3).AddItem ("")
         Fila = Fila + 1
     End If
     rstlocal.Close
     '
-    grid(3).TextMatrix(Fila, 0) = "DEUDA TOTAL CONDOMINIO"
-    grid(3).TextMatrix(Fila, 2) = Format(curTemp, m)
-    grid(3).AddItem ("")
+    Grid(3).TextMatrix(Fila, 0) = "DEUDA TOTAL CONDOMINIO"
+    Grid(3).TextMatrix(Fila, 2) = Format(curTemp, m)
+    Grid(3).AddItem ("")
     Fila = Fila + 1
-    grid(3).TextMatrix(Fila, 0) = "TOTAL FONDO EDIFICIO"
-    grid(3).TextMatrix(Fila, 2) = Format(curTFondo - curTemp, m)
-    grid(3).AddItem ("")
+    Grid(3).TextMatrix(Fila, 0) = "TOTAL FONDO EDIFICIO"
+    Grid(3).TextMatrix(Fila, 2) = Format(curTFondo - curTemp, m)
+    Grid(3).AddItem ("")
     Fila = Fila + 1
     '
     'selecciona el detalle de las cuentas de cuotas especiales
-    grid(1).Col = 1
+    Grid(1).Col = 1
     
-    For I = 1 To grid(1).Rows - 1
+    For I = 1 To Grid(1).Rows - 1
     
-        grid(1).Row = I
+        Grid(1).Row = I
         
-        If grid(1).CellPicture = img(1) Then
+        If Grid(1).CellPicture = img(1) Then
             '
             
             rstlocal.Open "SELECT Sum(MovFondo.Debe) AS D,Sum(MovFondo.Haber) AS H,Tgastos.Titu" _
             & "lo FROM MovFondo INNER JOIN Tgastos ON MovFondo.CodGasto = Tgastos.CodGasto WHER" _
-            & "E MovFondo.CodGasto ='" & grid(1).TextMatrix(I, 0) & "' AND MovFondo.Del= False GROUP BY MovFondo.CodGas" _
+            & "E MovFondo.CodGasto ='" & Grid(1).TextMatrix(I, 0) & "' AND MovFondo.Del= False GROUP BY MovFondo.CodGas" _
             & "to, Tgastos.Titulo;", cnnOLEDB + mcDatos, adOpenKeyset, adLockOptimistic, adCmdText
-            If Not rstlocal.EOF And Not rstlocal.BOF Then
-                grid(3).AddItem ("")
+            If Not (rstlocal.EOF And rstlocal.BOF) Then
+                Grid(3).AddItem ("")
                 Fila = Fila + 1
                 '
-                grid(3).Row = Fila
-                grid(3).Col = 0
+                Grid(3).Row = Fila
+                Grid(3).Col = 0
                 
-                grid(3).TextMatrix(Fila, 0) = "CUOTA ESPECIAL " & rstlocal("Titulo")
-                grid(3).CellFontBold = True
-                grid(3).AddItem ("")
+                Grid(3).TextMatrix(Fila, 0) = "CUOTA ESPECIAL " & rstlocal("Titulo")
+                Grid(3).CellFontBold = True
+                Grid(3).AddItem ("")
                 Fila = Fila + 1
                 '
                 'total credito
-                grid(3).TextMatrix(Fila, 0) = "TOTAL CREDITO"
-                grid(3).TextMatrix(Fila, 1) = Format(rstlocal("H"), m)
-                grid(3).AddItem ("")
+                Grid(3).TextMatrix(Fila, 0) = "TOTAL CREDITO"
+                Grid(3).TextMatrix(Fila, 1) = Format(rstlocal("H"), m)
+                Grid(3).AddItem ("")
                 Fila = Fila + 1
                 '
                 'todal debito
-                grid(3).TextMatrix(Fila, 0) = "TOTAL DEBITO"
-                grid(3).TextMatrix(Fila, 1) = Format(rstlocal("d"), m)
-                grid(3).AddItem ("")
+                Grid(3).TextMatrix(Fila, 0) = "TOTAL DEBITO"
+                Grid(3).TextMatrix(Fila, 1) = Format(rstlocal("d"), m)
+                Grid(3).AddItem ("")
                 Fila = Fila + 1
                 '
                 'saldo a la fecha
                 Saldo_Fecha = rstlocal("H") - rstlocal("D")
-                grid(3).TextMatrix(Fila, 0) = "SALDO A LA FECHA"
-                grid(3).TextMatrix(Fila, 1) = Format(Saldo_Fecha, m)
-                grid(3).AddItem ("")
+                Grid(3).TextMatrix(Fila, 0) = "SALDO A LA FECHA"
+                Grid(3).TextMatrix(Fila, 1) = Format(Saldo_Fecha, m)
+                Grid(3).AddItem ("")
                 Fila = Fila + 1
                 '
             
@@ -954,18 +992,18 @@ Attribute VB_Exposed = False
                 rstlocal.Close
                 rstlocal.Open "SELECT Sum(DF.Monto) AS Total FROM DetFact AS DF INNER JOIN Factura " _
                 & "AS F ON DF.Fact = F.FACT WHERE F.Saldo>0 AND DF.CodGasto='" & _
-                grid(1).TextMatrix(I, 0) & "';"
+                Grid(1).TextMatrix(I, 0) & "';"
                 If Not rstlocal.EOF And Not rstlocal.BOF Then Por_Cobrar = IIf(IsNull(rstlocal("Total")), 0, rstlocal("Total"))
                 'por recaudar
-                grid(3).TextMatrix(Fila, 0) = "SALDO POR RECAUDAR"
-                grid(3).TextMatrix(Fila, 1) = Format(Por_Cobrar, m)
-                grid(3).AddItem ("")
+                Grid(3).TextMatrix(Fila, 0) = "SALDO POR RECAUDAR"
+                Grid(3).TextMatrix(Fila, 1) = Format(Por_Cobrar, m)
+                Grid(3).AddItem ("")
                 Fila = Fila + 1
                 '
                 'SALDO REAL
-                grid(3).TextMatrix(Fila, 0) = "SALDO REAL"
-                grid(3).TextMatrix(Fila, 1) = Format(Saldo_Fecha - Por_Cobrar, m)
-                grid(3).AddItem ("")
+                Grid(3).TextMatrix(Fila, 0) = "SALDO REAL"
+                Grid(3).TextMatrix(Fila, 1) = Format(Saldo_Fecha - Por_Cobrar, m)
+                Grid(3).AddItem ("")
                 Fila = Fila + 1
             End If
             rstlocal.Close
@@ -975,15 +1013,15 @@ Attribute VB_Exposed = False
         End If
         
     Next I
-    grid(3).Col = 2
-    grid(3).ColSel = 2
-    grid(3).Row = 1
-    grid(3).RowSel = grid(3).Rows - 1
+    Grid(3).Col = 2
+    Grid(3).ColSel = 2
+    Grid(3).Row = 1
+    Grid(3).RowSel = Grid(3).Rows - 1
 
-    grid(3).FillStyle = flexFillRepeat
-    grid(3).CellFontBold = True
-    grid(3).Col = 0
-    grid(3).Row = 1
+    Grid(3).FillStyle = flexFillRepeat
+    Grid(3).CellFontBold = True
+    Grid(3).Col = 0
+    Grid(3).Row = 1
     
     'selecciona ahora el total facturado para un determinado N períodos
     If txtIEco = "" Then txtIEco = 0
@@ -1053,7 +1091,7 @@ Attribute VB_Exposed = False
         
         
         '
-        With grid(2)
+        With Grid(2)
             .Col = 1
             For I = 1 To .Rows - 1
                 .Row = I
@@ -1195,30 +1233,30 @@ Attribute VB_Exposed = False
     Set rstCGastos = New ADODB.Recordset
     rstCGastos.Open "SELECT CodGasto,'',Titulo FROM Tgastos WHERE Fondo=True", cnnOLEDB + _
     mcDatos, adOpenKeyset, adLockOptimistic, adCmdText
-    Set grid(0).DataSource = rstCGastos
-    Set grid(1).DataSource = rstCGastos
+    Set Grid(0).DataSource = rstCGastos
+    Set Grid(1).DataSource = rstCGastos
     '
     'crea una nueva instancia del mismo objeto
     Set rstCGastos = New ADODB.Recordset
     rstCGastos.Open "SELECT DISTINCT CodGasto,'' FROM AsignaGasto WHERE Len(CodGasto)>4", _
     cnnOLEDB + mcDatos, adOpenKeyset, adLockOptimistic, adCmdText
     '
-    Set grid(2).DataSource = rstCGastos
+    Set Grid(2).DataSource = rstCGastos
     '
     For I = 0 To 2
-        Set grid(I).FontFixed = LetraTitulo(LoadResString(527), 7.5, , True)
-        Set grid(I).Font = LetraTitulo(LoadResString(528), 8)
-        Call centra_titulo(grid(I), True)
-        grid(I).Col = 1
-        For K = 1 To grid(I).Rows - 1   'IMAGEN
-            grid(I).Row = K
-            Set grid(I).CellPicture = img(0)
-            grid(I).CellPictureAlignment = flexAlignCenterCenter
+        Set Grid(I).FontFixed = LetraTitulo(LoadResString(527), 7.5, , True)
+        Set Grid(I).Font = LetraTitulo(LoadResString(528), 8)
+        Call centra_titulo(Grid(I), True)
+        Grid(I).Col = 1
+        For K = 1 To Grid(I).Rows - 1   'IMAGEN
+            Grid(I).Row = K
+            Set Grid(I).CellPicture = img(0)
+            Grid(I).CellPictureAlignment = flexAlignCenterCenter
         Next K
     Next I
-    grid(3).ColWidth(0) = 7000
-    grid(3).ColWidth(1) = 1500
-    grid(3).ColWidth(2) = 1500
+    Grid(3).ColWidth(0) = 7000
+    Grid(3).ColWidth(1) = 1500
+    Grid(3).ColWidth(2) = 1500
     dtp(1) = Date
     '
     End Sub
@@ -1226,8 +1264,8 @@ Attribute VB_Exposed = False
     Private Sub Form_Resize()
     'configura la presentacion en la ventana del formulario
     With SSTab1
-        .Height = Me.ScaleHeight - SSTab1.Top
-        fraIECO(0).Height = .Height - fraIECO(0).Top - 200
+        .Height = Me.ScaleHeight - SSTab1.top
+        fraIECO(0).Height = .Height - fraIECO(0).top - 200
     End With
     End Sub
 
@@ -1240,10 +1278,10 @@ Attribute VB_Exposed = False
 
 
     Private Sub grid_Click(Index As Integer)
-    If grid(Index).ColSel = 1 And Index < 3 Then
-        grid(Index).Row = grid(Index).RowSel
-        Set grid(Index).CellPicture = IIf(grid(Index).CellPicture = img(0), img(1), img(0))
-        grid(Index).CellPictureAlignment = flexAlignCenterCenter
+    If Grid(Index).ColSel = 1 And Index < 3 Then
+        Grid(Index).Row = Grid(Index).RowSel
+        Set Grid(Index).CellPicture = IIf(Grid(Index).CellPicture = img(0), img(1), img(0))
+        Grid(Index).CellPictureAlignment = flexAlignCenterCenter
     End If
     End Sub
 
@@ -1273,7 +1311,14 @@ Attribute VB_Exposed = False
     End Sub
 
     Private Sub txtCopy_KeyPress(Index%, KeyAscii%)
-    If KeyAscii > 26 Then If InStr("0123456789", Chr(KeyAscii)) = 0 Then KeyAscii = 0
+    Select Case Index
+        Case 2, 4
+            KEYASCCi = Asc(UCase(Chr(KeyAscii)))
+        Case 0, 1
+            If KeyAscii > 26 Then If InStr("0123456789", Chr(KeyAscii)) = 0 Then KeyAscii = 0
+        Case 3, 5
+            If KeyAscii > 26 Then If InStr("0123456789,-.", Chr(KeyAscii)) = 0 Then KeyAscii = 0
+    End Select
     End Sub
 
     Private Sub txtIEco_KeyPress(KeyAscii As Integer)
@@ -1421,7 +1466,7 @@ Attribute VB_Exposed = False
                 '
                 Printer.CurrentY = Linea
                 Printer.CurrentX = Left + 600
-                Printer.Print Mid(!detalle, 1, 50)
+                Printer.Print Mid(!Detalle, 1, 50)
                 '
                 Pos = 4400
                 For I = 3 To .Fields.Count - 1
@@ -1511,8 +1556,8 @@ Cuadricula:
     Dim I%, j%, K%
     Dim varTotal() As Currency
     '
-    grid(4).Rows = 2
-    Call rtnLimpiar_Grid(grid(4))
+    Grid(4).Rows = 2
+    Call rtnLimpiar_Grid(Grid(4))
     With rst
         .Open "ieconomico", cnnOLEDB & mcDatos, adOpenKeyset, adLockOptimistic, adCmdTable
         'aplica el filtro seleccionado
@@ -1528,8 +1573,8 @@ Cuadricula:
             ReDim varTotal(.Fields.Count)
             .MoveFirst
             'configura el encabezado del grid
-            grid(4).Cols = .Fields.Count - 1
-            grid(4).Rows = .RecordCount + 2
+            Grid(4).Cols = .Fields.Count - 1
+            Grid(4).Rows = .RecordCount + 2
             FS = "^Código|<Descripción"
             ancho = "800|4000"
             For I = 3 To .Fields.Count - 1
@@ -1538,16 +1583,16 @@ Cuadricula:
             Next
             FS = FS + "|>Total"
             ancho = ancho + "|1200"
-            grid(4).FormatString = FS
-            grid(4).Tag = ancho
-            Call centra_titulo(grid(4), True)
+            Grid(4).FormatString = FS
+            Grid(4).Tag = ancho
+            Call centra_titulo(Grid(4), True)
             I = 1
             Do
                 
                 For j = 0 To (.Fields.Count - 1)
                     If j = 2 Then
                         'Grid(4).Font.Bold = True
-                        grid(4).TextMatrix(I, .Fields.Count - 1) = Format(.Fields(2), m)
+                        Grid(4).TextMatrix(I, .Fields.Count - 1) = Format(.Fields(2), m)
                     
                     Else
                         If j > 2 Then
@@ -1555,7 +1600,7 @@ Cuadricula:
                         Else
                             K = j
                         End If
-                        grid(4).TextMatrix(I, K) = IIf(j >= 3, IIf(IsNull(.Fields(j)), "0,00", _
+                        Grid(4).TextMatrix(I, K) = IIf(j >= 3, IIf(IsNull(.Fields(j)), "0,00", _
                         Format(.Fields(j), m)), IIf(IsNull(.Fields(j)), "", .Fields(j)))
                     End If
                     
@@ -1567,7 +1612,7 @@ Cuadricula:
             Loop Until .EOF
             .Close
             'On Error Resume Next
-            With grid(4)
+            With Grid(4)
             
                 .TextMatrix(I, 1) = "TOTALES:"
                 For j = 2 To .Cols - 1
@@ -1616,46 +1661,46 @@ Cuadricula:
     '
     '   Esta función trata la variable recibida y devuelve una ajustada a la aplicacion (resumina)
     '---------------------------------------------------------------------------------------------
-    Private Function Descrip(N As String) As String
+    Private Function Descrip(n As String) As String
     'variables locales
     Dim INI As Integer  'contiene el punto de inicio
     Dim K As Integer
     
-    INI = InStr(N, " ")
+    INI = InStr(n, " ")
     If INI = 0 Then
     
-        Descrip = N
+        Descrip = n
         
     Else
-        If Left(N, INI - 1) <> "SUELDO" And Left(N, INI - 1) <> "APARTADO" Then
-            Descrip = Left(N, INI - 1)
+        If Left(n, INI - 1) <> "SUELDO" And Left(n, INI - 1) <> "APARTADO" Then
+            Descrip = Left(n, INI - 1)
             K = 1
         End If
-        N = Mid(N, INI + 1, Len(N))
+        n = Mid(n, INI + 1, Len(n))
         
         Do
             
-            INI = InStr(N, " ")
+            INI = InStr(n, " ")
         
             If INI = 0 Then
-                If N <> "SOCIALES" Then
-                    Descrip = Descrip & " " & N
-                    N = ""
+                If n <> "SOCIALES" Then
+                    Descrip = Descrip & " " & n
+                    n = ""
                 End If
             Else
                 
-                If Left(N, INI - 1) = "SOCIALES" Then
-                    N = ""
+                If Left(n, INI - 1) = "SOCIALES" Then
+                    n = ""
                 Else
-                    Descrip = Descrip & " " & Trim(Left(N, INI - 1))
-                    N = Mid(N, INI + 1, Len(N))
+                    Descrip = Descrip & " " & Trim(Left(n, INI - 1))
+                    n = Mid(n, INI + 1, Len(n))
                     K = K + 1
                 End If
                 
             End If
             
             
-        Loop Until N = "" Or K = 2
+        Loop Until n = "" Or K = 2
         
     End If
     '
@@ -1688,7 +1733,7 @@ Cuadricula:
             Printer.Print "ADMINISTRADORA"
         End If
         'imprime el encabezado
-        If Opt(0) Then  'logo inversiones
+        If opt(0) Then  'logo inversiones
             Printer.PaintPicture pic(0), ScaleLeft, ScaleTop
             Printer.CurrentY = pic(0).Height
         Else    'logo sac
@@ -1719,7 +1764,7 @@ Cuadricula:
     
         '
         'imprime la información del grid
-        With grid(3)
+        With Grid(3)
         
             For I = 1 To .Rows - 1
                 Linea = Printer.CurrentY
@@ -1801,3 +1846,47 @@ Cuadricula:
     MousePointer = vbDefault
     '
     End Sub
+
+Private Sub mostrarInformeEconomico()
+Dim cuentasDeFondo() As String
+Dim cuentasCuotasEspeciales() As String
+Dim numeroDeFacturaciones As Integer
+Dim strCodigos As String, mostrarIntereses As Boolean
+Dim Desde As Date, Hasta As Date, fechaUltimaAsamblea As Date
+Dim deudaCondominio As Double
+If Not (IsDate("01/" & MskFecha(0)) Or IsDate(MskFecha(1))) Then
+    MsgBox "Complete la la información del paso Nº 7.", vbCritical, App.ProductName
+    Exit Sub
+End If
+
+cuentasDeFondo = Split(getCuentasDe("Fondo"), ",")
+cuentasCuotasEspeciales = Split(getCuentasDe("CuotasEspeciales"), ",")
+numeroDeFacturaciones = txtIEco
+Desde = "01/" & MskFecha(0)
+Hasta = "01/" & MskFecha(1)
+fechaUltimaAsamblea = dtp(0).Value
+mostrarIntereses = chk.Value = vbChecked
+deudaCondominio = FrmAdmin.objRst("deudaAct")
+
+Call ModGeneral.imprimirInformeEconomico(cuentasDeFondo, cuentasCuotasEspeciales, _
+mostrarIntereses, numeroDeFacturaciones, deudaCondominio, Desde, Hasta, fechaUltimaAsamblea, _
+dtp(1).Value, crPantalla, txtCopy(2), txtCopy(3), txtCopy(4), txtCopy(5))
+
+End Sub
+
+Function getCuentasDe(tipoCuenta As String) As String
+Dim Index As Integer
+Dim strIN As String
+Index = IIf(tipoCuenta = "Fondo", 0, 1)
+
+Grid(Index).Col = 1
+    
+For I = 1 To Grid(Index).Rows - 1
+    Grid(Index).Row = I
+    If Grid(Index).CellPicture = img(1) Then
+        strIN = strIN & IIf(strIN = "", "", ",") & Grid(0).TextMatrix(I, 0)
+    End If
+Next I
+getCuentasDe = strIN
+
+End Function

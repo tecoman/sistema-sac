@@ -13,6 +13,28 @@ Begin VB.Form frmCalendario
    ScaleHeight     =   3090
    ScaleWidth      =   4680
    WindowState     =   2  'Maximized
+   Begin VB.Timer Tempo 
+      Left            =   240
+      Top             =   210
+   End
+   Begin VB.Label lbl 
+      Caption         =   "..."
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   9.75
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   495
+      Left            =   8880
+      TabIndex        =   0
+      Top             =   5490
+      Visible         =   0   'False
+      Width           =   5190
+   End
 End
 Attribute VB_Name = "frmCalendario"
 Attribute VB_GlobalNameSpace = False
@@ -29,6 +51,19 @@ Dim MonthAr(WEEKS - 1, DAYS_INWEEK - 1) As Integer
 Private Declare Function GetTempFileName Lib "kernel32" Alias "GetTempFileNameA" (ByVal lpszPath As String, ByVal lpPrefixString As String, ByVal wUnique As Long, ByVal lpTempFileName As String) As Long
 Dim Path As String
 
+'--------------------------------------------
+'   CONSTANTES SERVIDOR SMTP
+'--------------------------------------------
+Private Const SMTP_SERVER$ = "smtp.gmail.com"
+Private Const SMTP_SERVER_PORT& = 465
+Private Const SERVER_AUTH  As Boolean = True
+Private Const USER_NAME$ = "pagoscondominio@administradorasac.com"
+Private Const Password$ = "10537439"
+Private Const SSL As Boolean = True
+
+Public cPropietarios As Collection
+Dim email As CDO.Message
+Dim login As Boolean
 
 Private Function Archivo_Temporal() As String
     Dim sSave As String, hOrgFile As Long, hNewFile As Long, bBytes() As Byte
@@ -66,8 +101,10 @@ End Function
 
 Private Sub Form_Load()
 Dim anchoPantalla As Integer
-anchoPantalla = Screen.Width / Screen.TwipsPerPixelX
 
+Set email = New CDO.Message
+
+anchoPantalla = Screen.Width / Screen.TwipsPerPixelX
 
 If (anchoPantalla >= 1280 And anchoPantalla < 1360) Then
     Me.Picture = LoadPicture(Cargar(IIf(Demo, 108, 106)))
@@ -79,6 +116,7 @@ End If
 
 Me.BackColor = RGB(5, 68, 106)
 Call CalendarioActual
+
 End Sub
 
 Private Sub CalendarioActual()
@@ -335,6 +373,10 @@ Private Sub FillGrid(MaxDays As Integer)
 
 End Sub
 
+Public Sub iniciarTemporizador(intervalo As Integer)
+Tempo.Enabled = True
+Tempo.Interval = intervalo
+End Sub
 
 Private Function NumberDays(Month As Integer, _
 intYear As Integer) As Integer
@@ -381,3 +423,131 @@ Private Function February(nYear As Integer) As Integer
 End Function
 
 
+Private Sub Form_Resize()
+Lbl.Width = Me.Width / 2
+Lbl.top = Me.Height - (Lbl.Height * 2)
+Lbl.Left = Me.Width / 2
+End Sub
+
+Private Sub Form_Unload(Cancel As Integer)
+Set email = Nothing
+End Sub
+
+Private Sub Tempo_Timer()
+Dim Registro As String
+Dim email() As String
+Dim Periodo As Date
+Dim Mes As String
+Dim avisoDeCobro As String
+
+If cPropietarios.Count > 0 Then
+    Lbl.Visible = True
+    Registro = cPropietarios(1)
+    email = Split(Registro, "|")
+    Periodo = Format(email(4), "mm/dd/yyyy")
+    Mes = UCase(Format(Periodo, "mm-yyyy"))
+    Lbl = "Generando aviso de cobro " & Mes & " (" & email(0) & " " & email(1) & ") de " & email(2)
+    avisoDeCobro = obtenerAvisoDeCobroPDF(email(5), Periodo, email(0), email(6))
+    DoEvents
+    
+    If avisoDeCobro <> "" Then
+        
+        Lbl = "Enviando email > " & email(3)
+        
+        enviarAvisoDeCobroPorEmail email(3), sysEmpresa, "Aviso de Cobro Período: " & Mes, _
+            Replace(ModGeneral.Subjet, "%periodo%", Mes), avisoDeCobro
+    
+    End If
+    
+    DoEvents
+    
+    Debug.Print email(0) & ", " & email(1) & ", " & email(2) & ", " & email(3)
+    cPropietarios.Remove (1)
+
+Else
+    Tempo.Enabled = False
+    Lbl.Visible = False
+End If
+
+End Sub
+
+Function enviarAvisoDeCobroPorEmail(para As String, de As String, _
+                        asunto As String, Mensaje As String, _
+                        archivo_adjunto As String) As Boolean
+    
+    
+    Dim adjunto() As String
+    Dim I As Integer
+    If Not login Then loginEmail
+    
+    'estructura del email
+    email.from = "Servicio de Administración de Condominio <" & USER_NAME & ">"
+    email.To = para
+    email.BCC = "ynfantes@gmail.com"
+    email.Subject = asunto
+    
+    email.TextBody = Mensaje
+    
+    'aqui colocamos los archivos adjuntos
+    If Not archivo_adjunto = "" Then
+        Dim archivos() As String
+        archivos = Split(archivo_adjunto, ",")
+        For I = LBound(archivos) To UBound(archivos)
+            If Dir(archivos(I), vbArchive) <> "" Then
+                email.AddAttachment (archivos(I))
+            End If
+        Next
+    End If
+    On Error Resume Next
+    email.Send
+    enviarAvisoDeCobroPorEmail = Err = 0
+    email.Attachments.DeleteAll
+    End Function
+
+Private Function obtenerAvisoDeCobroPDF(IdArchivo As String, Periodo As Date, _
+codigoInmueble As String, codigoPropietario As String) As String
+
+Dim m_report As CRAXDRT.Report
+Dim m_app As CRAXDRT.Application
+Dim avisoFormatoPDF As String
+Dim archivoAvisosDeCobroInmueble As String
+
+
+archivoAvisosDeCobroInmueble = gcPath & "\" & codigoInmueble & "\reportes\AC" & _
+                UCase(Format(Periodo, "MMMYY")) & ".rpt"
+
+If Dir(archivoAvisosDeCobroInmueble, vbArchive) <> "" Then
+    
+    Set m_app = New CRAXDRT.Application
+    Set m_report = New CRAXDRT.Report
+    
+    Set m_report = m_app.OpenReport(archivoAvisosDeCobroInmueble, 1)
+    m_report.RecordSelectionFormula = "{AC.Codigo}='" & codigoPropietario & "'"
+    m_report.DisplayProgressDialog = False
+    m_report.ExportOptions.DestinationType = crEDTDiskFile
+    m_report.ExportOptions.FormatType = crEFTPortableDocFormat
+    avisoFormatoPDF = Environ("temp") & "\" & IdArchivo & ".pdf"
+    m_report.ExportOptions.DiskFileName = avisoFormatoPDF
+    m_report.Export (False)
+    obtenerAvisoDeCobroPDF = avisoFormatoPDF
+
+End If
+End Function
+
+Private Sub loginEmail()
+'configuramos el objeto
+With email.Configuration
+    .Fields(cdoSMTPServer) = SMTP_SERVER
+    .Fields(cdoSendUsingMethod) = 2
+    .Fields.Item("http://schemas.microsoft.com/cdo/configuration/smtpserverport") = SMTP_SERVER_PORT
+    .Fields.Item("http://schemas.microsoft.com/cdo/configuration/smtpauthenticate") = Abs(1)
+    .Fields.Item("http://schemas.microsoft.com/cdo/configuration/smtpconnectiontimeout") = 30
+    If SERVER_AUTH Then
+        .Fields.Item("http://schemas.microsoft.com/cdo/configuration/sendusername") = USER_NAME
+        .Fields.Item("http://schemas.microsoft.com/cdo/configuration/sendpassword") = Password
+        .Fields.Item("http://schemas.microsoft.com/cdo/configuration/smtpusessl") = SSL
+    End If
+    .Fields.Update
+End With
+login = True
+End Sub

@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{F0D2F211-CCB0-11D0-A316-00AA00688B10}#1.0#0"; "MSDATLST.OCX"
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
 Object = "{5E9E78A0-531B-11CF-91F6-C2863C385E30}#1.0#0"; "MSFLXGRD.OCX"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{38911DA0-E448-11D0-84A3-00DD01104159}#1.1#0"; "COMCT332.OCX"
@@ -538,7 +538,7 @@ Begin VB.Form FrmHonorarios
                Strikethrough   =   0   'False
             EndProperty
             CustomFormat    =   "abcdefghijklmnñopqrstuvwxyz"
-            Format          =   64159745
+            Format          =   85262337
             CurrentDate     =   37505
          End
          Begin MSComCtl2.DTPicker DTPicker1 
@@ -562,7 +562,7 @@ Begin VB.Form FrmHonorarios
                Strikethrough   =   0   'False
             EndProperty
             CustomFormat    =   "abcdefghijklmnñopqrstuvwxyz"
-            Format          =   64159745
+            Format          =   85262337
             CurrentDate     =   37505
          End
          Begin VB.Label lblHono 
@@ -695,7 +695,7 @@ Attribute VB_Exposed = False
     '---------------------------------------------------------------------------------------------
     Private Sub Form_Load() '
     '---------------------------------------------------------------------------------------------
-    Dim strSql$    'Cadena SQL
+    Dim strSQL$    'Cadena SQL
     Dim rstCod As New ADODB.Recordset
     '
     Set RstCajas = New ADODB.Recordset
@@ -703,11 +703,11 @@ Attribute VB_Exposed = False
     Set dtcHono(0).RowSource = FrmAdmin.objRst
     dtcHono(0).ListField = "CodInm"
     '
-    strSql = "SELECT * FROM Taquillas ORDER BY IDTaquilla"
-    RstCajas.Open strSql, cnnConexion, adOpenStatic, adLockReadOnly, adCmdText
-    strSql = "SELECT * FROM Inmueble WHERE CodInm='" & sysCodInm & "';"
+    strSQL = "SELECT * FROM Taquillas ORDER BY IDTaquilla"
+    RstCajas.Open strSQL, cnnConexion, adOpenStatic, adLockReadOnly, adCmdText
+    strSQL = "SELECT * FROM Inmueble WHERE CodInm='" & sysCodInm & "';"
     Set dtcHono(1).RowSource = RstCajas
-    rstCod.Open strSql, cnnConexion, adOpenStatic, adLockReadOnly, adCmdText
+    rstCod.Open strSQL, cnnConexion, adOpenStatic, adLockReadOnly, adCmdText
     codPagCond = rstCod!CodPagoCondominio
     codDedHonoA = rstCod!CodRebHA
     codHonoA = rstCod!CodHA
@@ -720,9 +720,9 @@ Attribute VB_Exposed = False
         .Row = 0
         .ColWidth(0) = 700
         .ColWidth(1) = 550
-        For i = 2 To 5
-            .Col = i
-            .ColWidth(i) = 1200
+        For I = 2 To 5
+            .Col = I
+            .ColWidth(I) = 1200
             .CellAlignment = flexAlignCenterCenter
         Next
         .ColAlignment(0) = flexAlignCenterCenter
@@ -775,9 +775,9 @@ Attribute VB_Exposed = False
     Private Sub rtnPeriodo(StrEstado As String)  '
     '------------------------------------------------------
     '
-        For i = 0 To 1
-            lblHono(i + 1).Enabled = StrEstado
-            DTPicker1(i).Enabled = StrEstado
+        For I = 0 To 1
+            lblHono(I + 1).Enabled = StrEstado
+            DTPicker1(I).Enabled = StrEstado
         Next
         cmbHono.Enabled = Not cmbHono.Enabled
     '
@@ -788,7 +788,7 @@ Attribute VB_Exposed = False
     '---------------------------------------------------------------------------------------------
     '
     Dim ADOcontrol As New ADODB.Recordset
-    Dim strSql$, Date1$, Date2$, Codigo$, i%
+    Dim strSQL$, Date1$, Date2$, Codigo$, I%
     Dim vecCHR(2 To 4) As Currency
     '
     
@@ -804,27 +804,27 @@ Attribute VB_Exposed = False
        Date1 = DTPicker1(0).Value
        Date2 = DTPicker1(1).Value
     End If
-    strSql = "WHERE Mc.FechaMovimientoCaja Between #" & CStr(Format(Date1, "mm/dd/yy")) _
+    strSQL = "WHERE Mc.FechaMovimientoCaja Between #" & CStr(Format(Date1, "mm/dd/yy")) _
     & "# AND #" & CStr(Format(Date2, "mm/dd/yy")) & "#"
     If optHono(3).Value = True Then
-        strSql = strSql & IIf(strSql = "", "", " AND ") & "MC.InmuebleMovimientoCaja='" & _
+        strSQL = strSQL & IIf(strSQL = "", "", " AND ") & "MC.InmuebleMovimientoCaja='" & _
         dtcHono(0) & "'"
     End If
     If optHono(5).Value = True Then
-        strSql = strSql & IIf(strSql = "", "", " AND ") & "MC.IDTaquilla=" & CInt(dtcHono(1))
+        strSQL = strSQL & IIf(strSQL = "", "", " AND ") & "MC.IDTaquilla=" & CInt(dtcHono(1))
     End If
     '---------------------------------------------------------------------------------------------
     
-    For i = 1 To 3
-        TxtHono(i) = "0,00"
-        If i = 3 Then
+    For I = 1 To 3
+        TxtHono(I) = "0,00"
+        If I = 3 Then
             Codigo = "AND (DE.CodGasto='" & codDedHonoA & "' or DE.CodGasto='9007')"
         Else
-            Codigo = " AND (P.CodGasto='" & IIf(i = 1, codPagCond & "' or P.CodGasto='" & codAbono & "')" _
+            Codigo = " AND (P.CodGasto='" & IIf(I = 1, codPagCond & "' or P.CodGasto='" & codAbono & "')" _
             , codHonoA & "' or P.CodGasto='8101')")
         End If
-        pgbHono.Value = 50 * i
-        Call CreateQDF(strSql & Codigo, i)
+        pgbHono.Value = 50 * I
+        Call CreateQDF(strSQL & Codigo, I)
     Next
     TxtHono(0) = "0,00"
     '
@@ -844,24 +844,24 @@ Attribute VB_Exposed = False
         FlexHono.Rows = .RecordCount + 1
         If Not .EOF Then
         .MoveFirst
-        i = 0
+        I = 0
         pgbHono.Value = 200
         Do Until .EOF
-            i = i + 1
+            I = I + 1
             For K = 0 To 4
-                FlexHono.TextMatrix(i, K) = IIf(IsNull(.Fields(K)), _
+                FlexHono.TextMatrix(I, K) = IIf(IsNull(.Fields(K)), _
                 IIf(K >= 2 And K <= 4, 0, ""), IIf(K >= 2 And K <= 4, _
                 Format(.Fields(K), "#,##0.00"), .Fields(K)))
             Next
-            FlexHono.TextMatrix(i, 5) = Format(CCur(FlexHono.TextMatrix(i, 3) - _
-            FlexHono.TextMatrix(i, 4)), "#,##0.00")
-            For J = 2 To 4
-                vecCHR(J) = vecCHR(J) + IIf(IsNull(.Fields(J)), 0, .Fields(J))
+            FlexHono.TextMatrix(I, 5) = Format(CCur(FlexHono.TextMatrix(I, 3) - _
+            FlexHono.TextMatrix(I, 4)), "#,##0.00")
+            For j = 2 To 4
+                vecCHR(j) = vecCHR(j) + IIf(IsNull(.Fields(j)), 0, .Fields(j))
             Next
             .MoveNext
         Loop
-        For J = 0 To 2
-            TxtHono(J) = Format(vecCHR(J + 2), "#,##0.00")
+        For j = 0 To 2
+            TxtHono(j) = Format(vecCHR(j + 2), "#,##0.00")
         Next
         TxtHono(3) = Format(vecCHR(3) - vecCHR(4), "#,##0.00")
         End If
@@ -871,7 +871,7 @@ Attribute VB_Exposed = False
     End Sub
     
     '---------------------------------------------------------------------------------------------
-    Private Sub CreateQDF(strCriterio$, J%)  '
+    Private Sub CreateQDF(strCriterio$, j%)  '
     '---------------------------------------------------------------------------------------------
     '
     Dim strSQL1$, strSQL2$, strSQL3$
@@ -882,13 +882,13 @@ Attribute VB_Exposed = False
     & "= P.IDRecibo " & strCriterio & " GROUP BY P.IDRecibo, P.CodGasto, MC.InmuebleMovimientoC" _
     & "aja, MC.AptoMovimientoCaja"
     '
-    strSQL2 = "SELECT P.IDRecibo, De.CodGasto, Sum(De.Monto) AS RHA  FROM (MovimientoCaja as MC" _
+      strSQL2 = "SELECT P.IDRecibo, De.CodGasto, Sum(De.Monto) AS RHA  FROM (MovimientoCaja as MC" _
     & " INNER JOIN Periodos as P ON MC.IDRecibo = P.IDRecibo) LEFT JOIN Deducciones as De ON P." _
     & "IDPeriodos = De.IDPeriodos " & strCriterio & " GROUP BY P.IDRecibo, De.CodGasto, MC.Inmu" _
     & "ebleMovimientoCaja, MC.AptoMovimientoCaja"
-    strSQL3 = IIf(J = 3, strSQL2, strSQL1)
+    strSQL3 = IIf(j = 3, strSQL2, strSQL1)
     '
-    Call rtnGenerator(gcPath & "\sac.mdb", strSQL3, "Hono" & J)
+    Call rtnGenerator(gcPath & "\sac.mdb", strSQL3, "Hono" & j)
     '
     End Sub
 

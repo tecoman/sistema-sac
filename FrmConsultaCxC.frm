@@ -1067,7 +1067,7 @@ End Sub
     '
     If Area = 2 Then
         datIndex = Index
-        txt(0) = "": strPago = ""
+        Txt(0) = "": strPago = ""
         Select Case Index
             '
             'LISTA DE CODIGOS DE INMUEBLE
@@ -1100,7 +1100,7 @@ End Sub
     KeyAscii = Asc(UCase(Chr(KeyAscii)))
     '
     If KeyAscii = 13 Then
-        txt(0) = "": strPago = ""
+        Txt(0) = "": strPago = ""
         
         Select Case Index
             
@@ -1158,15 +1158,15 @@ End Sub
     '-----------------------------------------------------------------------
     establecerFuente FrmConsultaCxC
     Dim I As Integer
-    lbl(0) = LoadResString(101):        lbl(1) = LoadResString(112)
-    lbl(2) = LoadResString(107):        lbl(3) = LoadResString(102)
-    lbl(4) = LoadResString(116):        lbl(5) = LoadResString(108)
-    lbl(6) = LoadResString(118):        lbl(7) = LoadResString(109)
-    lbl(8) = LoadResString(113):        lbl(9) = LoadResString(110)
-    lbl(10) = LoadResString(114):       lbl(11) = LoadResString(111)
-    lbl(12) = LoadResString(115):       lbl(13) = LoadResString(117)
-    lbl(17) = LoadResString(119):       lbl(14) = LoadResString(120)
-    lbl(18) = LoadResString(121):       Dat(3) = ""
+    Lbl(0) = LoadResString(101):        Lbl(1) = LoadResString(112)
+    Lbl(2) = LoadResString(107):        Lbl(3) = LoadResString(102)
+    Lbl(4) = LoadResString(116):        Lbl(5) = LoadResString(108)
+    Lbl(6) = LoadResString(118):        Lbl(7) = LoadResString(109)
+    Lbl(8) = LoadResString(113):        Lbl(9) = LoadResString(110)
+    Lbl(10) = LoadResString(114):       Lbl(11) = LoadResString(111)
+    Lbl(12) = LoadResString(115):       Lbl(13) = LoadResString(117)
+    Lbl(17) = LoadResString(119):       Lbl(14) = LoadResString(120)
+    Lbl(18) = LoadResString(121):       Dat(3) = ""
     'cmd.Picture = LoadResPicture("DER", vbResIcon)
     For I = 0 To 2
         Dat(I) = ""
@@ -1185,25 +1185,25 @@ End Sub
     Set Dat(1).RowSource = FrmAdmin.ObjRstNom
     '
     For I = 21 To 24
-        Load lbl(I)
-        lbl(I).Visible = True
-        lbl(I).Width = Frame3(0).Width
-        lbl(I) = ""
-        lbl(I).Font.Size = lbl(I).Font.Size - 1
+        Load Lbl(I)
+        Lbl(I).Visible = True
+        Lbl(I).Width = Frame3(0).Width
+        Lbl(I) = ""
+        Lbl(I).Font.Size = Lbl(I).Font.Size - 1
     Next
     Dim margen_top As Long
     margen_top = Screen.Height / Screen.TwipsPerPixelY
     margen_top = (margen_top * 300) / 768
-    lbl(21).FontBold = True
-    lbl(21).Left = lbl(20).Left
-    lbl(21).Top = Frame3(0).Top + Frame3(0).Height + 300
-    lbl(21).AutoSize = True
-    lbl(22).Left = lbl(21).Left
-    lbl(22).Top = lbl(21).Top + 300
-    lbl(23).Left = lbl(21).Left
-    lbl(23).Top = lbl(22).Top + 300
-    lbl(24).Left = lbl(21).Left
-    lbl(24).Top = lbl(23).Top + 300
+    Lbl(21).FontBold = True
+    Lbl(21).Left = Lbl(20).Left
+    Lbl(21).Top = Frame3(0).Top + Frame3(0).Height + 300
+    Lbl(21).AutoSize = True
+    Lbl(22).Left = Lbl(21).Left
+    Lbl(22).Top = Lbl(21).Top + 300
+    Lbl(23).Left = Lbl(21).Left
+    Lbl(23).Top = Lbl(22).Top + 300
+    Lbl(24).Left = Lbl(21).Left
+    Lbl(24).Top = Lbl(23).Top + 300
     End Sub
 
 
@@ -1219,11 +1219,11 @@ End Sub
             FmeCuentas.Height = .Height - FmeCuentas.Top + 300
             FlexFacturas(0).Height = FmeCuentas.Height - FlexFacturas(0).Top - 100
             FlexFacturas(1).Height = FmeCuentas.Height - FlexFacturas(1).Top - 725
-            txt(0).Top = FlexFacturas(1).Top + FlexFacturas(1).Height
+            Txt(0).Top = FlexFacturas(1).Top + FlexFacturas(1).Height
             FlexFacturas(2).Height = FmeCuentas.Height - FlexFacturas(2).Top - 200
-            lbl(20).Height = FmeCuentas.Height * 0.3
-            Frame3(0).Top = lbl(20).Top + lbl(20).Height
-            Frame3(0).Left = lbl(20).Left
+            Lbl(20).Height = FmeCuentas.Height * 0.3
+            Frame3(0).Top = Lbl(20).Top + Lbl(20).Height
+            Frame3(0).Left = Lbl(20).Left
         End If
     End With
     '
@@ -1244,9 +1244,9 @@ End Sub
 Private Sub lbl_Click(Index As Integer)
 Dim sContacto As String, sGestion As String, sPor As String, sCadena As String
 If Index >= 22 And Index <= 24 Then
-    lbl(Index).Font.Underline = False
-    lbl(Index).ForeColor = vbBlack
-    sCadena = lbl(Index).Tag
+    Lbl(Index).Font.Underline = False
+    Lbl(Index).ForeColor = vbBlack
+    sCadena = Lbl(Index).Tag
     sContacto = Trim(Left(sCadena, InStr(sCadena, vbCrLf)))
     sCadena = Right(sCadena, Len(sCadena) - InStr(sCadena, vbLf))
     sPor = Trim(Left(sCadena, InStr(sCadena, vbCrLf)))
@@ -1262,14 +1262,14 @@ Shift As Integer, X As Single, Y As Single)
 'Y = 30 - 150
 'X = 15 - 3750
 For I = 22 To 24
-    lbl(I).Font.Underline = False
-    lbl(I).ForeColor = vbBlack
+    Lbl(I).Font.Underline = False
+    Lbl(I).ForeColor = vbBlack
 Next
 'toolTip.Visible = False
 If Index >= 22 And Index <= 24 Then
     If (Y >= 30 And Y <= 150) And (X >= 25 And X <= 3750) Then
-        lbl(Index).Font.Underline = True
-        lbl(Index).ForeColor = vbBlue
+        Lbl(Index).Font.Underline = True
+        Lbl(Index).ForeColor = vbBlue
         'toolTip = addToolTip(lbl(Index).Tag)
         'toolTip.Move lbl(Index).Left + 100, _
         lbl(Index).Top - toolTip.Height '_
@@ -1317,8 +1317,8 @@ End Sub
         
         '-----------------------------
         If SSTab1.tab = 0 Then
-            If Trim(txt(10)) = "" Then txt(10) = 0
-            If CCur(txt(10)) <> 0 Then
+            If Trim(Txt(10)) = "" Then Txt(10) = 0
+            If CCur(Txt(10)) <> 0 Then
             MousePointer = vbHourglass
                 'Set ctlReport = FrmAdmin.rptReporte
                 Set edoRpt = New ctlReport
@@ -1556,7 +1556,7 @@ End Sub
         Else
             tipoCta = CUENTA_INMUEBLE
         End If
-        Text1(0).Text = Format(CCur(.Fields("Deuda")), "#,##0.00")
+        Text1(0).Text = Format(CCur(.Fields("DeudaAct")), "#,##0.00")
         Text1(1).Text = Format(CCur(IIf(IsNull(.Fields("FondoAct")), 0, .Fields("FondoAct"))), _
             "#,##0.00")
         DataC.SetFocus
@@ -1579,13 +1579,13 @@ End Sub
     '
     Dat(2) = ""
     Dat(3) = ""
-    lbl(20) = ""
+    Lbl(20) = ""
     '
     For I = 4 To 11
         If I = 4 Or I = 6 Or I = 5 Then GoTo 10
         Text1(I) = ""
 10      Next
-    For I = 9 To 11: txt(I) = Format(0, "#,##0.00")
+    For I = 9 To 11: Txt(I) = Format(0, "#,##0.00")
     Next
     '
     End Sub
@@ -1657,7 +1657,7 @@ End Sub
     '
     FlexFacturas(0).Visible = Not StrEstado
     FlexFacturas(0).Visible = Not StrEstado
-    txt(0).Visible = StrEstado
+    Txt(0).Visible = StrEstado
     FlexFacturas(1).Visible = StrEstado
     cmd.Visible = StrEstado
     FlexFacturas(2).Visible = StrEstado
@@ -1701,23 +1701,23 @@ End Sub
                     .Filter = "Apto='" & Dat(2) & "'"
                     .Sort = "Fecha DESC"
                     If Not (.EOF And .BOF) Then
-                        lbl(21) = "Gestiones de Cobranza (Últ.3)"
+                        Lbl(21) = "Gestiones de Cobranza (Últ.3)"
                         I = 22
                         Do
-                            lbl(I) = !fecha & " " & !Resultado
+                            Lbl(I) = !fecha & " " & !Resultado
                             
                             strTool = !Contacto & vbCrLf _
                             & !Usuario & vbCrLf & !Resultado
-                            lbl(I).Tag = strTool
+                            Lbl(I).Tag = strTool
                             'AddCustomToolTip lbl(i), strTool, Me
                             I = I + 1
                             .MoveNext
                         Loop Until .EOF Or I = 25
                     Else
-                        lbl(21) = ""
-                        lbl(22) = ""
-                        lbl(23) = ""
-                        lbl(24) = ""
+                        Lbl(21) = ""
+                        Lbl(22) = ""
+                        Lbl(23) = ""
+                        Lbl(24) = ""
                     End If
                 End With
                 If !Demanda Then    'cliente demandado
@@ -1733,10 +1733,10 @@ End Sub
                 
                 FlexFacturas(0).Visible = True
                 If !Recibos >= 4 Then FlexFacturas(0).Visible = False
-                lbl(20) = IIf(IsNull(!Notas), "", !Notas)
-                txt(10) = Format(!Deuda, "#,##0.00")
-                txt(9) = Format(0, "#,##0.00")
-                txt(11) = txt(10)
+                Lbl(20) = IIf(IsNull(!Notas), "", !Notas)
+                Txt(10) = Format(!Deuda, "#,##0.00")
+                Txt(9) = Format(0, "#,##0.00")
+                Txt(11) = Txt(10)
                 MskTelefono(0) = IIf(IsNull(!Fax), "", !Fax)
                 MskTelefono(1) = IIf(IsNull(!TelfHab), "", !TelfHab)
                 MskTelefono(2) = IIf(IsNull(!Celular), "", !Celular)
@@ -1756,9 +1756,9 @@ End Sub
                     Call rtnLimpiar_Grid(FlexFacturas(0))
                     
                     Call RtnFlex(Dat(2).Text, FlexFacturas(0), IntMMora, IntHonoMorosidad, _
-                        6, txt(9), cnnPropietario, Dat(0))
-                    If IsNull(txt(10)) Or txt(10) = "" Then txt(10) = 0
-                    txt(11) = Format(CCur(txt(9)) + CCur((txt(10))), "#,##0.00")
+                        6, Txt(9), cnnPropietario, Dat(0))
+                    If IsNull(Txt(10)) Or Txt(10) = "" Then Txt(10) = 0
+                    Txt(11) = Format(CCur(Txt(9)) + CCur((Txt(10))), "#,##0.00")
                     
                 Else                    'BUSCA LOS PAGOS
                     Call rtnBitacora("Consultando Pagos Apto: " & Dat(2) & "; Inmueble: " & Dat(0))
@@ -1821,7 +1821,7 @@ End Sub
             '
             If Not rPeriodos.EOF Or Not rPeriodos.BOF Then    '
                 'forma de pago
-                txt(0) = "": strFPago = ""
+                Txt(0) = "": strFPago = ""
                 'Si tiene efectivo
                 strFPago = IIf(rPeriodos!EfectivoMovimientoCaja > 0, "Efectivo:......." _
                 & rPeriodos("EfectivoMovimientoCaja"), "")
@@ -1835,7 +1835,7 @@ End Sub
                     rPeriodos("fechaChequeMovimientoCaja" & strVar) & "  " & _
                     Format(rPeriodos("MontoCheque" & strVar), "#,##0.00") & vbCrLf)
                 Next
-                txt(0) = IIf(strFPago = "", "Pago en Efectivo....", strFPago)
+                Txt(0) = IIf(strFPago = "", "Pago en Efectivo....", strFPago)
                 '
                 With FlexFacturas(2)
                     .Rows = rPeriodos.RecordCount + 1
@@ -1890,8 +1890,8 @@ End Sub
         Else
             If Text1(11) > IntMMora Then FlexFacturas(0).Visible = False
             Call RtnFlex(Dat(2).Text, FlexFacturas(0), IntMMora, IntHonoMorosidad, _
-                6, txt(9), cnnPropietario)
-            txt(11) = Format(CDbl(txt(9)) + CDbl((txt(10))), "#,##0.00")
+                6, Txt(9), cnnPropietario)
+            Txt(11) = Format(CDbl(Txt(9)) + CDbl((Txt(10))), "#,##0.00")
         End If
     
     End If

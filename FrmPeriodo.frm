@@ -136,12 +136,12 @@ Attribute VB_Exposed = False
         Exit Sub    'Sale del proceso.......
     End If
     AdoFactura.Close
-    'confirma el procesamiento del mes
-    If Not Respuesta("Seguro que desea realizar el proceso para el periodo:" _
-        & CmbPeriodo(0) & "/" & CmbPeriodo(1)) Then    'Sale si niega la confirmación
-        Set AdoFactura = Nothing
-        Exit Sub
-    End If
+'    'confirma el procesamiento del mes
+'    If Not Respuesta("Seguro que desea realizar el proceso para el periodo:" _
+'        & CmbPeriodo(0) & "/" & CmbPeriodo(1)) Then    'Sale si niega la confirmación
+'        Set AdoFactura = Nothing
+'        Exit Sub
+'    End If
     '
     DoEvents
     AdoFactura.Open "SELECT CodGasto FROM Tgastos WHERE Titulo Like 'REINTEGRO AGUA PRESUPUESTA" _
