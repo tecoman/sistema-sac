@@ -79,7 +79,7 @@ Begin VB.Form frmSelecInm
       Caption         =   "&Cancelar"
       Height          =   495
       Index           =   1
-      Left            =   1725
+      Left            =   3075
       TabIndex        =   1
       Top             =   6945
       Width           =   1215
@@ -88,7 +88,7 @@ Begin VB.Form frmSelecInm
       Caption         =   "&Aceptar"
       Height          =   495
       Index           =   0
-      Left            =   3075
+      Left            =   1725
       TabIndex        =   0
       Top             =   6960
       Width           =   1215
@@ -199,11 +199,11 @@ End Sub
 
 Private Sub Enviar_Avisos()
 'variables locales
-Dim rstlocal As New ADODB.Recordset
+Dim cPropieatrios As Collection
+Dim propietario() As Variant
+Dim rst As ADODB.Recordset
 Dim Mensaje As String
 Dim datPer1 As Date
-Dim Temporal(0 To 5) As String
-Dim strDireccion As String
 '
 datPer1 = "01/" & cmbRfact(0) & "/" & cmbRfact(1)
 datPer1 = Format(datPer1, "mm/dd/yy")
@@ -214,50 +214,58 @@ Mensaje = "Se dispone a enviar los avisos de cobro a los inmuebles seleccionados
 If Respuesta(Mensaje) Then
 
     cmd(1).Enabled = False
+    cmd(0).Enabled = False
     With List1(1)
-        If .ListCount > 0 Then
         
-            Temporal(0) = mcDatos
-            Temporal(1) = gcCodInm
-            Temporal(2) = gcCodFondo
-            Temporal(3) = gcUbica
-            Temporal(4) = gcNomInm
-            Temporal(5) = gnCta
-            rstlocal.CursorLocation = adUseClient
-            rstlocal.Open "Inmueble", cnnConexion, adOpenKeyset, adLockOptimistic, adCmdTable
-            For I = 0 To (.ListCount - 1)
-                rstlocal.Filter = "Codinm = '" & .List(I) & "'"
-                If Not (rstlocal.EOF And rstlocal.BOF) Then
-                    nEnviados = 0
-                    gcCodInm = rstlocal("CodInm")
-                    gcCodFondo = rstlocal("CodFondo")
-                    gcUbica = rstlocal("Ubica")
-                    mcDatos = gcPath + gcUbica + "Inm.mdb"
-                    gcNomInm = rstlocal("Nombre")
-                    If rstlocal!Caja = sysCodCaja Then
-                        gnCta = CUENTA_POTE
-                    Else
-                        gnCta = CUENTA_INMUEBLE
-                    End If
-                    If Not Validar_Periodo(datPer1) Then Call Enviar_ACemail(datPer1)
-                            
-                End If
+        If .ListCount > 0 Then
+            'If Not Validar_Periodo(datPer1) Then Call Enviar_ACemail(datPer1)
+            
+            
+                Set cPropietarios = New Collection
+                I = 0
+                Set rst = New ADODB.Recordset
                 
-            Next
+                Do
+                    
+                    If periodoEsValido(datPer1, .List(I)) Then
+                    
+                        cnn = cnnOLEDB & gcPath & "\" & .List(I) & "\inm.mdb"
+                        
+                        sql = "SELECT * FROM Propietarios WHERE email <>'' AND Demanda = False;"
+                        rst.Open sql, cnn, adOpenKeyset, adLockOptimistic, adCmdText
+                        
+                        If Not (rst.EOF And rst.BOF) Then
+                            Do
+                                cPropietarios.Add (.List(I) & "|" & rst("codigo") & "|" & _
+                                rst("nombre") & "|" & rst("email") & "|" & Format(datPer1, "dd/mm/yy") & _
+                                "|" & Format(datPer1, "ddyy") + Right(.List(I), 3) + Format(rst("ID"), "000") & _
+                                "|" & rst("codigo"))
+                                rst.MoveNext
+                            Loop Until rst.EOF
+                        End If
+                        rst.Close
+                        
+                    End If
+                    I = I + 1
+                                
+                Loop Until .ListCount = I
+                
+                Set rst = Nothing
+                If cPropietarios.Count > 0 Then
+                    Set frmCalendario.cPropietarios = cPropietarios
+                    frmCalendario.iniciarTemporizador 5000
+                    Unload Me
+                    Set frmselectinm = Nothing
+                End If
+            
         Else
             MsgBox "Seleccion por lo menos un inmueble de la lista", vbCritical, App.ProductName
         End If
         
     End With
     
-    mcDatos = Temporal(0)
-    gcCodInm = Temporal(1)
-    gcCodFondo = Temporal(2)
-    gcUbica = Temporal(3)
-    gcNomInm = Temporal(4)
-    gnCta = Temporal(5)
     cmd(1).Enabled = True
-    
+    cmd(0).Enabled = True
 End If
 '
 End Sub
@@ -274,25 +282,28 @@ End Select
 End Sub
 
  '---------------------------------------------------------------------------------------------
-    '   Funcion:    Validar_Periodo
+    '   Funcion:    periodoEsValido
     '
     '   Devuelve True si el periodo seleccionado no ha sido facturado aun
     '---------------------------------------------------------------------------------------------
-    Private Function Validar_Periodo(datPeriodo As Date) As Boolean
+    Private Function periodoEsValido(Periodo As Date, Inmueble As String) As Boolean
     'variables locales
     Dim rstValida As New ADODB.Recordset
-    Dim cnnValida As New ADODB.Connection
+    Dim cnn As String
     '
-    cnnValida.Open cnnOLEDB & mcDatos
-    rstValida.Open "SELECT * FROM Factura WHERE Fact Not LIKE 'CH*' AND Periodo=#" & datPeriodo _
-    & "#;", cnnValida, adOpenStatic, adLockReadOnly
-    If rstValida.RecordCount <= 1 Then
-        Validar_Periodo = MsgBox("No facturado el período " _
-        & UCase(Left(cmbRfact(0), 3)) & "-" & cmbRfact(1), vbInformation + vbOKOnly, "Inmueble " & gcCodInm)
+    cnn = cnnOLEDB & gcPath & "\" & Inmueble & "\inm.mdb"
+    rstValida.Open "SELECT * FROM Factura WHERE Fact Not LIKE 'CH*' AND Periodo=#" & Periodo _
+    & "#;", cnn, adOpenStatic, adLockReadOnly
+    
+    If (rstValida.EOF And rstValida.BOF) Then
+        periodoEsValido = MsgBox("Para el inmueble " & Inmueble & " no se ha facturado el período: " _
+        & UCase(Left(cmbRfact(0), 3)) & "-" & cmbRfact(1), vbInformation + vbOKOnly, "Inmueble " & Inmueble)
     End If
+    
+    periodoEsValido = Not periodoEsValido
     '
+    rstValida.Close
     Set rstValida = Nothing
-    Set cnnValida = Nothing
     '
     End Function
 

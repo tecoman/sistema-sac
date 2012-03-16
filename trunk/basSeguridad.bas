@@ -83,7 +83,7 @@ Attribute VB_Name = "basSeguridad"
                     If gcNivel > nuADSYS Then
                         rstPerfil.Open "SELECT * FROM Perfiles WHERE Usuario ='" & strUID & "'", cnnSeg, _
                         adOpenKeyset, adLockOptimistic, adCmdText
-                        If rstPerfil.EOF Or rstPerfil.BOF Then
+                        If rstPerfil.EOF And rstPerfil.BOF Then
                             ftnSegur = MsgBox("Consulte al supervisor, No Tiene Ningún Acceso al Sistem" _
                             & "a...", vbInformation, App.ProductName)
                             rstPerfil.Close

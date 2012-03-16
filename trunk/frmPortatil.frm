@@ -195,25 +195,25 @@ End Function
 
 
 Private Sub cmb_Click(Index%)
-Dim Direc, Carpe, Archivos, Arc, errLocal, Carpes, Car, Car1, Carpes1
+Dim Direc, Carpe, archivos, Arc, errLocal, Carpes, Car, Car1, Carpes1
 Dim strOrigen$, strDestino$, strMaquina$, strLinea$, strCarpera$, strClose$
 Dim numArchivo As Integer
 Dim booConec As Boolean
-Dim i&, J&, Maxi& 'contadores
+Dim I&, j&, Maxi& 'contadores
 Dim INI, INI1 As Date
 If Index = 0 Then
 
-    If cmb(0).Tag = 1 Then
+    If Cmb(0).Tag = 1 Then
         Fin = InputBox$("Introduzca la clave de cierre por favor." & vbCrLf & _
         "Si no la tiene consulte con el administrador del sistema", _
         "Confirme la finalización del proceso")
         If UCase(Fin) = "FIN" Then
-            cmb(0).Tag = 0
+            Cmb(0).Tag = 0
             booDetener = True
-            cmb(2).Enabled = True
-            lbl(4) = ""
+            Cmb(2).Enabled = True
+            Lbl(4) = ""
             pic.Visible = False
-            lbl(0).Visible = True
+            Lbl(0).Visible = True
         Else
             SetTimer hWnd, NV_CLOSEMSGBOX, 4000&, AddressOf TimerProc
             Call MessageBox(hWnd, "SAC continuará con este proceso", _
@@ -221,14 +221,14 @@ If Index = 0 Then
         End If
     Else
         
-        If txt = "" Then
+        If Txt = "" Then
         
             MsgBox "Seleccione la carpeta de destino", vbCritical, App.ProductName
             Exit Sub
             
         End If
         'COMPRUBa la existencia del directorio
-        If Dir(txt & "\", vbDirectory) = "" Then
+        If Dir(Txt & "\", vbDirectory) = "" Then
             MsgBox "Debe crear el directorio de destino antes de continuar", vbCritical, _
             App.ProductName
             Exit Sub
@@ -236,20 +236,20 @@ If Index = 0 Then
         If Dir(App.Path & "\sacportatil.log") <> "" Then Kill App.Path & "\sacportatil.log"
         pic.Visible = True
         pic1.Visible = True
-        cmb(2).Enabled = False
-        cmb(0).Caption = "Detener"
-        cmb(0).Tag = 1
-        lbl(0).Visible = False
+        Cmb(2).Enabled = False
+        Cmb(0).Caption = "Detener"
+        Cmb(0).Tag = 1
+        Lbl(0).Visible = False
         strOrigen = gcPath
-        lbl(3) = strOrigen
-        strDestino = txt
+        Lbl(3) = strOrigen
+        strDestino = Txt
         
-        On Error GoTo salir:
+        On Error GoTo Salir:
         Set Direc = CreateObject("Scripting.FileSystemObject")
         Set Carpe = Direc.GetFolder(strOrigen)
-        Set Archivos = Carpe.Files
-        Maxi = Archivos.Count
-        i = 1
+        Set archivos = Carpe.Files
+        Maxi = archivos.Count
+        I = 1
         'Inicialmente copia todos los archivos dentro del directorio raiz
         UpdateStatus pic1, 1, True
         Call rtnBitacora("Inicianco el proceso de copiado...")
@@ -257,15 +257,15 @@ If Index = 0 Then
         rtnBitacora ("Desde: " & strOrigen & vbTab & " Hasta: " & strDestino)
         INI1 = Time()
         rtnBitacora ("Hora Inicio: " & Format(INI, "hh:mm:ss"))
-        For Each Arc In Archivos
-            UpdateStatus pic, i * 100 / Maxi, True
+        For Each Arc In archivos
+            UpdateStatus pic, I * 100 / Maxi, True
             If Not Arc.Name Like "*.ldb" Then
-                lbl(3) = "'" & Arc.Path & "'"
-                lbl(4) = "Copiando....'" & Arc.Name & "'"
+                Lbl(3) = "'" & Arc.Path & "'"
+                Lbl(4) = "Copiando....'" & Arc.Name & "'"
                 Me.rtnBitacora (Arc.Name)
                 DoEvents
                 If booDetener Then
-                    cmb(0).Caption = "Iniciar"
+                    Cmb(0).Caption = "Iniciar"
                     pic1.Visible = False
                     Exit Sub
                 End If
@@ -274,46 +274,46 @@ If Index = 0 Then
                     'actualiza el campo  ruta de la tabla ambiente en el equipo remoto
                     Dim cnn As New ADODB.Connection
                     cnn.Open cnnOLEDB & strDestino & "\sac.mdb"
-                    cnn.Execute "UPDATE Ambiente SET Ruta = '" & txt & "'"
+                    cnn.Execute "UPDATE Ambiente SET Ruta = '" & Txt & "'"
                     cnn.Close
                     Set cnn = Nothing
                 End If
             End If
-            i = i + 1
+            I = I + 1
         Next
         'ahora copia los archivos contenidos en cada carpeta dentro del
         'directorio raíz
         Set Carpes = Carpe.SubFolders
-        J = 1
-        i = 1
+        j = 1
+        I = 1
         Me.rtnBitacora ("Respaldando directorios...")
         For Each Car In Carpes
             If UCase(Carpe.Name) <> "NOMINA" Then
             Maxi = Carpes.Count
             strOrigen = Car.Path
             Set Carpe = Direc.GetFolder(strOrigen)
-            Set Archivos = Carpe.Files
-            UpdateStatus pic, J * 100 / Maxi, True
-            UpdateStatus pic1, J * 100 / Maxi, True
-            Maxi = Archivos.Count
+            Set archivos = Carpe.Files
+            UpdateStatus pic, j * 100 / Maxi, True
+            UpdateStatus pic1, j * 100 / Maxi, True
+            Maxi = archivos.Count
             INI = Time()
             'Me.rtnBitacora (Car.Name & " -- " & Format(Time, "hh:mm:ss"))
-            For Each Arc In Archivos
+            For Each Arc In archivos
                 'pgb.Max = Archivos.Count
-                UpdateStatus pic, i * 100 / Maxi, True
+                UpdateStatus pic, I * 100 / Maxi, True
                 If Not Arc.Name Like "*.ldb" Then
                     'crea el directorio si no existe
                     If Dir(strDestino & "\" & Car.Name & "\", vbDirectory) = "" Then
                         Direc.CreateFolder (strDestino & "\" & Car.Name)
                     End If
-                        lbl(3) = "'" & IIf(Len(Arc.Path) > 30, Left(Arc.Path, 24) & String(10, ".") & Arc.Name, Arc.Path) & "'"
-                        lbl(4) = "Copiando....'" & Car.Name & "\" & Arc.Name & "'"
-                        lbl(3).Refresh
-                        lbl(4).Refresh
+                        Lbl(3) = "'" & IIf(Len(Arc.Path) > 30, Left(Arc.Path, 24) & String(10, ".") & Arc.Name, Arc.Path) & "'"
+                        Lbl(4) = "Copiando....'" & Car.Name & "\" & Arc.Name & "'"
+                        Lbl(3).Refresh
+                        Lbl(4).Refresh
                         'Me.Refresh
                         DoEvents
                         If booDetener Then
-                            cmb(0).Caption = "Iniciar"
+                            Cmb(0).Caption = "Iniciar"
                             pic1.Visible = False
                             Exit Sub
                         End If
@@ -321,45 +321,45 @@ If Index = 0 Then
                         Arc.Name, True
                                 
                 End If
-                i = i + 1
+                I = I + 1
             Next
             
-            i = 1
-            J = J + 1
+            I = 1
+            j = j + 1
             
             Set Carpes1 = Carpe.SubFolders
             For Each Car1 In Carpes1
                 'copia tod el contenido de la carpeta
-                Set Archivos = Car1.Files
-                Maxi = Archivos.Count
+                Set archivos = Car1.Files
+                Maxi = archivos.Count
                 If Maxi > 0 Then
                     If Dir$(strDestino & "\" & Carpe.Name & "\" & Car1.Name, vbDirectory) = "" Then Direc.CreateFolder (strDestino & "\" & Carpe.Name & "\" & Car1.Name)
                 End If
-                For Each Arc In Archivos
-                    UpdateStatus pic, i * 100 / Maxi, True
-                    lbl(3) = "'" & IIf(Len(Arc.Path) > 30, Left(Arc.Path, 24) & String(10, ".") & "\" & Arc.Name, Arc.Path) & "'"
-                    lbl(4) = "Copiando....'" & Car.Name & "\" & Car1.Name & "\" & Arc.Name & "'"
+                For Each Arc In archivos
+                    UpdateStatus pic, I * 100 / Maxi, True
+                    Lbl(3) = "'" & IIf(Len(Arc.Path) > 30, Left(Arc.Path, 24) & String(10, ".") & "\" & Arc.Name, Arc.Path) & "'"
+                    Lbl(4) = "Copiando....'" & Car.Name & "\" & Car1.Name & "\" & Arc.Name & "'"
                     DoEvents
                     If booDetener Then
-                        cmb(0).Caption = "Iniciar"
+                        Cmb(0).Caption = "Iniciar"
                         pic1.Visible = False
                         Exit Sub
                     End If
                     Direc.CopyFile Arc.Path, strDestino & "\" & Car.Name & "\" & Car1.Name & "\" & _
                     Arc.Name, True
-                    i = i + 1
+                    I = I + 1
                 Next
             Next
             Me.rtnBitacora (Car.Name & " Inicia: " & Format(INI, "hh:mm:ss")) & " Fin: " & Format(Time, "hh:mm:ss") & " Duración: " & Format(Time() - INI, "hh:mm:ss")
             End If
         Next
         
-salir:
-        cmb(0).Tag = 0
-        cmb(0).Caption = "&Iniciar"
-        cmb(2).Enabled = True
+Salir:
+        Cmb(0).Tag = 0
+        Cmb(0).Caption = "&Iniciar"
+        Cmb(2).Enabled = True
         booDetener = False
-        lbl(0).Visible = True
+        Lbl(0).Visible = True
         If Err.Number = 70 Then
             MsgBox "El archivo " & Arc.Name & " está siendo utilizado por otro usuario. Verifique q" _
             & "ue todos los usuarios hayan finalizado la sesión en el sistema e intentelo nuevament" _
@@ -368,7 +368,7 @@ salir:
             MsgBox Err.Description, vbCritical, App.ProductName
         Else
             rtnBitacora ("Proceso Finalizado " & Format(Time, "hh:mm:ss") & vbTab & "Duración:" & Format(Time() - INI1, "hh:mm:ss"))
-            lbl(4) = "Proceso completado con Éxito!!"
+            Lbl(4) = "Proceso completado con Éxito!!"
             pic.Visible = False
             pic1.Visible = False
         End If
@@ -376,7 +376,7 @@ salir:
         
     End If
 ElseIf Index = 1 Then
-    txt = BrowseForFolder(Me.hWnd, "Selecciona un directorio")
+    Txt = BrowseForFolder(Me.hWnd, "Selecciona un directorio")
 Else
     Unload Me
 End If
@@ -384,7 +384,7 @@ End If
 End Sub
 
 Private Sub Form_Load()
-lbl(3) = gcPath
+Lbl(3) = gcPath
 CenterForm Me
 pic.Visible = False
 If Dir(App.Path & "\sacportatil.log") <> "" Then

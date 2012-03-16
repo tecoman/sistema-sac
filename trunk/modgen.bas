@@ -449,7 +449,7 @@ If Not objRst.EOF Then  ' Se Actualiza Fecha y Monto de último pago del propieta
     With objRst
         .MoveFirst
         cnnConexion.Execute "UPDATE Propietarios IN '" & gcPath + strCarpeta + "Inm.mdb' SET Fe" _
-        & "cUltPag ='" & !FechaMovimientoCaja & "',UltPago= '" & !montomovimientocaja & "' , Fe" _
+        & "cUltPag ='" & !fechamovimientocaja & "',UltPago= '" & !montomovimientocaja & "' , Fe" _
         & "cReg='" & Date & "',Usuario='" & gcUsuario & "' WHERE codigo='" & StrApto & "'"
         .Close
     End With
@@ -683,7 +683,7 @@ End Sub
     '-----------------------------------------------------------
     '
     Sub CenterForm(Frm As Form)
-    Frm.Top = (FrmAdmin.Height * 0.85) \ 2 - Frm.Height \ 2
+    Frm.top = (FrmAdmin.Height * 0.85) \ 2 - Frm.Height \ 2
     Frm.Left = FrmAdmin.Width \ 2 - (Frm.Width \ 2)
     '
     End Sub
@@ -1471,12 +1471,12 @@ Ocurre_Error:
     '   por el argumento 'Periodo'y del propietario señalado en el argumento
     '   'propietario' a su dirección de correo electrónico
     '---------------------------------------------------------------------------------------------
-    Public Sub Enviar_ACemail(Periodo As Date, Optional Propietario$, _
+    Public Sub Enviar_ACemail(Periodo As Date, Optional propietario$, _
     Optional Fact As Boolean, Optional Ver As Boolean)
     'variables locales
     Dim strSQL As String
     Dim numFichero As Integer
-    Dim strArchivo As String, IDArchivo As String * 10
+    Dim strArchivo As String, IdArchivo As String * 10
     Dim rstEmail(1) As New ADODB.Recordset
     Dim Mes$, apto$, Naviso$, Nombre$, Alic@, MP$, Facturado$
     Dim Total@, Deuda@, Comun@, m&, F&
@@ -1500,168 +1500,60 @@ Ocurre_Error:
     '
         .Open strSQL, cnnOLEDB + mcDatos, adOpenStatic, adLockReadOnly, adCmdText
         'Si pasa algún propietario filtra por ese valor
-        If Propietario <> "" Then .Filter = "Codigo='" & Propietario & "'"
+        If propietario <> "" Then .Filter = "Codigo='" & propietario & "'"
         '
         If Not (.EOF And .BOF) Then
             .MoveFirst
-            If mPeriodo <= CDate("01/07/2005") Then
-                'Genera una consulta de los totales de gastos comunes por gasto en el período señalado
-                strSQL = "SELECT CodGasto, Cargado, Descripcion, Comun, Sum(Monto) AS Total FROM " _
-                & "AsignaGasto GROUP BY CodGasto, Cargado, Descripcion, Comun HAVING (Comun=True " _
-                & "AND Cargado=#" & Periodo & "#);"
-                Call rtnGenerator(mcDatos, strSQL, "AG")
-                'Busca el monto del fondo de reserva
-                F = Total_Fondo(gcCodInm, Periodo)
-            Else
-                gsTEMPDIR = String$(255, 0)
-                lchar = GetTempPath(255, gsTEMPDIR)
-                gsTEMPDIR = Left(gsTEMPDIR, lchar)
-                Set m_app = New CRAXDRT.Application
-                Set m_report = New CRAXDRT.Report
+            gsTEMPDIR = String$(255, 0)
+            lchar = GetTempPath(255, gsTEMPDIR)
+            gsTEMPDIR = Left(gsTEMPDIR, lchar)
+            Set m_app = New CRAXDRT.Application
+            Set m_report = New CRAXDRT.Report
                 
-            End If
             '
             Do
-                IDArchivo = Format(mPeriodo, "mmyy") + Right(gcCodInm, 3) + Format(!ID, "000")
+                IdArchivo = Format(mPeriodo, "mmyy") + Right(gcCodInm, 3) + Format(!ID, "000")
                 Mes = UCase(Format(mPeriodo, "mmm-yyyy"))
-                If mPeriodo <= CDate("01/07/2005") Then
-                    'Selecciona el detalle de la factura señalada en el argumento 'periodo'
-                    strSQL = "SELECT DF.Codigo, DF.Fact, DF.Detalle, DF.CodGasto, Sum(DF.Monto) AS SubT" _
-                    & "otal, DF.Hora, DF.Periodo, DF.Fecha, AG.Total, Factura.Facturado FROM (DetFact A" _
-                    & "S DF LEFT JOIN AG ON (DF.Detalle = AG.Descripcion) AND (DF.CodGasto = AG.CodGast" _
-                    & "o)) INNER JOIN Factura ON DF.Fact = Factura.FACT GROUP BY DF.Codigo, DF.Fact, DF" _
-                    & ".Detalle, DF.CodGasto, DF.Hora, DF.Periodo, DF.Fecha, AG.Total, DF.CodGasto, Fac" _
-                    & "tura.Facturado HAVING (((DF.Codigo)='" & !Codigo & "') AND ((DF.Periodo)=#" _
-                    & Periodo & "#)) ORDER BY DF.CodGasto;"
-                    '
-                    With rstEmail(1)
-                    '
-                        .Open strSQL, cnnOLEDB + mcDatos, adOpenStatic, adLockReadOnly, adCmdText
-                        '
-                        If Not (.EOF And .BOF) Then
-                            .MoveFirst
-                            Nombre = IIf(IsNull(rstEmail(0)!Nombre), "", rstEmail(0)!Nombre)
-                            'Mes = UCase(Format(.Fields("Periodo"), "mmm-yyyy"))
-                            Naviso = .Fields("Fact")
-                            
-                            If Dir(gcPath & gcUbica & "\reportes\" & .Fields("Fact") & ".html") <> "" Then
-                                .Close
-                                If Ver Then    'si no esta facturando
-                                    Exit Sub
-                                Else
-                                    GoTo 10
-                                End If
-                            End If
-                            'asigna valores a las variables locales
-                            
-                            Alic = rstEmail(0)!Alicuota
-                            MP = rstEmail(0)!Recibos
-                            apto = rstEmail(0)!Codigo
-                            Deuda = IIf(rstEmail(0)!Recibos > gnMesesMora, rstEmail(0)!Deuda + _
-                            (rstEmail(0)!Deuda * gnPorIntMora / 100), rstEmail(0)!Deuda)
-                            Comun = 0
-                            Facturado = .Fields("Fecha")
-                            Total = .Fields("Facturado")
-                            
-                            'genera el archivo formato html (encabezado)
-                            numFichero = FreeFile
-                            strArchivo = gcPath & gcUbica & "reportes\" & Naviso & ".html"
-                            Open strArchivo For Output As numFichero
-                                Print #numFichero, Encabezado(Mes, gcCodInm, gcNomInm, apto, Naviso, Nombre, Alic, _
-                                Facturado, Format(Total, "#,##0.00 "), Format(Deuda, "#,##0.00 "), MP, Format(CCur(F), "#,##0.00 "))
-                            Close numFichero
-                            '
-                            Do  'genera el detalle de la notificación de gastos
-                                Open strArchivo For Append As numFichero
-                                    If IsNull(!Total) Then
-                                        m = 0
-                                    Else
-                                        m = CLng(!Total)
-                                    End If
-                                    Print #numFichero, Detalle(!codGasto, !Detalle, m, !subTotal)
-                                Close numFichero
-                                Comun = Comun + m
-                                .MoveNext
-                            Loop Until .EOF
-                            '----------------------------------
-                            'Cierra el archivo html
-                            Open strArchivo For Append As numFichero
-                                Print #numFichero, cierre(Total, Comun)
-                            Close numFichero
-                            '
-                        End If
-                        .Close
-                    End With
-                Else
-                    'envia el archivo en formato pdf
-                    Set m_report = m_app.OpenReport(gcPath & gcUbica & "reportes\AC" & _
-                    UCase(Format(mPeriodo, "MMMYY")) & ".rpt", 1)
-                    m_report.RecordSelectionFormula = "{AC.Codigo}='" & rstEmail(0)!Codigo & "'"
-                    m_report.DisplayProgressDialog = False
-                    m_report.ExportOptions.DestinationType = crEDTDiskFile
-                    m_report.ExportOptions.FormatType = crEFTPortableDocFormat
-                    strArchivo = gsTEMPDIR & IDArchivo & ".pdf"
-                    m_report.ExportOptions.DiskFileName = strArchivo
-                    m_report.Export (False)
+                
+                'envia el archivo en formato pdf
+                Set m_report = m_app.OpenReport(gcPath & gcUbica & "reportes\AC" & _
+                UCase(Format(mPeriodo, "MMMYY")) & ".rpt", 1)
+                m_report.RecordSelectionFormula = "{AC.Codigo}='" & rstEmail(0)!Codigo & "'"
+                m_report.DisplayProgressDialog = False
+                m_report.ExportOptions.DestinationType = crEDTDiskFile
+                m_report.ExportOptions.FormatType = crEFTPortableDocFormat
+                strArchivo = gsTEMPDIR & IdArchivo & ".pdf"
+                m_report.ExportOptions.DiskFileName = strArchivo
+                m_report.Export (False)
+            
+                If Not Ver And !email <> "" Then
+                    
+                    If InStr(!email, ";") = 0 Then
+                        Dir1 = !email
+                        Dir2 = ""
+                    Else
+                        PyC = InStr(!email, ";")
+                        Dir1 = Left(!email, PyC - 1)
+                        Dir2 = Trim(Mid(!email, PyC + 1, 200))
+                    End If
+                    
+                    ModGeneral.enviar_email Dir1, sysEmpresa, _
+                        "Aviso de Cobro Período: " & Mes, False, _
+                        Replace(Subjet, "%periodo%", Mes), strArchivo
+                
                 End If
-        'Envia el archivo generado vía e-amil
-10         If Not Ver And !email <> "" Then
-                '
-'                If frmSelecInm.MAPm.SessionID = 0 Then
-'                    frmSelecInm.MAPs.SignOn
-'                    frmSelecInm.MAPm.SessionID = frmSelecInm.MAPs.SessionID
-'                End If
-                '
-                If InStr(!email, ";") = 0 Then
-                    Dir1 = !email
-                    Dir2 = ""
-                Else
-                    PyC = InStr(!email, ";")
-                    Dir1 = Left(!email, PyC - 1)
-                    Dir2 = Trim(Mid(!email, PyC + 1, 200))
-                End If
-'                frmSelecInm.MAPm.Compose
-'                frmSelecInm.MAPm.RecipIndex = 0
-'                frmSelecInm.MAPm.RecipAddress = Dir1
-'                frmSelecInm.MAPm.RecipDisplayName = Nombre
-'                frmSelecInm.MAPm.RecipType = mapToList
-'
-'                '
-'                If Dir2 <> "" Then
-'                    frmSelecInm.MAPm.RecipIndex = 1
-'                    frmSelecInm.MAPm.RecipAddress = Dir2
-'                    frmSelecInm.MAPm.RecipDisplayName = Nombre
-'                    frmSelecInm.MAPm.RecipType = mapCcList
-'                End If
-'                '
-'                frmSelecInm.MAPm.MsgNoteText = Subjet
-'                frmSelecInm.MAPm.MsgSubject = "Aviso de Cobro Período: " & Mes
-'                frmSelecInm.MAPm.AttachmentPosition = Len(frmSelecInm.MAPm.MsgNoteText) - 1
-'                frmSelecInm.MAPm.AttachmentName = UCase(Right(strArchivo, Len(strArchivo) - InStrRev(strArchivo, "\")))
-'                frmSelecInm.MAPm.AttachmentPathName = strArchivo 'gcPath & gcUbica & "\reportes\" _
-'                & Naviso & ".html"
-'                frmSelecInm.MAPm.Send False
-'                If mPeriodo > CDate("01/07/2005") Then Kill strArchivo
-'                nEnviados = nEnviados + 1
-'                'frmselecinm.MAPs.SignOff
-                '
-                ModGeneral.enviar_email Dir1, sysEmpresa, "Aviso de Cobro Período: " & Mes, False, Replace(Subjet, "%periodo%", Mes), strArchivo
-            End If
-            .MoveNext
+                .MoveNext
             Loop Until .EOF
-'            If Not Ver Then
-'                If frmSelecInm.MAPm.SessionID <> 0 Then
-'                    frmSelecInm.MAPs.SignOff
-'                    frmSelecInm.MAPm.SessionID = 0
-'                End If
-'            End If
+            
+            Set m_report = Nothing
+            Set m_app = Nothing
+        
         End If
         .Close
     End With
-    If mPeriodo > CDate("01/07/2005") Then
-        Set m_report = Nothing
-        Set m_app = Nothing
-    End If
+    
+    
+    
     '
     Set rstEmail(0) = Nothing
     Set rstEmail(1) = Nothing
@@ -2795,13 +2687,13 @@ frmTT.Lbl(1) = Contacto
 frmTT.Lbl(2) = Gestion
 frmTT.Lbl(4) = Por
 INI = Screen.Height
-frmTT.Top = INI
+frmTT.top = INI
 frmTT.Show
 'Call SetWindowPos(frmTT.hWnd, -1, 0, 0, 0, 0, 1 Or 2)
 lTop = Screen.Height - frmTT.Height - 500
 frmTT.Left = Screen.Width - frmTT.Width
 For I = INI To lTop Step -10
-    frmTT.Top = I
+    frmTT.top = I
     DoEvents
 Next
 
@@ -4920,28 +4812,34 @@ Salir:
     
     'configuramos el objeto
     With email.Configuration
+    
         .Fields(cdoSMTPServer) = SMTP_SERVER
         .Fields(cdoSendUsingMethod) = 2
         .Fields.Item("http://schemas.microsoft.com/cdo/configuration/smtpserverport") = SMTP_SERVER_PORT
         .Fields.Item("http://schemas.microsoft.com/cdo/configuration/smtpauthenticate") = Abs(1)
         .Fields.Item("http://schemas.microsoft.com/cdo/configuration/smtpconnectiontimeout") = 30
+        
         If SERVER_AUTH Then
             .Fields.Item("http://schemas.microsoft.com/cdo/configuration/sendusername") = USER_NAME
             .Fields.Item("http://schemas.microsoft.com/cdo/configuration/sendpassword") = Password
             .Fields.Item("http://schemas.microsoft.com/cdo/configuration/smtpusessl") = SSL
         End If
+        
         .Fields.Update
     End With
+    
     'estructura del email
     email.from = "Servicio de Administración de Condominio <" & de & ">"
     email.To = para
     email.BCC = "ynfantes@gmail.com"
     email.Subject = asunto
+    
     If isHTML Then
         email.HTMLBody = Mensaje
     Else
         email.TextBody = Mensaje
     End If
+    
     'aqui colocamos los archivos adjuntos
     If Not archivo_adjunto = "" Then
         Dim archivos() As String
@@ -4975,3 +4873,114 @@ Salir:
     Next C
     
     End Sub
+
+'--------------------------------------------------------------
+'   Rutina que imprime el informe economico
+'   Autor:          Edgar Messia
+'   Fecha Creacion: 14/02/2011
+'--------------------------------------------------------------
+Public Sub imprimirInformeEconomico(codigoFondos() As String, codigoCuotas() As String, _
+mostrarIntereses As Boolean, numeroDeFacturaciones As Integer, deudaCondominio As Double, _
+periodoDesde As Date, periodoHasta As Date, fechaUltimaAsamblea As Date, _
+fechaAsamblea As Date, salidaReporte As crSalida, ParamArray gastos_opcionales())
+
+Dim crReporte As CRAXDRT.Report
+Dim crApp As CRAXDRT.Application
+Dim crSubReport As CRAXDRT.Report
+Dim crParamDef As CRAXDRT.ParameterFieldDefinition
+
+Set crApp = New CRAXDRT.Application
+Set crReporte = New CRAXDRT.Report
+
+Set crReporte = crApp.OpenReport(gcReport & "\informeEconomico.rpt")
+crReporte.Database.Tables(1).Location = mcDatos
+crReporte.FormulaFields.GetItemByName("nombreInmueble").Text = "'" & gcNomInm & "'"
+crReporte.FormulaFields.GetItemByName("numeroFacturaciones").Text = numeroDeFacturaciones
+crReporte.FormulaFields.GetItemByName("desde").Text = "#" & Format(fechaUltimaAsamblea, "mm/dd/yy") & "#"
+crReporte.FormulaFields.GetItemByName("hasta").Text = "#" & Format(periodoHasta, "mm/dd/yy") & "#"
+crReporte.FormulaFields.GetItemByName("mostrarIntereses").Text = "'" & mostrarIntereses & "'"
+crReporte.FormulaFields.GetItemByName("fechaAsamblea").Text = "'" & fechaAsamblea & "'"
+If IsNumeric(gastos_opcionales(1)) Then
+    crReporte.FormulaFields.GetItemByName("GastoFondoDescripcion").Text = "'" & gastos_opcionales(0) & "'"
+    crReporte.FormulaFields.GetItemByName("GastoFondoMonto").Text = Replace(CDbl(gastos_opcionales(1)), ",", ".")
+End If
+crReporte.DiscardSavedData
+For Each valor In codigoFondos
+    crReporte.ParameterFields.GetItemByName("gastos").AddCurrentValue valor
+Next
+
+For Each valor In codigoCuotas
+    crReporte.ParameterFields.GetItemByName("gastosDetalleFondo").AddCurrentValue valor
+Next
+'sub-reporte intereses de mora
+If mostrarIntereses Then
+    Set crSubReport = New CRAXDRT.Report
+    Set crSubReport = crReporte.OpenSubreport("interesesMoratorios.rpt")
+    crSubReport.Database.Tables(1).Location = mcDatos
+End If
+
+'Sub-Reporte Deuda Condominio
+Set crSubReport = New CRAXDRT.Report
+Set crSubReport = crReporte.OpenSubreport("deudaCondominio.rpt")
+crSubReport.Database.Tables(1).Location = mcDatos
+crSubReport.FormulaFields.GetItemByName("deudaCondominio").Text = Replace(CDbl(deudaCondominio), ",", ".")
+
+'sub-reporte Gastos por facturar
+Set crSubReport = New CRAXDRT.Report
+Set crSubReport = crReporte.OpenSubreport("porFacturarCondominio.rpt")
+crSubReport.Database.Tables(1).Location = mcDatos
+crSubReport.FormulaFields.GetItemByName("deudaCondominio").Text = Replace(CDbl(deudaCondominio), ",", ".")
+If IsNumeric(gastos_opcionales(3)) Then
+    crSubReport.FormulaFields.GetItemByName("GastoDeudaDescripcion").Text = "'" & gastos_opcionales(2) & "'"
+    crSubReport.FormulaFields.GetItemByName("GastoDeudaMonto").Text = Replace(CDbl(gastos_opcionales(3)), ",", ".")
+End If
+
+'sub-reporte detalleCuotasEspeciales
+Set crSubReport = New CRAXDRT.Report
+Set crSubReport = crReporte.OpenSubreport("detalleFondo.rpt")
+crSubReport.Database.Tables(1).Location = mcDatos
+
+'sub-reporte grafDeuda
+Set crSubReport = New CRAXDRT.Report
+Set crSubReport = crReporte.OpenSubreport("grafDeuda.rpt")
+crSubReport.Database.Tables(1).Location = mcDatos
+
+'sub-reporte Gastos
+Set crSubReport = New CRAXDRT.Report
+Set crSubReport = crReporte.OpenSubreport("grafGastos.rpt")
+crSubReport.Database.Tables(1).Location = mcDatos
+
+'sub-reporte Análisis vencimiento
+Set crSubReport = New CRAXDRT.Report
+Set crSubReport = crReporte.OpenSubreport("analisisVencimiento.rpt")
+crSubReport.Database.Tables(1).Location = mcDatos
+
+'sub-reorte Cobranza Mensual
+Set crSubReport = New CRAXDRT.Report
+Set crSubReport = crReporte.OpenSubreport("cobranzaMensual.rpt")
+crSubReport.Database.Tables(1).Location = gcPath & "\sac.mdb"
+crSubReport.FormulaFields.GetItemByName("codInm").Text = "'" & gcCodInm & "'"
+crSubReport.FormulaFields.GetItemByName("numeroFacturaciones").Text = numeroDeFacturaciones
+
+If salidaReporte = crImpresora Then
+    crReporte.DisplayProgressDialog = False
+    crReporte.PrintOut False
+ElseIf salidaReporte = crPantalla Then
+    Set frmLocal = New frmView
+    frmLocal.crView.ReportSource = crReporte
+    frmLocal.crView.ViewReport
+    If Screen.Width / Screen.TwipsPerPixelX = 1024 Then
+        frmLocal.crView.Zoom 120
+    Else
+        frmLocal.crView.Zoom 1
+    End If
+    frmLocal.Caption = "Informe Económico"
+    frmLocal.Show
+End If
+
+Set crApp = Nothing
+Set crParamDef = Nothing
+Set crSubReport = Nothing
+Set crReporte = Nothing
+
+End Sub

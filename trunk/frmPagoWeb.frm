@@ -1,4 +1,5 @@
 VERSION 5.00
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{0ECD9B60-23AA-11D0-B351-00A0C9055D8E}#6.0#0"; "MSHFLXGD.OCX"
 Begin VB.Form frmPagoWeb 
@@ -16,6 +17,22 @@ Begin VB.Form frmPagoWeb
    ScaleWidth      =   14610
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
+   Begin MSComCtl2.MonthView calendar 
+      Height          =   2370
+      Left            =   1500
+      TabIndex        =   5
+      Top             =   345
+      Visible         =   0   'False
+      Width           =   2595
+      _ExtentX        =   4577
+      _ExtentY        =   4180
+      _Version        =   393216
+      ForeColor       =   -2147483630
+      BackColor       =   -2147483633
+      Appearance      =   1
+      StartOfWeek     =   94306305
+      CurrentDate     =   40871
+   End
    Begin VB.CommandButton cmd 
       Caption         =   "&Imprimir"
       Height          =   495
@@ -149,6 +166,12 @@ Private sNombreInmueble As String, sCajaInmueble As String
 Private aFacturasC() As String
 Private cErrores As New Collection
 Private sProceso As String
+Private Izq As Long
+
+Private Sub Calendar_DateClick(ByVal DateClicked As Date)
+calendar.Visible = False
+grid.TextMatrix(grid.RowSel, grid.ColSel) = DateClicked
+End Sub
 
 Private Sub cmd_Click(Index As Integer)
 Select Case Index
@@ -254,6 +277,11 @@ Private Sub Form_Load()
         cnn.Close
         Set cnn = Nothing
     End If
+    Izq = grid.Left
+    For I = 0 To 4
+        Izq = Izq + grid.ColWidth(I)
+    Next
+    calendar.Value = Date
     MousePointer = vbDefault
 End Sub
 
@@ -266,13 +294,13 @@ rtnLimpiar_Grid grid
 Reg = Split(contenido, "<br>")
 Filas = UBound(Reg)
 grid.Rows = Filas + 1
-For i = 0 To Filas - 1
+For I = 0 To Filas - 1
     Fila = Fila + 1
     grid.Col = 0
     grid.Row = Fila
     Set grid.CellPicture = img(2)
     grid.CellPictureAlignment = flexAlignCenterCenter
-    maestro = Split(Reg(i), "|")
+    maestro = Split(Reg(I), "|")
     For j = 0 To 13
         valor = maestro(j)
         If IsDate(valor) And Not IsNumeric(valor) Then
@@ -329,6 +357,9 @@ If grid.ColSel = 0 Then
                 
         End If
     End If
+ElseIf grid.ColSel = 5 Then
+    
+
 ElseIf grid.ColSel = 14 Then
     If grid.TextMatrix(grid.RowSel, 1) <> "" Then
         grid.Row = grid.RowSel
@@ -345,7 +376,7 @@ End If
 End Sub
 
 Private Sub procesar_pago()
-Dim i As Integer, ID As Integer, Fila As Integer
+Dim I As Integer, ID As Integer, Fila As Integer
 Dim Pago As Currency, mfactura As Currency, sql As String, dAbono As Double, mAbono As Double
 Dim sINM As String, sFact As String, sFP As String, sRecibo As String
 Dim cFactura As Double, sEmail As String, sApto As String, sNdoc As String, sFdoc As String
@@ -361,32 +392,33 @@ pBar.Max = grid.Rows - 1
 Call rtnBitacora("Inicio procesar pagos web")
 
 
-For i = 1 To grid.Rows - 1
+For I = 1 To grid.Rows - 1
     grid.Col = 0
-    grid.Row = i
-    pBar.Value = i
+    grid.Row = I
+    pBar.Value = I
     
     'si el registro esta marcado para procesar, entramos en esta rutina
-    If grid.CellPicture = img(3) And grid.TextMatrix(i, 10) = "P" Then
+    If grid.CellPicture = img(3) And grid.TextMatrix(I, 10) = "P" Then
         
         'abrimos una transaccion para guardas este pago
         cnnConexion.BeginTrans
+        'cnnConexion.IsolationLevel = adXactReadUncommitted
         bTrans = True
         On Error GoTo ReversarPago:
         Call rtnBitacora("-- Inicar transacción...")
         
         Fila = grid.RowSel
-        grid.Row = i + 1
+        grid.Row = I + 1
         
         ' seteamos las variables generales del pago
-        Pago = grid.TextMatrix(i, 6)
-        ID = grid.TextMatrix(i, 1)      'monto total del pago
-        sFP = IIf(grid.TextMatrix(i, 3) = "D", "DEPOSITO", "TRANSFERENCIA")
-        sEmail = grid.TextMatrix(i, 11)
-        sNdoc = grid.TextMatrix(i, 4)
-        sFdoc = grid.TextMatrix(i, 5)
-        sNdoc2 = grid.TextMatrix(i + 1, 2)
-        sBanco = grid.TextMatrix(i, 8)
+        Pago = grid.TextMatrix(I, 6)
+        ID = grid.TextMatrix(I, 1)      'monto total del pago
+        sFP = IIf(grid.TextMatrix(I, 3) = "D", "DEPOSITO", "TRANSFERENCIA")
+        sEmail = grid.TextMatrix(I, 11)
+        sNdoc = grid.TextMatrix(I, 4)
+        sFdoc = grid.TextMatrix(I, 5)
+        sNdoc2 = grid.TextMatrix(I + 1, 2)
+        sBanco = grid.TextMatrix(I, 8)
 
         
         If formaPagoYaRegistrada(sNdoc, sBanco, sFP) Then
@@ -425,7 +457,7 @@ For i = 1 To grid.Rows - 1
             
             End If
             
-            pBar.Value = i + 1
+            pBar.Value = I + 1
             DoEvents
             
             
@@ -549,10 +581,14 @@ For i = 1 To grid.Rows - 1
             sFP, sNdoc, sBanco, Format(CDate(sFdoc), "dd/mm/yy"), Pago, ""
             '   ------ SI ES TRANSFERENCIA REGISTRAMOS OTRO DOCUMENTO POR EL REGISTRADO EN BANCO ------
             If sNdoc2 <> "" And sFP = "TRANSFERENCIA" Then
-                If formaPagoYaRegistrada(sNdoc2, sBanco, sFP) Then
-                    sProceso = "Agregar Pago"
-                    Err.Raise -2147467259 + ID, "Registrar " & sFP, sFP & " " & sBanco & " " & sNdoc2 & " ya registrado(a)"
-                End If
+            '   -----------------------------------------------------
+            '   comentamos estas líneas a solicitud de la licenciada
+            '   -----------------------------------------------------
+'                If formaPagoYaRegistrada(sNdoc2, sBanco, sFP) Then
+'                    sProceso = "Agregar Pago"
+'                    Err.Raise -2147467259 + ID, "Registrar " & sFP, sFP & " " & sBanco & " " & sNdoc2 & " ya registrado(a)"
+'                End If
+            '   --------------------------------------------------------
                 ModGeneral.insertar_registro "procPagoAdd", sRecibo, CStr(IntTaquilla), sINM, _
                 Format(Date, "dd/mm/yy"), sFP, sNdoc2, sBanco, Format(CDate(sFdoc), "dd/mm/yy"), 0, ""
                 
@@ -581,14 +617,14 @@ ReversarPago:
                 grid.TextMatrix(Fila + 1, 8) = actualizarFTP(ID, "A")
             End If
             bTrans = False
-            i = grid.RowSel - 1
+            I = grid.RowSel - 1
         
         End If
         
-    ElseIf grid.TextMatrix(i, 14) = "Sí" Then ' eliminar pago
-        ID = grid.TextMatrix(i, 1)
+    ElseIf grid.TextMatrix(I, 14) = "Sí" Then ' eliminar pago
+        ID = grid.TextMatrix(I, 1)
         Call rtnBitacora("Pago ID: " & ID & " rechazado por el usuario")
-        grid.TextMatrix(i + 1, 8) = actualizarFTP(ID, "R")
+        grid.TextMatrix(I + 1, 8) = actualizarFTP(ID, "R")
     End If
     
 Next
@@ -596,8 +632,8 @@ If cErrores.Count > 0 Then
     If bTrans Then cnnConexion.RollbackTrans
     sDescrip = "El proceso se completo, pero ocurrieron los siguientes errores: " & vbCrLf
     'For Each error In cErrores
-    For i = 1 To cErrores.Count
-        sDescrip = sDescrip & "- " & cErrores.Item(i) & vbCrLf
+    For I = 1 To cErrores.Count
+        sDescrip = sDescrip & "- " & cErrores.Item(I) & vbCrLf
     Next
     sDescrip = sDescrip & "Verifique las transacciones con estatus (E) en color rojo."
     MsgBox sDescrip
@@ -719,12 +755,18 @@ sCaja = CajaInmueble(Inmueble)
 sCajaInmueble = sCaja
 
 sProceso = "procNumTransaccion"
-Set rst = ejecutar_procedure("procNumTransaccion", Date, sCaja)
 
-sProceso = "guardar_movimiento_caja"
+'sql = "SELECT iif(isnull(max(NumeroMovimientoCaja)),0,max(NumeroMovimientoCaja)) as maximo " & _
+    "FROM MOVIMIENTOCAJA WHERE FechaMovimientoCaja=#" & Format(Date, "mm/dd/yy") & _
+    "# and InmuebleMovimientoCaja='" & Inmueble & "'"
+
+'Set rst = cnnConexion.Execute(sql)
+
+Set rst = ModGeneral.ejecutar_procedure("procNumTransaccion", Date, sCaja)
 
 nTransaccion = rst("maximo") + 1
 
+sProceso = "guardar_movimiento_caja"
 strRecibo = Right(Inmueble, 2) & Apartamento & Format(Date, "ddmmyy") & Format(nTransaccion, "00")
 
 sql = "INSERT INTO MovimientoCaja(IDTaquilla, IDRecibo, NumeroMovimientoCaja, FechaMovimientoCaja, " & _
@@ -819,8 +861,8 @@ Dim mFTP As New cFtp, Facturas() As String
         'numFichero = FreeFile
         'strArchivo = App.Path & Archivo_Temp
         'Open strArchivo For Input As numFichero 'abre el archivo de recibos cancelados
-        For i = 0 To UBound(aFacturasC)
-            Facturas = Split(aFacturasC(i), "|")
+        For I = 0 To UBound(aFacturasC)
+            Facturas = Split(aFacturasC(I), "|")
             Carpeta = "\" & Inmueble & "\"
             sArchivo = Facturas(0) & ".pdf"
             Call Printer_Pago(Facturas(0), CCur(Facturas(1)), Carpeta, _
@@ -858,3 +900,38 @@ formaPagoYaRegistrada = Not (rst.EOF And rst.BOF)
 rst.Close
 Set rst = Nothing
 End Function
+
+Private Sub grid_KeyDown(KeyCode As Integer, Shift As Integer)
+If KeyCode = 27 Then calendar.Visible = False
+
+End Sub
+
+Private Sub grid_LeaveCell()
+If grid.ColSel = 5 Then calendar.Visible = False
+End Sub
+
+Private Sub Grid_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+'MsgBox grid.ColSel & "-> " & x & "-> " & y
+'Debug.Print grid.Text
+Dim top As Integer
+
+If grid.ColSel = 5 And grid.TextMatrix(grid.RowSel, 10) <> "" Then
+    If grid.RowSel - grid.TopRow > 15 Then
+        'grid.TopRow = grid.TopRow + 4
+        top = grid.RowPos(grid.RowSel) + grid.top - calendar.Height
+    Else
+        top = grid.RowPos(grid.RowSel) + grid.top + grid.RowHeight(grid.RowSel)
+    End If
+    
+    calendar.top = top 'grid.Top + (grid.RowHeight(grid.RowSel) * (grid.RowSel + 1))
+    calendar.Left = Izq
+    calendar.Visible = True
+    Debug.Print grid.TopRow & "->" & grid.RowSel
+Else
+    'calendar.Visible = False
+End If
+End Sub
+
+Private Sub grid_Scroll()
+If calendar.Visible Then calendar.Visible = False
+End Sub
