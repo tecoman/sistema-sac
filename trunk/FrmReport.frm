@@ -380,7 +380,7 @@ End Sub
             '--------
             Set rstReg = New ADODB.Recordset
             rstReg.Open strSQL1, cnnConexion, adOpenStatic, adLockReadOnly, adCmdText
-            If rstReg.EOF Or rstReg.BOF Then
+            If (rstReg.EOF And rstReg.BOF) Then
                 MsgBox "Caja '" & IntTaquilla & "' sin movimientos..", vbInformation, _
                 App.ProductName
                 rstReg.Close
@@ -408,7 +408,7 @@ End Sub
             
             rstReg.Open strSQL1, cnnConexion, adOpenStatic, adLockReadOnly, adCmdText
             
-            If rstReg.EOF Or rstReg.BOF Then
+            If (rstReg.EOF And rstReg.BOF) Then
             
                 MsgBox "Caja '" & IntTaquilla & "' sin movimientos..", vbInformation, _
                 App.ProductName
