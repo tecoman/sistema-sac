@@ -442,7 +442,7 @@ Dim avisoDeCobro As String
 
 If cPropietarios.Count > 0 Then
     Lbl.Visible = True
-    Registro = cPropietarios(1)
+        Registro = cPropietarios(1)
     email = Split(Registro, "|")
     Periodo = Format(email(4), "mm/dd/yyyy")
     Mes = UCase(Format(Periodo, "mm-yyyy"))

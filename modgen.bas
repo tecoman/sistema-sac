@@ -41,7 +41,7 @@ Attribute VB_Name = "ModGeneral"
 
     'Public Const INVERSIONES$ = "9999"  'Codigo de Inmueble Inversiones
     '
-    Public Const cnnOLEDB$ = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source="
+        Public Const cnnOLEDB$ = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source="
     Public strLlamada As String * 1             '
     Public Const Archivo_Temp = "\RECANSAC.log" '
     Public Matriz_A()               '
@@ -3759,7 +3759,7 @@ LocalErr:
     End Sub
 
 
-'---------------------------------------------------------------------------------------------
+    '---------------------------------------------------------------------------------------------
     '   Rutina rtnAC
     '
     '   Entradas: Control Crytal Report, Periodo Formatio "mmm/yyyy",Periodo
